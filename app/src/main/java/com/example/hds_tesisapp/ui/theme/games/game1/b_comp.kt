@@ -2,6 +2,7 @@ package com.example.hds_tesisapp.ui.theme.games.game1
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun FuturisticButton(
     text: String = "COMPROBAR",
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -42,7 +44,8 @@ fun FuturisticButton(
             .shadow(
                 elevation = 12.dp,
                 shape = RoundedCornerShape(20.dp)
-            ),
+            )
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Text(
