@@ -37,7 +37,7 @@ fun SplashScreen(navController: NavController) {
     ) {
         // Fondo (cubre todo)
         Image(
-            painter = painterResource(id = R.drawable.fondo_menu),
+            painter = painterResource(id = R.drawable.background_landscape),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -46,9 +46,9 @@ fun SplashScreen(navController: NavController) {
             painter = painterResource(id = R.drawable.titulo),
             contentDescription = "Título de la aplicación",
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 10.dp)
-                .fillMaxWidth(0.95f),
+                .align(Alignment.TopStart)
+                .padding(top = 20.dp, start = 40.dp)
+                .fillMaxWidth(0.5f),
             contentScale = ContentScale.FillWidth
         )
 
@@ -57,9 +57,9 @@ fun SplashScreen(navController: NavController) {
             painter = painterResource(id = R.drawable.pj),
             contentDescription = "Personajes",
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-
-                .fillMaxWidth(0.95f),
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 20.dp, end = 40.dp)
+                .fillMaxWidth(0.4f),
             contentScale = ContentScale.FillWidth
         )
     }
