@@ -9,6 +9,7 @@ import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
 import com.example.hds_tesisapp.ui.theme.splash.SplashScreen
 import com.example.hds_tesisapp.ui.theme.personajes.MaxScreen
 import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
+import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
 
 @Composable
 fun AppNavigation() {
@@ -37,6 +38,10 @@ fun AppNavigation() {
 
         composable(Routes.LinaCharacter.route) {
             LinaScreen(navController)
+        }
+
+        composable(Routes.TomAtomCharacter.route) {
+            TomAtomScreen(navController)
         }
     }
 }
