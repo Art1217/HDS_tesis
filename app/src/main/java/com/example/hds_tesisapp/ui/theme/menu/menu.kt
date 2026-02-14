@@ -35,10 +35,26 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
 import com.example.hds_tesisapp.R
+import android.app.Activity
+import android.content.Context
+import android.content.pm.ActivityInfo
+
+fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is android.content.ContextWrapper -> baseContext.findActivity()
+    else -> null
+}
 
 @Composable
 fun MenuScreen(navController: NavController) {
     val context = LocalContext.current
+
+    // Force Landscape Orientation
+    val activity = remember { context.findActivity() }
+    DisposableEffect(Unit) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        onDispose {}
+    }
     
     // Music State
     var isMuted by remember { mutableStateOf(false) }

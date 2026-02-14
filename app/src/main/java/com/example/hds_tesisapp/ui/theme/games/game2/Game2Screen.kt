@@ -83,9 +83,7 @@ fun Game2Screen() {
     DisposableEffect(Unit) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        onDispose {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        onDispose {}
     }
     
     // Game State

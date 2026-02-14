@@ -126,9 +126,7 @@ fun GameScreen(onLevelComplete: () -> Unit) {
     DisposableEffect(Unit) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        onDispose {
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
+        onDispose {}
     }
 
     // FONDO CON IMAGEN
