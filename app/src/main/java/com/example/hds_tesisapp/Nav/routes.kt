@@ -7,4 +7,5 @@ sealed class Routes(val route: String) {
     object MaxCharacter : Routes("max_character")
     object LinaCharacter : Routes("lina_character")
     object TomAtomCharacter : Routes("tom_atom_character")
+    object Game2 : Routes("game2")
 }

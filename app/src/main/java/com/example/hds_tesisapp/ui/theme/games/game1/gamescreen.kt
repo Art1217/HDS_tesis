@@ -118,7 +118,7 @@ fun Context.findActivity(): Activity? = when (this) {
 // PANTALLA DE JUEGO (FINAL COMPLETA)
 // ================================================
 @Composable
-fun GameScreen() {
+fun GameScreen(onLevelComplete: () -> Unit) {
 
     // Forzar orientación horizontal SOLO AQUÍ
     val context = LocalContext.current
@@ -224,6 +224,7 @@ fun GameScreen() {
                         onClick = {
                             if (step1 == "3" && step2 == "2" && step3 == "1") {
                                 Toast.makeText(context, "¡Correcto! Has resuelto los pasos.", Toast.LENGTH_SHORT).show()
+                                onLevelComplete()
                             } else {
                                 Toast.makeText(context, "Incorrecto. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
                             }
