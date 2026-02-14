@@ -11,6 +11,7 @@ import com.example.hds_tesisapp.ui.theme.personajes.MaxScreen
 import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
 import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
 import com.example.hds_tesisapp.ui.theme.games.game2.Game2Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.Game3Screen
 
 @Composable
 fun AppNavigation() {
@@ -38,7 +39,15 @@ fun AppNavigation() {
         }
 
         composable(Routes.Game2.route) {
-            Game2Screen()
+            Game2Screen(onLevelComplete = {
+                navController.navigate(Routes.Game3.route) {
+                    popUpTo(Routes.Game2.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Game3.route) {
+            Game3Screen()
         }
 
         composable(Routes.MaxCharacter.route) {

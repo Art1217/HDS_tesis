@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -74,7 +75,7 @@ enum class ItemType {
 }
 
 @Composable
-fun Game2Screen() {
+fun Game2Screen(onLevelComplete: () -> Unit) {
     val context = LocalContext.current
     val density = LocalDensity.current
 
@@ -82,12 +83,10 @@ fun Game2Screen() {
     val activity = remember { context.findActivity() }
     DisposableEffect(Unit) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
         onDispose {}
     }
     
     // Game State
-    // Initial random positions inside the bowl area (approx 300x150 dp box)
     val initialItems = remember {
         listOf(
             GameItem(1, "Manzana", ItemType.FRUIT, Color.Red, Offset(20f, 20f)),
@@ -108,7 +107,7 @@ fun Game2Screen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Game2Config.BackgroundColor) // Fondo Cocina
+            .background(Game2Config.BackgroundColor)
     ) {
         
         // 1. HEADER (Score & Title)
@@ -146,28 +145,24 @@ fun Game2Screen() {
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 32.dp, bottom = 32.dp)
-                .size(150.dp) // Tamaño del personaje
+                .size(150.dp)
                 .background(Game2Config.LinaColor, CircleShape)
                 .border(4.dp, Color.Black, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text("Lina", color = Color.White, fontWeight = FontWeight.Bold)
-            // AQUÍ VA LA IMAGEN DE LINA:
-            // Image(painter = painterResource(id = R.drawable.lina_sentada), ...)
         }
 
         // --- BOWL (Center) ---
-        // Este Box es solo visual, los items se dibujan "encima" pero posicionados aquí
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .offset(y = (-50).dp) // Un poco hacia arriba
-                .size(350.dp, 180.dp) // Forma ovalada del bowl
-                .background(Game2Config.BowlColor, RoundedCornerShape(50)) // Semi-ovalado
+                .offset(y = (-50).dp)
+                .size(350.dp, 180.dp)
+                .background(Game2Config.BowlColor, RoundedCornerShape(50))
                 .border(6.dp, Game2Config.BowlBorderColor, RoundedCornerShape(50)),
             contentAlignment = Alignment.Center
         ) {
-            // Bowl Visuals
             Text("BOWL", color = Color.White.copy(alpha=0.5f), fontSize=24.sp)
         }
 
@@ -175,11 +170,10 @@ fun Game2Screen() {
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp, start = 150.dp) // Move right to clear Lina
-                .fillMaxWidth(0.7f), // Ocupa el 70% del ancho restante
+                .padding(bottom = 24.dp, start = 150.dp)
+                .fillMaxWidth(0.7f),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            // Fruit Bin (Alimentos/Frutas)
             ClassificationBin(
                 name = "FRUTAS",
                 color = Game2Config.FruitBinColor,
@@ -187,7 +181,6 @@ fun Game2Screen() {
                 onGloballyPositioned = { fruitZoneBounds = it }
             )
 
-            // Vegetable Bin (Animales/Verduras - Según tu lógica original mantengo Verduras, aunque la imagen diga Animales)
             ClassificationBin(
                 name = "VERDURAS",
                 color = Game2Config.VegBinColor,
@@ -197,25 +190,19 @@ fun Game2Screen() {
         }
 
         // 3. DRAGGABLE ITEMS LAYER
-        // We put them in a Box covering the screen so they can move freely,
-        // but we position them initially near the Bowl center.
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Bowl Center Calculation (Approximate for simple positioning)
-            // Screen Center - 50dp Y offset
-            
             Box(
                  modifier = Modifier
                      .align(Alignment.Center)
-                     .offset(y = (-80).dp) // Position items slightly above/in the bowl
+                     .offset(y = (-80).dp)
             ) {
                  currentItems.forEach { item ->
                     DraggableGameItem(
                         item = item,
                         initialOffset = item.initialOffset,
                         onDrop = { position ->
-                            // Check collisions
                             val isFruitDrop = fruitZoneBounds?.contains(position) == true
                             val isVegDrop = vegetableZoneBounds?.contains(position) == true
                             
@@ -241,21 +228,27 @@ fun Game2Screen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.6f)),
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .clickable { onLevelComplete() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "¡GANASTE!",
-                    fontSize = 60.sp,
-                    fontWeight = FontWeight.Black,
-                    color = Color.Yellow
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "¡GANASTE!",
+                        fontSize = 60.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.Yellow
+                    )
+                    Text(
+                        text = "Toca para continuar",
+                        fontSize = 20.sp,
+                        color = Color.White
+                    )
+                }
             }
         }
     }
 }
-
-
 
 @Composable
 fun ClassificationBin(
