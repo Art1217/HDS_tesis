@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -82,8 +83,8 @@ fun Game3Screen() {
         // Calculate dynamic positions for "Aligned at Top"
         val initialItems = remember(screenWidth, density) {
             with(density) {
-                // Place items in the upper section (approx 1/4 down)
-                val y = 90.dp.toPx() 
+                // Place items in the upper section (Move down to 130dp to avoid Title overlap)
+                val y = 130.dp.toPx() 
                 val spacing = screenWidth.toPx() / 4
                 listOf(
                     SizeItem(1, "Pequeño", SizeType.SMALL, Game3Config.SmallItemColor, Offset(spacing * 1 - 30.dp.toPx(), y), 60.dp),
@@ -93,10 +94,17 @@ fun Game3Screen() {
             }
         }
         
-        // Update currentItems when initialItems changes (e.g. screen resize)
-        var currentItems by remember(initialItems) { mutableStateOf(initialItems) }
-        var placedItems by remember { mutableStateOf(mapOf<SizeType, SizeItem>()) }
+        // Map of Slot Index (0,1,2) -> Placed Item
+        var placedItems by remember { mutableStateOf(mapOf<Int, SizeItem>()) }
+        var isGameWon by remember { mutableStateOf(false) }
         
+        // Derived State: Items that are NOT placed
+        val unplacedItems = remember(initialItems, placedItems) {
+            initialItems.filter { item -> 
+                placedItems.values.none { it.id == item.id }
+            }
+        }
+
         // Slot Areas
         var smallSlotBounds by remember { mutableStateOf<Rect?>(null) }
         var mediumSlotBounds by remember { mutableStateOf<Rect?>(null) }
@@ -141,70 +149,99 @@ fun Game3Screen() {
         
         Row(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // Align to bottom
-                .padding(bottom = 50.dp, start = 120.dp) // Lift up slightly, offset for char
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 50.dp, start = 120.dp)
                 .fillMaxWidth(0.8f),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Bottom 
         ) {
-            // Small Slot (Position 1)
+            // Slot 0 (Small)
             OrderSlot(
                 label = "",
                 size = commonSlotSize, 
                 onGloballyPositioned = { smallSlotBounds = it },
-                placedItem = placedItems[SizeType.SMALL]
+                placedItem = placedItems[0],
+                onClick = { placedItems = placedItems - 0 }
             )
             
-            // Medium Slot (Position 2)
+            // Slot 1 (Medium)
             OrderSlot(
                 label = "",
                 size = commonSlotSize,
                 onGloballyPositioned = { mediumSlotBounds = it },
-                placedItem = placedItems[SizeType.MEDIUM]
+                placedItem = placedItems[1],
+                 onClick = { placedItems = placedItems - 1 }
             )
             
-            // Large Slot (Position 3)
+            // Slot 2 (Large)
             OrderSlot(
                 label = "",
                 size = commonSlotSize,
                 onGloballyPositioned = { largeSlotBounds = it },
-                placedItem = placedItems[SizeType.LARGE]
+                placedItem = placedItems[2],
+                 onClick = { placedItems = placedItems - 2 }
             )
         }
         
         // 4. DRAGGABLE ITEMS (Unplaced)
-        currentItems.forEach { item ->  
-             if (!placedItems.containsValue(item)) {
+        // Explicit key composable to track items by ID
+        unplacedItems.forEach { item ->
+            key(item.id) {
                  DraggableSizeItem(
+                    key = item.id,
                     item = item,
                     initialOffset = item.initialOffset,
                     onDrop = { position ->
-                        val isSmallDrop = smallSlotBounds?.contains(position) == true
-                        val isMediumDrop = mediumSlotBounds?.contains(position) == true
-                        val isLargeDrop = largeSlotBounds?.contains(position) == true
+                        val isSlot0Drop = smallSlotBounds?.contains(position) == true
+                        val isSlot1Drop = mediumSlotBounds?.contains(position) == true
+                        val isSlot2Drop = largeSlotBounds?.contains(position) == true
                         
-                        var placed = false
-                        if (isSmallDrop && item.sizeType == SizeType.SMALL) {
-                            placed = true
-                        } else if (isMediumDrop && item.sizeType == SizeType.MEDIUM) {
-                             placed = true
-                        } else if (isLargeDrop && item.sizeType == SizeType.LARGE) {
-                             placed = true
-                        }
+                        var targetSlot = -1
+                        if (isSlot0Drop) targetSlot = 0
+                        else if (isSlot1Drop) targetSlot = 1
+                        else if (isSlot2Drop) targetSlot = 2
                         
-                        if (placed) {
-                            placedItems = placedItems + (item.sizeType to item)
-                            Toast.makeText(context, "¡Correcto!", Toast.LENGTH_SHORT).show()
+                        if (targetSlot != -1) {
+                            // If we drop on an occupied slot, we swap/replace.
+                            // The occupied item goes back to unplaced (because it's removed from placedItems).
+                            placedItems = placedItems + (targetSlot to item)
                         } else {
-                            Toast.makeText(context, "Intenta de nuevo", Toast.LENGTH_SHORT).show()
+                           // If dropped nowhere, it just snaps back (DraggableSizeItem handles visual snap backs mainly by recomposition usage)
+                           Toast.makeText(context, "Colócalo en un espacio", Toast.LENGTH_SHORT).show()
                         }
                     }
                  )
-             }
+            }
         }
         
+        // CHECK BUTTON
+        androidx.compose.material3.Button(
+            onClick = {
+                // Validate
+                val item0 = placedItems[0]
+                val item1 = placedItems[1]
+                val item2 = placedItems[2]
+                
+                val correct0 = item0?.sizeType == SizeType.SMALL
+                val correct1 = item1?.sizeType == SizeType.MEDIUM
+                val correct2 = item2?.sizeType == SizeType.LARGE
+                
+                if (correct0 && correct1 && correct2) {
+                    isGameWon = true
+                } else {
+                     Toast.makeText(context, "Incorrecto. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
+                     // Optional: Reset or let them fix it? Let them fix it.
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+             Text("COMPROBAR")
+        }
+
         // 5. WIN MESSAGE
-        if (placedItems.size == 3) {
+        if (isGameWon) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -234,7 +271,8 @@ fun OrderSlot(
     label: String,
     size: androidx.compose.ui.unit.Dp,
     onGloballyPositioned: (Rect) -> Unit,
-    placedItem: SizeItem? = null
+    placedItem: SizeItem? = null,
+    onClick: () -> Unit = {}
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -246,7 +284,8 @@ fun OrderSlot(
                 .border(2.dp, Game3Config.SlotBorderColor, RoundedCornerShape(12.dp))
                 .onGloballyPositioned { coords ->
                      onGloballyPositioned(coords.boundsInWindow())
-                },
+                }
+                .clickable { onClick() }, // Click to remove
             contentAlignment = Alignment.Center
         ) {
             if (placedItem != null) {
@@ -270,12 +309,19 @@ fun OrderSlot(
 
 @Composable
 fun DraggableSizeItem(
+    key: Int,
     item: SizeItem,
     initialOffset: Offset,
     onDrop: (Offset) -> Unit
 ) {
-    var offsetX by remember { mutableStateOf(initialOffset.x) }
-    var offsetY by remember { mutableStateOf(initialOffset.y) }
+    // key is used by parent to identify unique items, but we specifically need it for State.
+    // Actually, 'key' passed to the composable function doesn't automatically restart 'remember'.
+    // Use 'key(item.id)' in the call site or pass modifier.
+    // We already passed 'key' in arguments, let's use it for the 'remember' keys if we want.
+    
+    var offsetX by remember(key) { mutableStateOf(initialOffset.x) }
+    var offsetY by remember(key) { mutableStateOf(initialOffset.y) }
+    // ...
     var globalPosition by remember { mutableStateOf(Offset.Zero) }
 
     Box(

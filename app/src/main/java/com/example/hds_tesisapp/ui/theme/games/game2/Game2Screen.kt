@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
 import androidx.compose.ui.geometry.Rect
 import android.widget.Toast
@@ -87,6 +88,7 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
     }
     
     // Game State
+    // Mark items with unique IDs to track them
     val initialItems = remember {
         listOf(
             GameItem(1, "Manzana", ItemType.FRUIT, Color.Red, Offset(20f, 20f)),
@@ -97,8 +99,19 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
         )
     }
     
-    var currentItems by remember { mutableStateOf(initialItems) }
+    // Items placed in bins
+    var fruitBinItems by remember { mutableStateOf(listOf<GameItem>()) }
+    var vegBinItems by remember { mutableStateOf(listOf<GameItem>()) }
+    
+    // Derived: Items still on the table are those NOT in any bin
+    // This allows robust resetting: just clear bins, and items "reappear".
+    val currentItems = remember(initialItems, fruitBinItems, vegBinItems) {
+        val placedIds = fruitBinItems.map { it.id } + vegBinItems.map { it.id }
+        initialItems.filter { it.id !in placedIds }
+    }
+
     var score by remember { mutableStateOf(0) }
+    var isGameWon by remember { mutableStateOf(false) }
     
     // Drop Zones
     var fruitZoneBounds by remember { mutableStateOf<Rect?>(null) }
@@ -130,12 +143,6 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
                     )
                 )
             )
-            Text(
-                text = "Puntaje: $score",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF3E2723)
-            )
         }
 
         // 2. MAIN SCENE LAYOUT
@@ -145,7 +152,7 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 32.dp, bottom = 32.dp)
-                .size(150.dp)
+                .size(150.dp) 
                 .background(Game2Config.LinaColor, CircleShape)
                 .border(4.dp, Color.Black, CircleShape),
             contentAlignment = Alignment.Center
@@ -174,18 +181,22 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
                 .fillMaxWidth(0.7f),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+            // Fruit Bin
             ClassificationBin(
                 name = "FRUTAS",
                 color = Game2Config.FruitBinColor,
                 borderColor = Color.Red,
-                onGloballyPositioned = { fruitZoneBounds = it }
+                onGloballyPositioned = { fruitZoneBounds = it },
+                items = fruitBinItems // Pass items to render
             )
 
+            // Vegetable Bin
             ClassificationBin(
                 name = "VERDURAS",
                 color = Game2Config.VegBinColor,
                 borderColor = Color.Green,
-                onGloballyPositioned = { vegetableZoneBounds = it }
+                onGloballyPositioned = { vegetableZoneBounds = it },
+                items = vegBinItems
             )
         }
 
@@ -199,32 +210,61 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
                      .offset(y = (-80).dp)
             ) {
                  currentItems.forEach { item ->
-                    DraggableGameItem(
-                        item = item,
-                        initialOffset = item.initialOffset,
-                        onDrop = { position ->
-                            val isFruitDrop = fruitZoneBounds?.contains(position) == true
-                            val isVegDrop = vegetableZoneBounds?.contains(position) == true
-                            
-                            if (isFruitDrop && item.type == ItemType.FRUIT) {
-                                score += 10
-                                currentItems = currentItems - item
-                                Toast.makeText(context, "¡Correcto!", Toast.LENGTH_SHORT).show()
-                            } else if (isVegDrop && item.type == ItemType.VEGETABLE) {
-                                score += 10
-                                currentItems = currentItems - item
-                                Toast.makeText(context, "¡Correcto!", Toast.LENGTH_SHORT).show()
-                            } else if (isFruitDrop || isVegDrop) {
-                                Toast.makeText(context, "¡Intenta de nuevo!", Toast.LENGTH_SHORT).show()
+                    // Use key composable to track state by ID
+                    key(item.id) {
+                        DraggableGameItem(
+                            key = item.id,
+                            item = item,
+                            initialOffset = item.initialOffset,
+                            onDrop = { position ->
+                                val isFruitDrop = fruitZoneBounds?.contains(position) == true
+                                val isVegDrop = vegetableZoneBounds?.contains(position) == true
+                                
+                                if (isFruitDrop) {
+                                    fruitBinItems = fruitBinItems + item
+                                } else if (isVegDrop) {
+                                    vegBinItems = vegBinItems + item
+                                } else {
+                                    Toast.makeText(context, "Colócalo en una caja", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
         
+        // CHECK BUTTON
+        androidx.compose.material3.Button(
+            onClick = {
+                // Validation Logic
+                val allFruitsCorrect = fruitBinItems.all { it.type == ItemType.FRUIT }
+                val allVegsCorrect = vegBinItems.all { it.type == ItemType.VEGETABLE }
+                
+                // Also check counts to ensure we didn't just place 0 items?
+                val placedCount = fruitBinItems.size + vegBinItems.size
+                
+                if (placedCount == initialItems.size && allFruitsCorrect && allVegsCorrect) {
+                     score = 100
+                     isGameWon = true
+                } else {
+                    Toast.makeText(context, "Incorrecto. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
+                    
+                    // Reset Logic: Clear bins! Items will automatically reappear in currentItems via derived state.
+                    fruitBinItems = emptyList()
+                    vegBinItems = emptyList()
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .zIndex(10f) // Ensure button is always on top
+        ) {
+            Text("COMPROBAR")
+        }
+        
         // WIN MESSAGE
-        if (currentItems.isEmpty()) {
+        if (isGameWon) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -255,11 +295,12 @@ fun ClassificationBin(
     name: String,
     color: Color,
     borderColor: Color,
-    onGloballyPositioned: (Rect) -> Unit
+    onGloballyPositioned: (Rect) -> Unit,
+    items: List<GameItem>
 ) {
     Box(
         modifier = Modifier
-            .size(140.dp, 100.dp) // Más ancho que alto, como canastas
+            .size(140.dp, 100.dp)
             .background(color, RoundedCornerShape(10.dp))
             .border(4.dp, borderColor, RoundedCornerShape(10.dp))
             .onGloballyPositioned { layoutCoordinates ->
@@ -268,26 +309,40 @@ fun ClassificationBin(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // Placeholder Title
             Text(
-                text = name,
+                text = "$name (${items.size})",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+            // Render Tiny Icons of items inside
+            Row(
+                modifier = Modifier.padding(top = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                items.take(5).forEach { item ->
+                    Box(
+                        modifier = Modifier
+                            .size(15.dp)
+                            .background(item.color, CircleShape)
+                            .border(1.dp, Color.White, CircleShape)
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 fun DraggableGameItem(
+    key: Int,
     item: GameItem,
     initialOffset: Offset,
     onDrop: (Offset) -> Unit
 ) {
-    // State for drag offset
-    var offsetX by remember { mutableStateOf(initialOffset.x) }
-    var offsetY by remember { mutableStateOf(initialOffset.y) }
+    // State for drag offset with key to reset
+    var offsetX by remember(key) { mutableStateOf(initialOffset.x) }
+    var offsetY by remember(key) { mutableStateOf(initialOffset.y) }
     var globalPosition by remember { mutableStateOf(Offset.Zero) }
     
     // Reset position logic: If the item receives a new ID or is reset, we might want to snap back.
