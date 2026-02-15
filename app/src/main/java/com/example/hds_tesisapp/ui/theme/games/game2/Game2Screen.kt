@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -201,35 +202,33 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
         }
 
         // 3. DRAGGABLE ITEMS LAYER
+        // Removed outer fillMaxSize Box to prevent overlaying the Check Button
         Box(
-            modifier = Modifier.fillMaxSize()
+             modifier = Modifier
+                 .align(Alignment.Center)
+                 .offset(y = (-80).dp)
+                 // .zIndex(1f) // Optional: explicit layer
         ) {
-            Box(
-                 modifier = Modifier
-                     .align(Alignment.Center)
-                     .offset(y = (-80).dp)
-            ) {
-                 currentItems.forEach { item ->
-                    // Use key composable to track state by ID
-                    key(item.id) {
-                        DraggableGameItem(
-                            key = item.id,
-                            item = item,
-                            initialOffset = item.initialOffset,
-                            onDrop = { position ->
-                                val isFruitDrop = fruitZoneBounds?.contains(position) == true
-                                val isVegDrop = vegetableZoneBounds?.contains(position) == true
-                                
-                                if (isFruitDrop) {
-                                    fruitBinItems = fruitBinItems + item
-                                } else if (isVegDrop) {
-                                    vegBinItems = vegBinItems + item
-                                } else {
-                                    Toast.makeText(context, "Colócalo en una caja", Toast.LENGTH_SHORT).show()
-                                }
+             currentItems.forEach { item ->
+                // Use key composable to track state by ID
+                key(item.id) {
+                    DraggableGameItem(
+                        key = item.id,
+                        item = item,
+                        initialOffset = item.initialOffset,
+                        onDrop = { position ->
+                            val isFruitDrop = fruitZoneBounds?.contains(position) == true
+                            val isVegDrop = vegetableZoneBounds?.contains(position) == true
+                            
+                            if (isFruitDrop) {
+                                fruitBinItems = fruitBinItems + item
+                            } else if (isVegDrop) {
+                                vegBinItems = vegBinItems + item
+                            } else {
+                                Toast.makeText(context, "Colócalo en una caja", Toast.LENGTH_SHORT).show()
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
@@ -257,6 +256,7 @@ fun Game2Screen(onLevelComplete: () -> Unit) {
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .safeDrawingPadding() // Ensure not under notch/status bar
                 .padding(16.dp)
                 .zIndex(10f) // Ensure button is always on top
         ) {

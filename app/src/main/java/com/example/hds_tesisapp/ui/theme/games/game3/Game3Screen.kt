@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import kotlin.math.roundToInt
 
 // Helper function for Activity (Shared code usually, but duplicated here for standalone file)
@@ -68,7 +70,7 @@ enum class SizeType {
 }
 
 @Composable
-fun Game3Screen() {
+fun Game3Screen(onLevelComplete: () -> Unit = {}) {
     val context = LocalContext.current
     
     BoxWithConstraints(
@@ -230,12 +232,13 @@ fun Game3Screen() {
                     isGameWon = true
                 } else {
                      Toast.makeText(context, "Incorrecto. Intenta de nuevo.", Toast.LENGTH_SHORT).show()
-                     // Optional: Reset or let them fix it? Let them fix it.
                 }
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .safeDrawingPadding() // Ensure not under notch/status bar
                 .padding(16.dp)
+                .zIndex(10f) // Ensure button is always on top
         ) {
              Text("COMPROBAR")
         }
@@ -245,7 +248,8 @@ fun Game3Screen() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.6f)),
+                    .background(Color.Black.copy(alpha = 0.6f))
+                    .clickable { onLevelComplete() },
                 contentAlignment = Alignment.Center
             ) {
                  Column(horizontalAlignment = Alignment.CenterHorizontally) {
