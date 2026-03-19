@@ -5,13 +5,17 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -30,13 +34,13 @@ fun Context.findGame7Activity(): Activity? = when (this) {
 
 // ─── Defaults ─────────────────────────────────────────────────────────────────
 
-private const val DEFAULT_CURRENT      = 5
-private const val DEFAULT_TARGET       = 12
-private const val DEFAULT_PLUS_USES    = 3
-private const val DEFAULT_MINUS_USES   = 4
+private const val DEFAULT_CURRENT       = 5
+private const val DEFAULT_TARGET        = 12
+private const val DEFAULT_PLUS_USES     = 3
+private const val DEFAULT_MINUS_USES    = 4
 private const val DEFAULT_MULTIPLY_USES = 1
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+// ─── Screen ───────────────────────────────────────────────────────────────────
 
 @Composable
 fun Game7Screen(onLevelComplete: () -> Unit = {}) {
@@ -47,240 +51,296 @@ fun Game7Screen(onLevelComplete: () -> Unit = {}) {
         onDispose {}
     }
 
-    // ── Mutable state ─────────────────────────────────────────────────────────
+    // ── State ─────────────────────────────────────────────────────────────────
     var currentValue    by remember { mutableStateOf(DEFAULT_CURRENT) }
-    val targetValue     = DEFAULT_TARGET   // Fixed target for this round
-
-    var plusOneUses     by remember { mutableStateOf(DEFAULT_PLUS_USES) }
-    var minusOneUses    by remember { mutableStateOf(DEFAULT_MINUS_USES) }
-    var multiplyTwoUses by remember { mutableStateOf(DEFAULT_MULTIPLY_USES) }
+    val targetValue     = DEFAULT_TARGET
+    var plusUses        by remember { mutableStateOf(DEFAULT_PLUS_USES) }
+    var minusUses       by remember { mutableStateOf(DEFAULT_MINUS_USES) }
+    var multiplyUses    by remember { mutableStateOf(DEFAULT_MULTIPLY_USES) }
 
     val isWon = currentValue == targetValue
 
-    // ── Palette ───────────────────────────────────────────────────────────────
-    val bgColor       = Color(0xFFF5F5F5)
-    val cardColor     = Color.White
-    val accentGreen   = Color(0xFF43A047)
-    val accentRed     = Color(0xFFE53935)
-    val accentBlue    = Color(0xFF1E88E5)
-    val accentPurple  = Color(0xFF8E24AA)
-    val textDark      = Color(0xFF212121)
-    val textMuted     = Color(0xFF757575)
+    // ── Colors ────────────────────────────────────────────────────────────────
+    val bgGradient = Brush.verticalGradient(listOf(Color(0xFF1B0045), Color(0xFF3D007A)))
+    val panelColor = Color(0xFF2A0060)
+    val cardBg     = Color(0xFF1A0040)
 
-    // ── Layout ────────────────────────────────────────────────────────────────
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgColor)
+            .background(bgGradient)
     ) {
-
-        // ── TITLE (top center) ────────────────────────────────────────────────
+        // ── TITLE ─────────────────────────────────────────────────────────────
         Text(
-            text = "CAMBIA EL VALOR",
-            fontSize = 26.sp,
+            "⚡ CAMBIA EL VALOR ⚡",
+            fontSize = 22.sp,
             fontWeight = FontWeight.ExtraBold,
-            color = accentBlue,
+            color = Color(0xFFFFEB3B),
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 18.dp)
+                .padding(top = 14.dp)
         )
 
-        // ── LINA (observer, left) ─────────────────────────────────────────────
+        // ── LINA (observer) ───────────────────────────────────────────────────
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 20.dp, bottom = 20.dp)
+                .size(width = 70.dp, height = 100.dp)
+                .background(Color(0xFF5C6BC0), RoundedCornerShape(12.dp))
+                .border(2.dp, Color(0xFFB39DDB), RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Text("LINA", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // LEFT PANEL – Operation token buttons
+        // ══════════════════════════════════════════════════════════════════════
         Box(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(start = 24.dp)
-                .size(width = 80.dp, height = 120.dp)
-                .background(Color(0xFF5C6BC0), RoundedCornerShape(12.dp))
-                .border(2.dp, Color(0xFF9FA8DA), RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center
+                .padding(start = 110.dp)
+                .width(260.dp)
+                .wrapContentHeight()
+                .background(panelColor.copy(alpha = 0.8f), RoundedCornerShape(16.dp))
+                .border(2.dp, Color(0xFF7B1FA2), RoundedCornerShape(16.dp))
+                .padding(16.dp)
         ) {
-            Text("LINA", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-        }
-
-        // ── CENTER CARD ───────────────────────────────────────────────────────
-        Card(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .width(420.dp)
-                .wrapContentHeight(),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = cardColor),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-
-                // ── Header: Current value + Target ─────────────────────────
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                TokenButton(
+                    symbol = "+1",
+                    uses = plusUses,
+                    tokenColor = Color(0xFF43A047),
+                    shadowColor = Color(0xFF1B5E20),
+                    enabled = plusUses > 0 && !isWon
                 ) {
-                    // Current value (top-left of card)
-                    Column(horizontalAlignment = Alignment.Start) {
-                        Text("Valor actual", fontSize = 11.sp, color = textMuted)
-                        Text(
-                            text = currentValue.toString(),
-                            fontSize = 40.sp,
-                            fontWeight = FontWeight.Black,
-                            color = if (isWon) accentGreen else accentBlue
-                        )
-                    }
-
-                    // Arrow
-                    Text("→", fontSize = 28.sp, color = textMuted)
-
-                    // Target (highlighted, center-right)
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text("Objetivo", fontSize = 11.sp, color = textMuted)
-                        Text(
-                            text = targetValue.toString(),
-                            fontSize = 40.sp,
-                            fontWeight = FontWeight.Black,
-                            color = accentPurple
-                        )
-                    }
+                    currentValue += 1
+                    plusUses--
                 }
 
-                HorizontalDivider(color = Color(0xFFE0E0E0))
+                // divider
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(80.dp)
+                        .background(Color(0xFF7B1FA2))
+                )
 
-                // ── Victory banner ──────────────────────────────────────────
-                if (isWon) {
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9))
-                    ) {
-                        Text(
-                            text = "🏆 ¡Victoria! ¡Llegaste a $targetValue!",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = accentGreen,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 12.dp)
-                        )
-                    }
+                TokenButton(
+                    symbol = "-1",
+                    uses = minusUses,
+                    tokenColor = Color(0xFFE53935),
+                    shadowColor = Color(0xFF7F0000),
+                    enabled = minusUses > 0 && !isWon
+                ) {
+                    currentValue -= 1
+                    minusUses--
                 }
 
-                // ── Operation buttons ───────────────────────────────────────
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                // divider
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(80.dp)
+                        .background(Color(0xFF7B1FA2))
+                )
+
+                TokenButton(
+                    symbol = "×2",
+                    uses = multiplyUses,
+                    tokenColor = Color(0xFF1E88E5),
+                    shadowColor = Color(0xFF0D47A1),
+                    enabled = multiplyUses > 0 && !isWon
                 ) {
-                    // +1
-                    OperationButton(
-                        label = "+1",
-                        uses = plusOneUses,
-                        color = accentGreen,
-                        modifier = Modifier.weight(1f),
-                        enabled = plusOneUses > 0 && !isWon
-                    ) {
-                        currentValue += 1
-                        plusOneUses--
-                    }
-
-                    // -1
-                    OperationButton(
-                        label = "-1",
-                        uses = minusOneUses,
-                        color = accentRed,
-                        modifier = Modifier.weight(1f),
-                        enabled = minusOneUses > 0 && !isWon
-                    ) {
-                        currentValue -= 1
-                        minusOneUses--
-                    }
-
-                    // ×2
-                    OperationButton(
-                        label = "×2",
-                        uses = multiplyTwoUses,
-                        color = accentPurple,
-                        modifier = Modifier.weight(1f),
-                        enabled = multiplyTwoUses > 0 && !isWon
-                    ) {
-                        currentValue *= 2
-                        multiplyTwoUses--
-                    }
-                }
-
-                HorizontalDivider(color = Color(0xFFE0E0E0))
-
-                // ── Restart / Continue buttons ──────────────────────────────
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Reiniciar
-                    OutlinedButton(
-                        onClick = {
-                            currentValue     = DEFAULT_CURRENT
-                            plusOneUses      = DEFAULT_PLUS_USES
-                            minusOneUses     = DEFAULT_MINUS_USES
-                            multiplyTwoUses  = DEFAULT_MULTIPLY_USES
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("🔄 Reiniciar", fontWeight = FontWeight.Bold)
-                    }
-
-                    // Continuar (only visible on win)
-                    if (isWon) {
-                        Button(
-                            onClick = { onLevelComplete() },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = accentGreen)
-                        ) {
-                            Text("Continuar →", fontWeight = FontWeight.Bold, color = Color.White)
-                        }
-                    }
+                    currentValue *= 2
+                    multiplyUses--
                 }
             }
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // RIGHT PANEL – Game Card (current value top, target center)
+        // ══════════════════════════════════════════════════════════════════════
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 40.dp)
+                .size(width = 200.dp, height = 220.dp)
+                .background(cardBg, RoundedCornerShape(20.dp))
+                .border(4.dp, Color(0xFFFFEB3B), RoundedCornerShape(20.dp))
+        ) {
+            // ── Current value (top tag) ────────────────────────────────────
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .offset(y = (-16).dp)
+                    .background(Color(0xFFFDD835), RoundedCornerShape(20.dp))
+                    .border(2.dp, Color(0xFFF57F17), RoundedCornerShape(20.dp))
+                    .padding(horizontal = 20.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("⚡", fontSize = 14.sp)
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                        text = currentValue.toString(),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color(0xFF4A148C)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text("⚡", fontSize = 14.sp)
+                }
+            }
+
+            // ── X decoration (diagonal lines like the sketch) ─────────────
+            // Simplified: just show the target in center very large
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 20.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = if (isWon) "✅" else "⚡",
+                        fontSize = 28.sp
+                    )
+                    Text(
+                        text = targetValue.toString(),
+                        fontSize = 72.sp,
+                        fontWeight = FontWeight.Black,
+                        color = if (isWon) Color(0xFF69F0AE) else Color(0xFFFFEB3B),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = if (isWon) "¡CORRECTO!" else "OBJETIVO",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFB0BEC5)
+                    )
+                }
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // BOTTOM BUTTONS – Reset / Continue
+        // ══════════════════════════════════════════════════════════════════════
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 24.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Reset
+            Box(
+                modifier = Modifier
+                    .background(Color(0xFF37474F), RoundedCornerShape(24.dp))
+                    .border(2.dp, Color(0xFF90A4AE), RoundedCornerShape(24.dp))
+                    .clickable {
+                        currentValue  = DEFAULT_CURRENT
+                        plusUses      = DEFAULT_PLUS_USES
+                        minusUses     = DEFAULT_MINUS_USES
+                        multiplyUses  = DEFAULT_MULTIPLY_USES
+                    }
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("🔄 Reiniciar", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+            }
+
+            // Continue (only when won)
+            if (isWon) {
+                Box(
+                    modifier = Modifier
+                        .background(Color(0xFF00C853), RoundedCornerShape(24.dp))
+                        .border(2.dp, Color(0xFF69F0AE), RoundedCornerShape(24.dp))
+                        .clickable { onLevelComplete() }
+                        .padding(horizontal = 20.dp, vertical = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Continuar →", color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 13.sp)
+                }
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════════════
+        // WIN OVERLAY (full screen flash)
+        // ══════════════════════════════════════════════════════════════════════
+        if (isWon) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(Color(0xFF00C853).copy(alpha = 0.15f))
+                    .align(Alignment.Center)
+            )
         }
     }
 }
 
-// ─── Reusable operation button ────────────────────────────────────────────────
+// ─── Token Button ─────────────────────────────────────────────────────────────
 
 @Composable
-fun OperationButton(
-    label: String,
+fun TokenButton(
+    symbol: String,
     uses: Int,
-    color: Color,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    tokenColor: Color,
+    shadowColor: Color,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier,
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = color,
-            disabledContainerColor = Color(0xFFBDBDBD)
-        )
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                label,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White
-            )
-            Text(
-                "$uses usos restantes",
-                fontSize = 10.sp,
-                color = Color.White.copy(alpha = 0.85f)
-            )
+        // Token (circle coin)
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .background(
+                    if (enabled) shadowColor else Color(0xFF424242),
+                    CircleShape
+                )
+                // Offset gives a "depth / shadow" effect
+                .padding(bottom = 4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .offset(y = (-4).dp)
+                    .background(
+                        if (enabled) tokenColor else Color(0xFF616161),
+                        CircleShape
+                    )
+                    .border(
+                        3.dp,
+                        if (enabled) Color.White.copy(alpha = 0.4f) else Color.Gray,
+                        CircleShape
+                    )
+                    .clip(CircleShape)
+                    .clickable(enabled = enabled) { onClick() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = symbol,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White
+                )
+            }
         }
+
+        // Uses label
+        Text(
+            text = "($uses usos)",
+            fontSize = 10.sp,
+            color = if (enabled) Color(0xFFE0E0E0) else Color(0xFF757575),
+            fontWeight = FontWeight.Medium
+        )
     }
 }
