@@ -16,6 +16,7 @@ import com.example.hds_tesisapp.ui.theme.games.game4.Game4Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.Game5Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.Game6Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.Game7Screen
+import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 
 @Composable
 fun AppNavigation() {
@@ -100,6 +101,10 @@ fun AppNavigation() {
 
         composable(Routes.TomAtomCharacter.route) {
             TomAtomScreen(navController)
+        }
+
+        composable(Routes.Levels.route) {
+            LevelsScreen(navController)
         }
     }
 }
