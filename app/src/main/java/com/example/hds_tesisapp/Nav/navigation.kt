@@ -17,6 +17,7 @@ import com.example.hds_tesisapp.ui.theme.games.game5.Game5Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.Game6Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.Game7Screen
 import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
+import com.example.hds_tesisapp.ui.theme.games.game8.Game8Screen
 
 @Composable
 fun AppNavigation() {
@@ -85,8 +86,16 @@ fun AppNavigation() {
 
         composable(Routes.Game7.route) {
             Game7Screen(onLevelComplete = {
-                navController.navigate(Routes.Menu.route) {
+                navController.navigate(Routes.Game8.route) {
                     popUpTo(Routes.Game7.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Game8.route) {
+            Game8Screen(onLevelComplete = {
+                navController.navigate(Routes.Menu.route) {
+                    popUpTo(Routes.Game8.route) { inclusive = true }
                 }
             })
         }

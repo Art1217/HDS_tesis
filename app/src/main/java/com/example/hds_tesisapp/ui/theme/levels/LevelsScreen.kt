@@ -83,6 +83,7 @@ private val levels = listOf(
     LevelInfo(5, Routes.Game5.route, listOf(Color(0xFFEF5350), Color(0xFFC62828)), Color(0xFFEF9A9A), Color(0xFFFFCDD2)),
     LevelInfo(6, Routes.Game6.route, listOf(Color(0xFFEC407A), Color(0xFFAD1457)), Color(0xFFF48FB1), Color(0xFFF8BBD0)),
     LevelInfo(7, Routes.Game7.route, listOf(Color(0xFFAB47BC), Color(0xFF6A1B9A)), Color(0xFFCE93D8), Color(0xFFE1BEE7)),
+    LevelInfo(8, Routes.Game8.route, listOf(Color(0xFF26C6DA), Color(0xFF00838F)), Color(0xFF80DEEA), Color(0xFFB2EBF2)),
 )
 
 // Shared math: compute node pixel positions given container dimensions

@@ -14,4 +14,5 @@ sealed class Routes(val route: String) {
     object Game6 : Routes("game6")
     object Game7 : Routes("game7")
     object Levels : Routes("levels")
+    object Game8 : Routes("game8")
 }
