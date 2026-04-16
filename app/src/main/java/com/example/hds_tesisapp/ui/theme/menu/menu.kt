@@ -163,7 +163,7 @@ fun MenuScreen(navController: NavController) {
     ) {
         // Background
         Image(
-            painter = painterResource(id = R.drawable.background_landscape),
+            painter = painterResource(id = R.drawable.fondo_menu_tesis),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

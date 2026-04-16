@@ -32,32 +32,12 @@ fun SplashScreen(navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Fondo (cubre todo)
+        // Fondo único
         Image(
-            painter = painterResource(id = R.drawable.background_landscape),
-            contentDescription = null,
+            painter = painterResource(id = R.drawable.fondo_intro_unificado),
+            contentDescription = "Fondo de introducción",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
-        )
-        Image(
-            painter = painterResource(id = R.drawable.titulo),
-            contentDescription = "Título de la aplicación",
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 20.dp, start = 40.dp)
-                .fillMaxWidth(0.5f),
-            contentScale = ContentScale.FillWidth
-        )
-
-        // 2. Imagen inferior
-        Image(
-            painter = painterResource(id = R.drawable.pj),
-            contentDescription = "Personajes",
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(bottom = 20.dp, end = 40.dp)
-                .fillMaxWidth(0.4f),
-            contentScale = ContentScale.FillWidth
         )
     }
 }
