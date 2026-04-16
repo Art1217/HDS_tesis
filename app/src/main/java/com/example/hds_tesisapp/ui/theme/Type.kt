@@ -16,6 +16,13 @@ val Baloo2FontFamily = FontFamily(
     Font(R.font.baloo2, FontWeight.SemiBold),
 )
 
+// Orbitron — futuristic / HUD-style typeface for sci-fi buttons
+val OrbitronFontFamily = FontFamily(
+    Font(R.font.orbitron, FontWeight.Normal),
+    Font(R.font.orbitron, FontWeight.Bold),
+    Font(R.font.orbitron, FontWeight.ExtraBold),
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = Baloo2FontFamily,

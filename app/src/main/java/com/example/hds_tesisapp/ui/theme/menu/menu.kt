@@ -83,6 +83,7 @@ import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
+import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
 import kotlinx.coroutines.launch
 
 fun Context.findActivity(): Activity? = when (this) {
@@ -169,34 +170,14 @@ fun MenuScreen(navController: NavController) {
             contentScale = ContentScale.Crop
         )
 
-        // Settings Button (Top Right) — glass-style
-        IconButton(
+        // Settings Button (Top Right) — HUD holographic style
+        HudSettingsButton(
             onClick = { showSettings = true },
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(12.dp)
                 .zIndex(10f)
-                .size(52.dp)
-                .shadow(6.dp, CircleShape)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.9f),
-                            Color(0xFFE8E8E8).copy(alpha = 0.85f)
-                        )
-                    ),
-                    CircleShape
-                )
-                .border(1.5.dp, Color.White.copy(alpha = 0.6f), CircleShape)
-                .padding(6.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Configuración",
-                tint = Color(0xFF5D4037),
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        )
 
         // Main Content — Robot partially behind/overlapping buttons
         Row(
@@ -217,53 +198,40 @@ fun MenuScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // ====== CTA PRINCIPAL: JUGAR (más grande, más vívido) ======
-                ClayMenuButton(
+                // ====== CTA PRINCIPAL: JUGAR ======
+                HudMenuButton(
                     text = "Jugar",
                     icon = Icons.Default.PlayArrow,
-                    gradientColors = listOf(Color(0xFF4CAF50), Color(0xFF2E7D32)),
-                    glowColor = Color(0xFF81C784),
-                    borderColor = Color(0xFFA5D6A7),
-                    shadowColor = Color(0xFF1B5E20),
+                    accentColor = Color(0xFF00E5FF),
                     buttonHeight = 80.dp,
                     iconSize = 38.dp,
-                    fontSize = 30,
+                    fontSize = 22,
                     modifier = Modifier.fillMaxWidth(0.82f)
                 ) {
                     navController.navigate(Routes.Game.route)
                 }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
+                Spacer(modifier = Modifier.height(30.dp))
                 // ====== BOTÓN SECUNDARIO: NIVELES ======
-                ClayMenuButton(
+                HudMenuButton(
                     text = "Niveles",
                     icon = Icons.Default.List,
-                    gradientColors = listOf(Color(0xFFFFA726), Color(0xFFEF6C00)),
-                    glowColor = Color(0xFFFFCC80),
-                    borderColor = Color(0xFFFFE0B2),
-                    shadowColor = Color(0xFFE65100),
+                    accentColor = Color(0xFF69FF47),
                     buttonHeight = 60.dp,
                     iconSize = 28.dp,
-                    fontSize = 22,
+                    fontSize = 18,
                     modifier = Modifier.fillMaxWidth(0.68f)
                 ) {
                     navController.navigate(Routes.Levels.route)
                 }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
+                Spacer(modifier = Modifier.height(30.dp))
                 // ====== BOTÓN SECUNDARIO: PERSONAJES ======
-                ClayMenuButton(
+                HudMenuButton(
                     text = "Personajes",
                     icon = Icons.Default.Person,
-                    gradientColors = listOf(Color(0xFF42A5F5), Color(0xFF1565C0)),
-                    glowColor = Color(0xFF90CAF9),
-                    borderColor = Color(0xFFBBDEFB),
-                    shadowColor = Color(0xFF0D47A1),
+                    accentColor = Color(0xFFE040FB),
                     buttonHeight = 60.dp,
                     iconSize = 28.dp,
-                    fontSize = 22,
+                    fontSize = 18,
                     modifier = Modifier.fillMaxWidth(0.68f)
                 ) {
                     navController.navigate(Routes.MaxCharacter.route)
@@ -307,82 +275,273 @@ fun MenuScreen(navController: NavController) {
 }
 
 // ============================================================
-//  ClayMenuButton — Claymorphism / Skeuomorphic button
+//  HudSettingsButton — Circular holographic HUD settings button
 // ============================================================
 @Composable
-fun ClayMenuButton(
+fun HudSettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    accentColor: Color = Color(0xFF00E5FF)
+) {
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.88f else 1f,
+        animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessHigh),
+        label = "settingsScale"
+    )
+
+    // Pulsing glow animation
+    val glowAlpha = remember { Animatable(0.5f) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                glowAlpha.animateTo(1f, tween(1000))
+                glowAlpha.animateTo(0.5f, tween(1000))
+            }
+        }
+    }
+
+    Box(
+        modifier = modifier
+            .size(52.dp)
+            .scale(scale)
+            .drawBehind {
+                val r = size.minDimension / 2f
+                val cx = size.width / 2f
+                val cy = size.height / 2f
+
+                // Outer bloom glow (multiple rings)
+                for (i in 4 downTo 1) {
+                    drawCircle(
+                        color = accentColor.copy(alpha = glowAlpha.value * 0.10f * (5 - i)),
+                        radius = r + i * 9f,
+                        center = Offset(cx, cy),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = i * 9f * 2)
+                    )
+                }
+
+                // Dark navy fill
+                drawCircle(
+                    color = Color(0xFF000F1F).copy(alpha = if (isPressed) 0.90f else 0.68f),
+                    radius = r,
+                    center = Offset(cx, cy)
+                )
+
+                // Subtle top-edge highlight
+                drawArc(
+                    color = Color.White.copy(alpha = 0.15f),
+                    startAngle = 200f,
+                    sweepAngle = 140f,
+                    useCenter = false,
+                    topLeft = Offset(cx - r, cy - r),
+                    size = androidx.compose.ui.geometry.Size(r * 2, r * 2),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 3f)
+                )
+
+                // Outer neon border — soft pass
+                drawCircle(
+                    color = accentColor.copy(alpha = glowAlpha.value * 0.5f),
+                    radius = r,
+                    center = Offset(cx, cy),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 6f)
+                )
+                // Outer neon border — sharp pass
+                drawCircle(
+                    color = accentColor.copy(alpha = glowAlpha.value),
+                    radius = r,
+                    center = Offset(cx, cy),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2f)
+                )
+
+                // Small corner tick marks (top, right, bottom, left)
+                val tickLen = 6f
+                val tickOffset = r - 2f
+                val angles = listOf(0f, 90f, 180f, 270f)
+                for (angleDeg in angles) {
+                    val rad = Math.toRadians(angleDeg.toDouble())
+                    val sx = cx + (tickOffset * Math.cos(rad)).toFloat()
+                    val sy = cy + (tickOffset * Math.sin(rad)).toFloat()
+                    val ex = cx + ((tickOffset + tickLen) * Math.cos(rad)).toFloat()
+                    val ey = cy + ((tickOffset + tickLen) * Math.sin(rad)).toFloat()
+                    drawLine(accentColor, Offset(sx, sy), Offset(ex, ey), 2.5f)
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        tryAwaitRelease()
+                        isPressed = false
+                        onClick()
+                    }
+                )
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = "Configuración",
+            tint = accentColor,
+            modifier = Modifier
+                .size(26.dp)
+                .graphicsLayer {
+                    shadowElevation = 0f
+                    // Subtle glow via alpha pulse on the icon itself
+                    alpha = 0.85f + glowAlpha.value * 0.15f
+                }
+        )
+    }
+}
+
+// ============================================================
+//  HudMenuButton — Holographic HUD / sci-fi style button
+// ============================================================
+@Composable
+fun HudMenuButton(
     text: String,
     icon: ImageVector? = null,
-    gradientColors: List<Color>,
-    glowColor: Color,
-    borderColor: Color,
-    shadowColor: Color,
+    accentColor: Color = Color(0xFF00E5FF),   // neon cyan by default
     buttonHeight: Dp = 70.dp,
     iconSize: Dp = 32.dp,
-    fontSize: Int = 26,
+    fontSize: Int = 20,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    // Press animation state
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.94f else 1f,
+        targetValue = if (isPressed) 0.96f else 1f,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessHigh
         ),
-        label = "buttonScale"
+        label = "hudButtonScale"
     )
 
-    val shape = RoundedCornerShape(20.dp)
+    // Pulsing glow animation for the border
+    val glowAlpha = remember { Animatable(0.4f) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                glowAlpha.animateTo(1f, tween(900))
+                glowAlpha.animateTo(0.4f, tween(900))
+            }
+        }
+    }
+
+    // Cut-corner size
+    val cutPx = with(androidx.compose.ui.platform.LocalDensity.current) { 14.dp.toPx() }
 
     Box(
         modifier = modifier
             .height(buttonHeight)
             .scale(scale)
-            // Outer deep shadow
-            .shadow(
-                elevation = if (isPressed) 4.dp else 10.dp,
-                shape = shape,
-                ambientColor = shadowColor.copy(alpha = 0.4f),
-                spotColor = shadowColor.copy(alpha = 0.5f)
-            )
-            .clip(shape)
-            .background(Brush.verticalGradient(gradientColors))
-            // Colored border matching palette (not white)
-            .border(2.dp, borderColor.copy(alpha = 0.7f), shape)
-            // Inner glow overlay (top-light effect)
             .drawBehind {
-                // Top inner glow — simulates light coming from above
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0.35f),
-                            Color.Transparent
-                        ),
-                        startY = 0f,
-                        endY = size.height * 0.45f
-                    )
-                )
-                // Bottom inner shadow — adds depth
-                drawRect(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.15f)
-                        ),
-                        startY = size.height * 0.6f,
-                        endY = size.height
-                    )
-                )
-                // Press glow effect
-                if (isPressed) {
-                    drawCircle(
-                        color = glowColor.copy(alpha = 0.3f),
-                        radius = size.width * 0.5f,
-                        center = Offset(size.width / 2, size.height / 2)
+                val w = size.width
+                val h = size.height
+                val c = cutPx
+
+                // ── Outer glow bloom (4 passes, much stronger) ──
+                for (i in 5 downTo 1) {
+                    val blurPad = i * 8f
+                    val glowPath = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(c + blurPad, 0f - blurPad)
+                        lineTo(w - blurPad, 0f - blurPad)
+                        lineTo(w + blurPad, c + blurPad)
+                        lineTo(w + blurPad, h - c - blurPad)
+                        lineTo(w - c - blurPad, h + blurPad)
+                        lineTo(blurPad, h + blurPad)
+                        lineTo(0f - blurPad, h - c - blurPad)
+                        lineTo(0f - blurPad, c + blurPad)
+                        close()
+                    }
+                    drawPath(
+                        path = glowPath,
+                        color = accentColor.copy(alpha = glowAlpha.value * 0.12f * (6 - i)),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = blurPad * 2)
                     )
                 }
+
+                // ── Glass fill: dark navy, higher opacity for visibility ──
+                val fillPath = androidx.compose.ui.graphics.Path().apply {
+                    moveTo(c, 0f)
+                    lineTo(w, 0f)
+                    lineTo(w, h - c)
+                    lineTo(w - c, h)
+                    lineTo(0f, h)
+                    lineTo(0f, c)
+                    close()
+                }
+                drawPath(
+                    path = fillPath,
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF000F1F).copy(alpha = if (isPressed) 0.85f else 0.68f),
+                            Color(0xFF001630).copy(alpha = if (isPressed) 0.75f else 0.55f)
+                        )
+                    )
+                )
+
+                // ── Top-edge inner light strip (depth effect) ──
+                drawLine(
+                    color = Color.White.copy(alpha = 0.18f),
+                    start = Offset(c, 1f),
+                    end = Offset(w, 1f),
+                    strokeWidth = 2f
+                )
+
+                // ── Scanlines texture (more visible) ──
+                val lineSpacing = 5f
+                var y = lineSpacing
+                while (y < h) {
+                    drawLine(
+                        color = accentColor.copy(alpha = 0.07f),
+                        start = Offset(c, y),
+                        end = Offset(w, y),
+                        strokeWidth = 1f
+                    )
+                    y += lineSpacing
+                }
+
+                // ── Neon border — double pass for thickness + glow ──
+                val borderPath = androidx.compose.ui.graphics.Path().apply {
+                    moveTo(c, 0f)
+                    lineTo(w, 0f)
+                    lineTo(w, h - c)
+                    lineTo(w - c, h)
+                    lineTo(0f, h)
+                    lineTo(0f, c)
+                    close()
+                }
+                // Soft outer pass
+                drawPath(
+                    path = borderPath,
+                    color = accentColor.copy(alpha = glowAlpha.value * 0.55f),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 6f)
+                )
+                // Sharp inner pass
+                drawPath(
+                    path = borderPath,
+                    color = accentColor.copy(alpha = glowAlpha.value),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.5f)
+                )
+
+                // ── Corner accent marks — bigger & brighter ──
+                val markLen = 16f
+                val markOff = 3f
+                // top-left
+                drawLine(accentColor, Offset(markOff, c + markOff), Offset(markOff, c + markLen + markOff), 3f)
+                drawLine(accentColor, Offset(markOff, c + markOff), Offset(markLen + markOff, c + markOff), 3f)
+                // top-right
+                drawLine(accentColor, Offset(w - markOff, markOff), Offset(w - markLen - markOff, markOff), 3f)
+                drawLine(accentColor, Offset(w - markOff, markOff), Offset(w - markOff, markLen + markOff), 3f)
+                // bottom-left
+                drawLine(accentColor, Offset(markOff, h - markOff), Offset(markLen + markOff, h - markOff), 3f)
+                drawLine(accentColor, Offset(markOff, h - markOff), Offset(markOff, h - markLen - markOff), 3f)
+                // bottom-right
+                drawLine(accentColor, Offset(w - c - markOff, h - markOff), Offset(w - c - markLen - markOff, h - markOff), 3f)
+                drawLine(accentColor, Offset(w - c - markOff, h - markOff), Offset(w - c - markOff, h - markLen - markOff), 3f)
             }
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -398,13 +557,14 @@ fun ClayMenuButton(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 18.dp)
         ) {
             if (icon != null) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = accentColor,
                     modifier = Modifier.size(iconSize)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -412,18 +572,18 @@ fun ClayMenuButton(
             Text(
                 text = text.uppercase(),
                 fontSize = fontSize.sp,
-                fontWeight = FontWeight.ExtraBold,
-                fontFamily = Baloo2FontFamily,
+                fontWeight = FontWeight.Bold,
+                fontFamily = OrbitronFontFamily,
                 color = Color.White,
-                letterSpacing = 1.5.sp,
+                letterSpacing = 2.sp,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontSize = fontSize.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontFamily = Baloo2FontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = OrbitronFontFamily,
                     shadow = androidx.compose.ui.graphics.Shadow(
-                        color = Color.Black.copy(alpha = 0.45f),
-                        offset = Offset(2f, 3f),
-                        blurRadius = 5f
+                        color = accentColor,
+                        offset = Offset(0f, 0f),
+                        blurRadius = 18f
                     )
                 )
             )
@@ -531,16 +691,13 @@ fun SettingsDialog(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                ClayMenuButton(
+                HudMenuButton(
                     text = "Cerrar",
-                    gradientColors = listOf(Color(0xFFEF5350), Color(0xFFB71C1C)),
-                    glowColor = Color(0xFFEF9A9A),
-                    borderColor = Color(0xFFFFCDD2),
-                    shadowColor = Color(0xFF7F0000),
                     icon = Icons.Default.Close,
+                    accentColor = Color(0xFFFF5252),
                     buttonHeight = 50.dp,
                     iconSize = 24.dp,
-                    fontSize = 20,
+                    fontSize = 14,
                     modifier = Modifier.width(200.dp)
                 ) {
                     onDismiss()
