@@ -208,7 +208,7 @@ fun MenuScreen(navController: NavController) {
                     fontSize = 22,
                     modifier = Modifier.fillMaxWidth(0.82f)
                 ) {
-                    navController.navigate(Routes.Game.route)
+                    navController.navigate(Routes.Story.route)
                 }
                 Spacer(modifier = Modifier.height(30.dp))
                 // ====== BOTÓN SECUNDARIO: NIVELES ======
