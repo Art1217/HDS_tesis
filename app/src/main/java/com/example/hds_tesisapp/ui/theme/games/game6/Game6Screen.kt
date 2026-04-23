@@ -245,7 +245,7 @@ fun Game6Screen(onLevelComplete: () -> Unit = {}) {
                 fontSize = 13.sp,
                 textAlign = TextAlign.Center,
                 lineHeight = 18.sp
-                        |||||||||||||||            )
+            )
         }
 
         // ── ACTION BAR (Bottom) ────────────────────────────────────────────

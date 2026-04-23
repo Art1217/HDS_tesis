@@ -4,6 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import android.media.MediaPlayer
+import android.net.Uri
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -28,7 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
+import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import kotlinx.coroutines.delay
@@ -224,7 +231,7 @@ fun ZoneIntroScreen(navController: NavController) {
                         .pointerInput(Unit) {
                             detectTapGestures(onPress = {
                                 tryAwaitRelease()
-                                navController.navigate(Routes.Game.route) {
+                                navController.navigate(Routes.Level1.route) {
                                     popUpTo(Routes.ZoneIntro.route) { inclusive = true }
                                 }
                             })
@@ -244,47 +251,60 @@ fun ZoneIntroScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.width(32.dp))
 
-            // === LADO DERECHO: Ilustración (placeholder) ===
+            // === LADO DERECHO: Video en bucle (crop para llenar sin barras negras) ===
+            val mediaPlayerRef = remember { mutableStateOf<MediaPlayer?>(null) }
+            DisposableEffect(Unit) {
+                onDispose {
+                    mediaPlayerRef.value?.apply {
+                        if (isPlaying) stop()
+                        release()
+                    }
+                    mediaPlayerRef.value = null
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .weight(0.85f)
                     .fillMaxHeight(0.85f)
                     .graphicsLayer { alpha = illustrationAlpha.value }
                     .clip(RoundedCornerShape(20.dp))
-                    .background(Color(0xFF0D1B2A))
                     .border(
                         2.dp,
                         Brush.verticalGradient(
-                            listOf(Color(0xFF00E5FF).copy(alpha = 0.6f), Color(0xFF00E5FF).copy(alpha = 0.1f))
+                            listOf(Color(0xFF00E5FF).copy(alpha = 0.5f), Color(0xFF00E5FF).copy(alpha = 0.1f))
                         ),
                         RoundedCornerShape(20.dp)
-                    ),
-                contentAlignment = Alignment.Center
+                    )
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "[ ILUSTRACIÓN ]",
-                        fontSize = 13.sp,
-                        fontFamily = OrbitronFontFamily,
-                        color = Color(0xFF00E5FF).copy(alpha = 0.5f),
-                        letterSpacing = 2.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Ciudad Desordenada",
-                        fontSize = 11.sp,
-                        fontFamily = Baloo2FontFamily,
-                        color = Color.White.copy(alpha = 0.3f),
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = "zone1_scene.png",
-                        fontSize = 10.sp,
-                        fontFamily = Baloo2FontFamily,
-                        color = Color(0xFF00E5FF).copy(alpha = 0.3f),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                AndroidView(
+                    factory = { ctx ->
+                        SurfaceView(ctx).apply {
+                            holder.addCallback(object : SurfaceHolder.Callback {
+                                override fun surfaceCreated(holder: SurfaceHolder) {
+                                    val mp = MediaPlayer().apply {
+                                        setDataSource(
+                                            ctx,
+                                            Uri.parse("android.resource://${ctx.packageName}/${R.raw.la_ciudad_desordenada}")
+                                        )
+                                        setDisplay(holder)
+                                        setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+                                        isLooping = true
+                                        prepareAsync()
+                                        setOnPreparedListener { start() }
+                                    }
+                                    mediaPlayerRef.value = mp
+                                }
+                                override fun surfaceChanged(h: SurfaceHolder, f: Int, w: Int, ht: Int) {}
+                                override fun surfaceDestroyed(h: SurfaceHolder) {
+                                    mediaPlayerRef.value?.apply { if (isPlaying) stop(); release() }
+                                    mediaPlayerRef.value = null
+                                }
+                            })
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }

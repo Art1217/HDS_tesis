@@ -20,20 +20,16 @@ PANTALLA: ZoneIntroScreen  (zona_intro)
     Orientación: Landscape (más ancha que alta).
 
 ------------------------------------------------------------
-PANTALLA: GameScreen — Nivel 1 "El Camino a Casa"
+PANTALLA: Level1Screen — Nivel 1 "El Camino a Casa"
 ------------------------------------------------------------
+  Lógica: grilla 3×3, el Bit empieza en (fila 1, col 0) mirando →
+  Camino correcto: Avanzar → Girar izq. → Avanzar → llega a casa (fila 0, col 1)
+  El Bit y la casa son placeholders hasta que agregues las imágenes.
 
-[2] bit_character.png   (o reemplaza "pers_g1" si prefieres)
-    Dónde va : Actualmente hay un personaje (pers_g1) en el lado izquierdo.
-               Si quieres un "Bit" específico para este nivel, reemplázalo.
-    Qué es   : El NPC "Bit", ciudadano de CodeLand que necesita llegar a casa.
-    Contenido : Pequeño robot amigable, con forma de cuadrado/píxel.
-                Cara expresiva (confundido o asustado). Sin fondo.
-    Estilo   : Mismo universo que Max/Lina/TomAtom. Colores: blanco, azul
-               neón, detalles cyan.
-    Tamaño   : ~300 x 500 px. Fondo transparente (PNG).
-    Nota     : El personaje aparece de cuerpo completo, desde los pies hasta
-               la cabeza, posicionado en la parte inferior izquierda.
+[2] bit_character.png  ✔ YA INCLUIDO — se usa bit_triste.png
+    Archivo  : res/drawable-nodpi/bit_triste.png
+    Usado en : Level1Board.kt → BitCharacter (el NPC que se mueve en la grilla)
+    Nota     : Rota junto a la dirección del Bit al ejecutar los comandos.
 
 [3] bit_house.png   (opcional — para la pantalla de victoria)
     Dónde va : En la VictoryOverlay, como imagen de celebración junto a las
@@ -45,16 +41,26 @@ PANTALLA: GameScreen — Nivel 1 "El Camino a Casa"
     Tamaño   : ~250 x 200 px.
 
 ------------------------------------------------------------
-PANTALLA: GameScreen — Fondo (ya existe, opcional cambio)
+PANTALLA: Level1Screen — Fondo (opcional, actualmente es gradiente Compose)
 ------------------------------------------------------------
 
-[4] fondogame1.png   (ya existe, pero si quieres renovarlo)
-    Dónde va : Fondo completo del Nivel 1.
-    Qué es   : La escena de "La Ciudad Desordenada" desde dentro del nivel.
-    Contenido : Un pasillo o cuadrícula simple en medio de la ciudad caótica.
-                Edificios al fondo, suelo de código, ambiente nocturno con neón.
-    Estilo   : Landscape. Paleta oscura + neones cyan/amarillo.
-    Tamaño   : 1920 x 1080 px (o la misma resolución que el actual).
+[4] level1_bg.png   (opcional — ahora usa gradiente oscuro generado en código)
+    Dónde va : Fondo de toda la pantalla del Nivel 1.
+    Qué es   : Ciudad Desordenada vista desde adentro del nivel.
+    Contenido : Fondo oscuro con calles de código en perspectiva, edificios
+                al fondo con luz de neón. La grilla del juego se ve al frente.
+    Estilo   : Muy oscuro (casi negro). Neones cyan y amarillo suaves.
+               El fondo NO debe distraer de la grilla y los comandos.
+    Tamaño   : 1920 x 1080 px.
+    Cómo usarlo: En Level1Screen.kt reemplaza el Modifier.background(Brush...)
+                 del Box principal por:
+                 Image(painterResource(R.drawable.level1_bg), ...)
+
+------------------------------------------------------------
+PANTALLA: GameScreen (boceto, no borrar)
+------------------------------------------------------------
+
+[5] fondogame1.png   (ya existe — pertenece al boceto game1, no al Nivel 1 real)
 
 ------------------------------------------------------------
 CÓMO AGREGAR UNA IMAGEN AL PROYECTO
