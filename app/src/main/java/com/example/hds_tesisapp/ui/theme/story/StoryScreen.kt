@@ -133,8 +133,8 @@ fun StoryScreen(navController: NavController) {
                     spring(Spring.DampingRatioLowBouncy, Spring.StiffnessMediumLow)
                 )
             } else {
-                // Última página terminada → al juego
-                navController.navigate(Routes.Game.route) {
+                // Última página terminada → cinemática de Zona 1
+                navController.navigate(Routes.ZoneIntro.route) {
                     popUpTo(Routes.Story.route) { inclusive = true }
                 }
             }

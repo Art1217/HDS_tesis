@@ -4,6 +4,7 @@ sealed class Routes(val route: String) {
     object Splash : Routes("splash")
     object Menu : Routes("menu")
     object Story : Routes("story")
+    object ZoneIntro : Routes("zone_intro")
     object Game : Routes("game")
     object MaxCharacter : Routes("max_character")
     object LinaCharacter : Routes("lina_character")

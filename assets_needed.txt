@@ -1,0 +1,81 @@
+============================================================
+  IMÁGENES NECESARIAS — HDS Tesis
+  (Reemplaza el cuadro gris/placeholder por cada imagen)
+============================================================
+
+------------------------------------------------------------
+PANTALLA: ZoneIntroScreen  (zona_intro)
+------------------------------------------------------------
+
+[1] zone1_scene.png
+    Dónde va : lado derecho de la pantalla ZoneIntro (el cuadro con borde cyan)
+    Qué es   : Ilustración/viñeta de la "Ciudad Desordenada"
+    Contenido : Ciudad futurista en caos. Calles torcidas, semáforos con luz
+                roja y verde al mismo tiempo, edificios con bloques de código
+                cayendo, puertas en lugares imposibles.
+    Estilo   : Semi-realista o pixel-art. Colores: azules oscuros + neones
+               cyan y naranja. Sensación de "algo salió muy mal".
+    Tamaño   : 800 x 550 px aprox. Fondo transparente (PNG) o con fondo
+               oscuro que combine con #000A1A.
+    Orientación: Landscape (más ancha que alta).
+
+------------------------------------------------------------
+PANTALLA: GameScreen — Nivel 1 "El Camino a Casa"
+------------------------------------------------------------
+
+[2] bit_character.png   (o reemplaza "pers_g1" si prefieres)
+    Dónde va : Actualmente hay un personaje (pers_g1) en el lado izquierdo.
+               Si quieres un "Bit" específico para este nivel, reemplázalo.
+    Qué es   : El NPC "Bit", ciudadano de CodeLand que necesita llegar a casa.
+    Contenido : Pequeño robot amigable, con forma de cuadrado/píxel.
+                Cara expresiva (confundido o asustado). Sin fondo.
+    Estilo   : Mismo universo que Max/Lina/TomAtom. Colores: blanco, azul
+               neón, detalles cyan.
+    Tamaño   : ~300 x 500 px. Fondo transparente (PNG).
+    Nota     : El personaje aparece de cuerpo completo, desde los pies hasta
+               la cabeza, posicionado en la parte inferior izquierda.
+
+[3] bit_house.png   (opcional — para la pantalla de victoria)
+    Dónde va : En la VictoryOverlay, como imagen de celebración junto a las
+               estrellas (actualmente no está en el código, se añadiría después).
+    Qué es   : La casa del Bit (su destino en el nivel).
+    Contenido : Casa pequeña con elementos digitales/tecnológicos.
+                Puerta a nivel del suelo, iluminada en verde. Parece acogedora.
+    Estilo   : Mismo universo visual. Fondo transparente (PNG).
+    Tamaño   : ~250 x 200 px.
+
+------------------------------------------------------------
+PANTALLA: GameScreen — Fondo (ya existe, opcional cambio)
+------------------------------------------------------------
+
+[4] fondogame1.png   (ya existe, pero si quieres renovarlo)
+    Dónde va : Fondo completo del Nivel 1.
+    Qué es   : La escena de "La Ciudad Desordenada" desde dentro del nivel.
+    Contenido : Un pasillo o cuadrícula simple en medio de la ciudad caótica.
+                Edificios al fondo, suelo de código, ambiente nocturno con neón.
+    Estilo   : Landscape. Paleta oscura + neones cyan/amarillo.
+    Tamaño   : 1920 x 1080 px (o la misma resolución que el actual).
+
+------------------------------------------------------------
+CÓMO AGREGAR UNA IMAGEN AL PROYECTO
+------------------------------------------------------------
+1. Coloca el archivo PNG en:
+   app/src/main/res/drawable-nodpi/
+
+2. El nombre debe ser en minúsculas y sin guiones (usa _):
+   ✔ zone1_scene.png
+   ✔ bit_house.png
+   ✗ Zone1-Scene.png  ← esto NO funcionará
+
+3. En el código usa:
+   painterResource(id = R.drawable.zone1_scene)
+
+4. Para la ZoneIntroScreen, reemplaza el Box placeholder por:
+   Image(
+       painter = painterResource(id = R.drawable.zone1_scene),
+       contentDescription = null,
+       modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+       contentScale = ContentScale.Fit
+   )
+
+============================================================

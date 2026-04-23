@@ -20,6 +20,7 @@ import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 import com.example.hds_tesisapp.ui.theme.games.game8.Game8Screen
 import com.example.hds_tesisapp.ui.theme.games.game9.Game9Screen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
+import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 
 @Composable
 fun AppNavigation() {
@@ -40,6 +41,10 @@ fun AppNavigation() {
 
         composable(Routes.Story.route) {
             StoryScreen(navController)
+        }
+
+        composable(Routes.ZoneIntro.route) {
+            ZoneIntroScreen(navController)
         }
 
         composable(Routes.Game.route) {
