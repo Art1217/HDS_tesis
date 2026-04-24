@@ -1,4 +1,4 @@
-package com.example.hds_tesisapp.ui.theme.games.level1
+package com.example.hds_tesisapp.ui.theme.games.game1.level1
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
