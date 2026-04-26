@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.hds_tesisapp.ui.theme.games.game1.GameScreen
 import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
 import com.example.hds_tesisapp.ui.theme.splash.SplashScreen
@@ -22,6 +24,10 @@ import com.example.hds_tesisapp.ui.theme.games.game9.Game9Screen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
 import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
+import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
+import com.example.hds_tesisapp.ui.theme.games.game1.level3.Level3Screen
+import com.example.hds_tesisapp.ui.theme.games.game1.level4.Level4Screen
+import com.example.hds_tesisapp.ui.theme.games.game1.Game1TransitionScreen
 
 @Composable
 fun AppNavigation() {
@@ -50,10 +56,55 @@ fun AppNavigation() {
 
         composable(Routes.Level1.route) {
             Level1Screen(onLevelComplete = {
-                navController.navigate(Routes.Game2.route) {
+                navController.navigate(game1TransitionRoute(2)) {
                     popUpTo(Routes.Level1.route) { inclusive = true }
                 }
             })
+        }
+
+        composable(Routes.Level2.route) {
+            Level2Screen(onLevelComplete = {
+                navController.navigate(game1TransitionRoute(3)) {
+                    popUpTo(Routes.Level2.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Level3.route) {
+            Level3Screen(onLevelComplete = {
+                navController.navigate(game1TransitionRoute(4)) {
+                    popUpTo(Routes.Level3.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Level4.route) {
+            Level4Screen(onLevelComplete = {
+                navController.navigate(Routes.Menu.route) {
+                    popUpTo(Routes.Level4.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(
+            route = Routes.Game1Transition.route,
+            arguments = listOf(navArgument("toLevel") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val toLevel = backStackEntry.arguments?.getInt("toLevel") ?: 2
+            Game1TransitionScreen(
+                toLevel    = toLevel,
+                onContinue = {
+                    val dest = when (toLevel) {
+                        2    -> Routes.Level2.route
+                        3    -> Routes.Level3.route
+                        4    -> Routes.Level4.route
+                        else -> Routes.Menu.route
+                    }
+                    navController.navigate(dest) {
+                        popUpTo(Routes.Game1Transition.route) { inclusive = true }
+                    }
+                }
+            )
         }
 
         composable(Routes.Game.route) {
