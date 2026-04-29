@@ -94,56 +94,71 @@ fun G2CharacterBubble(
         scale.animateTo(1f, spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow))
     }
 
-    Box(
+    // Personaje parado a la izquierda, burbuja a la derecha
+    Row(
         modifier = modifier
             .graphicsLayer { scaleX = scale.value; scaleY = scale.value }
-            .fillMaxWidth(0.82f)
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFF0A1A0A).copy(alpha = 0.95f))
-            .border(2.dp, Color(0xFF69FF47).copy(alpha = 0.8f), RoundedCornerShape(20.dp))
-            .padding(16.dp)
+            .fillMaxWidth(0.88f),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Image(
-                    painter = painterResource(characterRes),
-                    contentDescription = characterName,
-                    modifier = Modifier.size(64.dp),
-                    contentScale = ContentScale.Fit
-                )
-                Column(modifier = Modifier.weight(1f)) {
+        // Personaje grande
+        Image(
+            painter = painterResource(characterRes),
+            contentDescription = characterName,
+            modifier = Modifier
+                .width(120.dp)
+                .height(140.dp),
+            contentScale = ContentScale.Fit
+        )
+
+        // Burbuja de diálogo
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .clip(RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 20.dp))
+                .background(Color(0xFF0A1A0A).copy(alpha = 0.96f))
+                .border(2.dp, Color(0xFF69FF47).copy(alpha = 0.85f),
+                    RoundedCornerShape(topStart = 4.dp, topEnd = 20.dp, bottomEnd = 20.dp, bottomStart = 20.dp))
+                .padding(14.dp)
+        ) {
+            Column {
+                // Badge nombre
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(Color(0xFF69FF47).copy(alpha = 0.18f))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                ) {
                     Text(
                         characterName.uppercase(),
                         fontSize = 10.sp, fontFamily = OrbitronFontFamily,
                         fontWeight = FontWeight.Bold, color = Color(0xFF69FF47),
                         letterSpacing = 1.5.sp
                     )
-                    Spacer(Modifier.height(4.dp))
+                }
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    message,
+                    fontSize = 13.sp, fontFamily = Baloo2FontFamily,
+                    color = Color.White.copy(alpha = 0.93f),
+                    lineHeight = 21.sp
+                )
+                Spacer(Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Brush.horizontalGradient(listOf(Color(0xFF1B5E20), Color(0xFF388E3C))))
+                        .border(1.dp, Color(0xFF69FF47).copy(alpha = 0.7f), RoundedCornerShape(10.dp))
+                        .clickable(onClick = onDismiss)
+                        .padding(horizontal = 24.dp, vertical = 8.dp)
+                ) {
                     Text(
-                        message,
-                        fontSize = 13.sp, fontFamily = Baloo2FontFamily,
-                        color = Color.White.copy(alpha = 0.93f),
-                        lineHeight = 20.sp
+                        "¡Entendido!", fontSize = 13.sp, fontFamily = OrbitronFontFamily,
+                        fontWeight = FontWeight.Bold, color = Color.White
                     )
                 }
-            }
-            Spacer(Modifier.height(12.dp))
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Brush.horizontalGradient(listOf(Color(0xFF1B5E20), Color(0xFF388E3C))))
-                    .border(1.dp, Color(0xFF69FF47).copy(alpha = 0.7f), RoundedCornerShape(10.dp))
-                    .clickable(onClick = onDismiss)
-                    .padding(horizontal = 28.dp, vertical = 8.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "¡Entendido!", fontSize = 13.sp, fontFamily = OrbitronFontFamily,
-                    fontWeight = FontWeight.Bold, color = Color.White
-                )
             }
         }
     }
