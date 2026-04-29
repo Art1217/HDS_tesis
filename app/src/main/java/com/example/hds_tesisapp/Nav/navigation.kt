@@ -6,28 +6,27 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.example.hds_tesisapp.ui.theme.games.game1.GameScreen
 import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
 import com.example.hds_tesisapp.ui.theme.splash.SplashScreen
 import com.example.hds_tesisapp.ui.theme.personajes.MaxScreen
 import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
 import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
-import com.example.hds_tesisapp.ui.theme.games.game2.Game2Screen
-import com.example.hds_tesisapp.ui.theme.games.game3.Game3Screen
-import com.example.hds_tesisapp.ui.theme.games.game4.Game4Screen
-import com.example.hds_tesisapp.ui.theme.games.game5.Game5Screen
-import com.example.hds_tesisapp.ui.theme.games.game6.Game6Screen
-import com.example.hds_tesisapp.ui.theme.games.game7.Game7Screen
 import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
-import com.example.hds_tesisapp.ui.theme.games.game8.Game8Screen
-import com.example.hds_tesisapp.ui.theme.games.game9.Game9Screen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
 import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level3.Level3Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level4.Level4Screen
+import com.example.hds_tesisapp.ui.theme.games.game1.level5.Level5Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.Game1TransitionScreen
+import com.example.hds_tesisapp.ui.theme.games.game1.Zone1CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game2.level1.Level1G2Screen
+import com.example.hds_tesisapp.ui.theme.games.game2.level2.Level2G2Screen
+import com.example.hds_tesisapp.ui.theme.games.game2.level3.Level3G2Screen
+import com.example.hds_tesisapp.ui.theme.games.game2.level4.Level4G2Screen
+import com.example.hds_tesisapp.ui.theme.games.game2.level5.Level5G2Screen
+import com.example.hds_tesisapp.ui.theme.games.game2.Zone2CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -53,6 +52,8 @@ fun AppNavigation() {
         composable(Routes.ZoneIntro.route) {
             ZoneIntroScreen(navController)
         }
+
+        // ── Zona 1: El Bit Perdido ────────────────────────────────────────────
 
         composable(Routes.Level1.route) {
             Level1Screen(onLevelComplete = {
@@ -80,8 +81,24 @@ fun AppNavigation() {
 
         composable(Routes.Level4.route) {
             Level4Screen(onLevelComplete = {
-                navController.navigate(Routes.Menu.route) {
+                navController.navigate(game1TransitionRoute(5)) {
                     popUpTo(Routes.Level4.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Level5.route) {
+            Level5Screen(onLevelComplete = {
+                navController.navigate(Routes.Zone1Complete.route) {
+                    popUpTo(Routes.Level5.route) { inclusive = true }
+                }
+            })
+        }
+
+        composable(Routes.Zone1Complete.route) {
+            Zone1CompleteScreen(onContinue = {
+                navController.navigate(Routes.Level1G2.route) {
+                    popUpTo(Routes.Zone1Complete.route) { inclusive = true }
                 }
             })
         }
@@ -98,6 +115,7 @@ fun AppNavigation() {
                         2    -> Routes.Level2.route
                         3    -> Routes.Level3.route
                         4    -> Routes.Level4.route
+                        5    -> Routes.Level5.route
                         else -> Routes.Menu.route
                     }
                     navController.navigate(dest) {
@@ -107,77 +125,57 @@ fun AppNavigation() {
             )
         }
 
-        composable(Routes.Game.route) {
-            GameScreen(onLevelComplete = {
-                navController.navigate(Routes.Game2.route) {
-                    popUpTo(Routes.Game.route) { inclusive = true }
+        // ── Zona 2: El Bosque de los Grupos ──────────────────────────────────
+
+        composable(Routes.Level1G2.route) {
+            Level1G2Screen(onLevelComplete = {
+                navController.navigate(Routes.Level2G2.route) {
+                    popUpTo(Routes.Level1G2.route) { inclusive = true }
                 }
             })
         }
 
-        composable(Routes.Game2.route) {
-            Game2Screen(onLevelComplete = {
-                navController.navigate(Routes.Game3.route) {
-                    popUpTo(Routes.Game2.route) { inclusive = true }
+        composable(Routes.Level2G2.route) {
+            Level2G2Screen(onLevelComplete = {
+                navController.navigate(Routes.Level3G2.route) {
+                    popUpTo(Routes.Level2G2.route) { inclusive = true }
                 }
             })
         }
 
-        composable(Routes.Game3.route) {
-            Game3Screen(onLevelComplete = {
-                navController.navigate(Routes.Game4.route) {
-                    popUpTo(Routes.Game3.route) { inclusive = true }
+        composable(Routes.Level3G2.route) {
+            Level3G2Screen(onLevelComplete = {
+                navController.navigate(Routes.Level4G2.route) {
+                    popUpTo(Routes.Level3G2.route) { inclusive = true }
                 }
             })
         }
 
-        composable(Routes.Game4.route) {
-            Game4Screen(onLevelComplete = {
-                navController.navigate(Routes.Game5.route) {
-                    popUpTo(Routes.Game4.route) { inclusive = true }
+        composable(Routes.Level4G2.route) {
+            Level4G2Screen(onLevelComplete = {
+                navController.navigate(Routes.Level5G2.route) {
+                    popUpTo(Routes.Level4G2.route) { inclusive = true }
                 }
             })
         }
 
-        composable(Routes.Game5.route) {
-            Game5Screen(onLevelComplete = {
-                navController.navigate(Routes.Game6.route) {
-                    popUpTo(Routes.Game5.route) { inclusive = true }
+        composable(Routes.Level5G2.route) {
+            Level5G2Screen(onLevelComplete = {
+                navController.navigate(Routes.Zone2Complete.route) {
+                    popUpTo(Routes.Level5G2.route) { inclusive = true }
                 }
             })
         }
 
-        composable(Routes.Game6.route) {
-            Game6Screen(onLevelComplete = {
-                navController.navigate(Routes.Game7.route) {
-                    popUpTo(Routes.Game6.route) { inclusive = true }
-                }
-            })
-        }
-
-        composable(Routes.Game7.route) {
-            Game7Screen(onLevelComplete = {
-                navController.navigate(Routes.Game8.route) {
-                    popUpTo(Routes.Game7.route) { inclusive = true }
-                }
-            })
-        }
-
-        composable(Routes.Game8.route) {
-            Game8Screen(onLevelComplete = {
-                navController.navigate(Routes.Game9.route) {
-                    popUpTo(Routes.Game8.route) { inclusive = true }
-                }
-            })
-        }
-
-        composable(Routes.Game9.route) {
-            Game9Screen(onLevelComplete = {
+        composable(Routes.Zone2Complete.route) {
+            Zone2CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
-                    popUpTo(Routes.Game9.route) { inclusive = true }
+                    popUpTo(Routes.Zone2Complete.route) { inclusive = true }
                 }
             })
         }
+
+        // ── Personajes ────────────────────────────────────────────────────────
 
         composable(Routes.MaxCharacter.route) {
             MaxScreen(navController)

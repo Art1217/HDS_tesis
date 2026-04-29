@@ -63,6 +63,9 @@ private val TRANSITION_MESSAGES = mapOf(
     4 to "¡Ya dominaste 3 niveles!\n\nGlitch puso obstáculos dobles y rutas falsas " +
          "para confundirte. Esta vez tendrás un comando extra en tu kit.\n\n" +
          "Piensa bien cada paso... y recuerda que a veces conviene retroceder.",
+    5 to "¡Solo falta un desafío!\n\nMini-Glitch, agente del caos, ha tomado el control " +
+         "del último paso de la Zona 1. Es más astuto que cualquier obstáculo que hayas visto.\n\n" +
+         "Crea el algoritmo perfecto y prepárate... él intentará sabotearlo.",
 )
 
 @Composable
