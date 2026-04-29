@@ -11,6 +11,7 @@ sealed class Routes(val route: String) {
     object Levels          : Routes("levels")
 
     // Zona 1
+    object AlgorithmTutorial : Routes("algorithm_tutorial")
     object Level1          : Routes("level1")
     object Level2          : Routes("level2")
     object Level3          : Routes("level3")

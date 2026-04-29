@@ -13,6 +13,7 @@ import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
 import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
 import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
+import com.example.hds_tesisapp.ui.theme.story.AlgorithmTutorialScreen
 import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
@@ -51,6 +52,10 @@ fun AppNavigation() {
 
         composable(Routes.ZoneIntro.route) {
             ZoneIntroScreen(navController)
+        }
+
+        composable(Routes.AlgorithmTutorial.route) {
+            AlgorithmTutorialScreen(navController)
         }
 
         // ── Zona 1: El Bit Perdido ────────────────────────────────────────────

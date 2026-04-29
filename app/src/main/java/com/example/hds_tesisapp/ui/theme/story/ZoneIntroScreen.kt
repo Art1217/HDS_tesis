@@ -231,7 +231,7 @@ fun ZoneIntroScreen(navController: NavController) {
                         .pointerInput(Unit) {
                             detectTapGestures(onPress = {
                                 tryAwaitRelease()
-                                navController.navigate(Routes.Level1.route) {
+                                navController.navigate(Routes.AlgorithmTutorial.route) {
                                     popUpTo(Routes.ZoneIntro.route) { inclusive = true }
                                 }
                             })
