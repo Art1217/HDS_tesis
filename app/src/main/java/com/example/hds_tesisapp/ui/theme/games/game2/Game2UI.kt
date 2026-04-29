@@ -177,7 +177,16 @@ fun G2ItemChip(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(item.emoji, fontSize = 22.sp)
+            if (item.drawableRes != null) {
+                Image(
+                    painter = painterResource(item.drawableRes!!),
+                    contentDescription = item.label,
+                    modifier = Modifier.size(28.dp),
+                    contentScale = ContentScale.Fit
+                )
+            } else {
+                Text(item.emoji, fontSize = 22.sp)
+            }
             Text(
                 item.label, fontSize = 9.sp, fontFamily = Baloo2FontFamily,
                 color = Color.White.copy(alpha = 0.8f), textAlign = TextAlign.Center
@@ -263,7 +272,16 @@ fun G2TreeZone(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 placedItems.take(6).forEach { item ->
-                    Text(item.emoji, fontSize = 16.sp, modifier = Modifier.padding(horizontal = 2.dp))
+                    if (item.drawableRes != null) {
+                        Image(
+                            painter = painterResource(item.drawableRes!!),
+                            contentDescription = item.label,
+                            modifier = Modifier.size(20.dp).padding(horizontal = 1.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Text(item.emoji, fontSize = 16.sp, modifier = Modifier.padding(horizontal = 2.dp))
+                    }
                 }
                 if (placedItems.size > 6) {
                     Text("+${placedItems.size - 6}", fontSize = 10.sp,
@@ -344,7 +362,16 @@ fun G2HabitatZone(
                 horizontalArrangement = Arrangement.Center
             ) {
                 placedItems.take(6).forEach { item ->
-                    Text(item.emoji, fontSize = 16.sp, modifier = Modifier.padding(horizontal = 2.dp))
+                    if (item.drawableRes != null) {
+                        Image(
+                            painter = painterResource(item.drawableRes!!),
+                            contentDescription = item.label,
+                            modifier = Modifier.size(20.dp).padding(horizontal = 1.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        Text(item.emoji, fontSize = 16.sp, modifier = Modifier.padding(horizontal = 2.dp))
+                    }
                 }
             }
         }

@@ -10,13 +10,18 @@ enum class FruitType(val emoji: String, val label: String) {
     MANGO("🥭", "Mango"),
 }
 
-enum class AnimalType(val emoji: String, val label: String, val habitat: HabitatType) {
-    PAJARO("🐦", "Pájaro",     HabitatType.COPA),
-    AGUILA("🦅", "Águila",     HabitatType.COPA),
-    ARDILLA("🐿️", "Ardilla",  HabitatType.TRONCO),
-    CARPINTERO("🪶", "Carpintero", HabitatType.TRONCO),
-    ZORRO("🦊", "Zorro",       HabitatType.MADRIGUERA),
-    CONEJO("🐰", "Conejo",     HabitatType.MADRIGUERA),
+enum class AnimalType(
+    val emoji: String,
+    val label: String,
+    val habitat: HabitatType,
+    val drawableRes: Int? = null
+) {
+    PAJARO    ("🐦", "Pájaro",      HabitatType.COPA),
+    AGUILA    ("🦅", "Águila",      HabitatType.COPA),
+    ARDILLA   ("🐿️", "Ardilla",    HabitatType.TRONCO),
+    CARPINTERO("",  "Carpintero",   HabitatType.TRONCO, R.drawable.pajaro_carp),
+    ZORRO     ("🦊", "Zorro",       HabitatType.MADRIGUERA),
+    CONEJO    ("🐰", "Conejo",      HabitatType.MADRIGUERA),
 }
 
 enum class HabitatType(val label: String, val icon: String) {
@@ -26,23 +31,25 @@ enum class HabitatType(val label: String, val icon: String) {
 }
 
 enum class TreeType(val label: String, val drawableRes: Int, val fruit: FruitType) {
-    MANZANA("Árbol Manzano",   R.drawable.tree_manzana, FruitType.MANZANA),
-    NARANJA("Árbol Naranjo",   R.drawable.tree_naranja, FruitType.NARANJA),
-    LIMON("Árbol Limonero",    R.drawable.tree_limon,   FruitType.LIMON),
+    MANZANA("Árbol Manzano", R.drawable.tree_manzana, FruitType.MANZANA),
+    NARANJA("Árbol Naranjo", R.drawable.tree_naranja, FruitType.NARANJA),
+    LIMON  ("Árbol Limonero", R.drawable.tree_limon,  FruitType.LIMON),
 }
 
 sealed class DragItem {
     abstract val id: Int
     abstract val emoji: String
     abstract val label: String
+    open val drawableRes: Int? get() = null
 
     data class Fruit(override val id: Int, val type: FruitType) : DragItem() {
-        override val emoji get() = type.emoji
-        override val label get() = type.label
+        override val emoji       get() = type.emoji
+        override val label       get() = type.label
     }
     data class Animal(override val id: Int, val type: AnimalType) : DragItem() {
-        override val emoji get() = type.emoji
-        override val label get() = type.label
+        override val emoji       get() = type.emoji
+        override val label       get() = type.label
+        override val drawableRes get() = type.drawableRes
     }
 }
 
