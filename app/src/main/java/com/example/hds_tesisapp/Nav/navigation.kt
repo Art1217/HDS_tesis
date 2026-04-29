@@ -14,6 +14,7 @@ import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
 import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
 import com.example.hds_tesisapp.ui.theme.story.AlgorithmTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.ClassificationTutorialScreen
 import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
@@ -102,7 +103,7 @@ fun AppNavigation() {
 
         composable(Routes.Zone1Complete.route) {
             Zone1CompleteScreen(onContinue = {
-                navController.navigate(Routes.Level1G2.route) {
+                navController.navigate(Routes.ClassificationTutorial.route) {
                     popUpTo(Routes.Zone1Complete.route) { inclusive = true }
                 }
             })
@@ -131,6 +132,10 @@ fun AppNavigation() {
         }
 
         // ── Zona 2: El Bosque de los Grupos ──────────────────────────────────
+
+        composable(Routes.ClassificationTutorial.route) {
+            ClassificationTutorialScreen(navController)
+        }
 
         composable(Routes.Level1G2.route) {
             Level1G2Screen(onLevelComplete = {

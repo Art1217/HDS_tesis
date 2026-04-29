@@ -21,6 +21,7 @@ sealed class Routes(val route: String) {
     object Game1Transition : Routes("game1_transition/{toLevel}")
 
     // Zona 2
+    object ClassificationTutorial : Routes("classification_tutorial")
     object Level1G2        : Routes("level1_g2")
     object Level2G2        : Routes("level2_g2")
     object Level3G2        : Routes("level3_g2")
