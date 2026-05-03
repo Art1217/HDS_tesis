@@ -15,6 +15,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -473,74 +475,80 @@ private fun Level5CommandPanel(
     onExecute: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 8.dp, vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            "PROGRAMA", fontSize = 16.sp, fontWeight = FontWeight.ExtraBold,
-            fontFamily = OrbitronFontFamily, color = Color(0xFFCE93D8), letterSpacing = 2.sp
-        )
-        Spacer(Modifier.height(3.dp))
-        Text(
-            when (phase) {
-                L5Phase.DEBUGGING -> "Toca los pasos rojos para borrarlos"
-                else              -> "Toca un comando para agregarlo"
-            },
-            fontSize = 10.sp, fontFamily = Baloo2FontFamily,
-            color = Color.White.copy(alpha = 0.6f), textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(10.dp))
+        // Título
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "PROGRAMA", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                fontFamily = OrbitronFontFamily, color = Color(0xFFCE93D8), letterSpacing = 2.sp
+            )
+            Text(
+                when (phase) {
+                    L5Phase.DEBUGGING -> "Toca los pasos rojos para borrarlos"
+                    else              -> "Toca un comando para agregarlo"
+                },
+                fontSize = 9.sp, fontFamily = Baloo2FontFamily,
+                color = Color.White.copy(alpha = 0.6f), textAlign = TextAlign.Center
+            )
+        }
 
         // Slots en filas de 3 (3-3-1)
-        val rowsList = slots.chunked(3)
-        rowsList.forEachIndexed { rowIndex, rowSlots ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                rowSlots.forEachIndexed { indexInRow, _ ->
-                    val absIdx   = rowIndex * 3 + indexInRow
-                    val isGlitch = absIdx in glitchedIndices
-                    val cmd      = slots[absIdx]
-                    L5CommandSlot(
-                        stepNumber   = absIdx + 1,
-                        command      = cmd,
-                        isGlitched   = isGlitch,
-                        isHinted     = hintsActive && hintSlotIndex == absIdx && !isGlitch,
-                        isDebugging  = phase == L5Phase.DEBUGGING,
-                        onClear      = { if (isGlitch) onClearGlitch(absIdx) }
-                    )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            slots.chunked(3).forEachIndexed { rowIndex, rowSlots ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    rowSlots.forEachIndexed { indexInRow, _ ->
+                        val absIdx   = rowIndex * 3 + indexInRow
+                        val isGlitch = absIdx in glitchedIndices
+                        L5CommandSlot(
+                            stepNumber   = absIdx + 1,
+                            command      = slots[absIdx],
+                            isGlitched   = isGlitch,
+                            isHinted     = hintsActive && hintSlotIndex == absIdx && !isGlitch,
+                            isDebugging  = phase == L5Phase.DEBUGGING,
+                            onClear      = { if (isGlitch) onClearGlitch(absIdx) }
+                        )
+                    }
                 }
             }
-            if (rowIndex < rowsList.size - 1) Spacer(Modifier.height(6.dp))
         }
 
-        Spacer(Modifier.height(10.dp))
+        // Divisor
         Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(Color(0xFFAB47BC).copy(alpha = 0.20f)))
-        Spacer(Modifier.height(8.dp))
 
-        Text(
-            "COMANDOS", fontSize = 10.sp, fontFamily = OrbitronFontFamily,
-            color = Color.White.copy(alpha = 0.5f), letterSpacing = 2.sp
-        )
-        Spacer(Modifier.height(6.dp))
-
-        L5_COMMANDS.chunked(3).forEach { cmdRow ->
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                cmdRow.forEach { cmd ->
-                    L5CommandCard(
-                        command = cmd,
-                        enabled = hintsActive && !isExecuting,
-                        onTap   = { onCommandTap(cmd) }
-                    )
+        // Comandos
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                "COMANDOS", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
+                color = Color.White.copy(alpha = 0.5f), letterSpacing = 2.sp
+            )
+            L5_COMMANDS.chunked(3).forEach { cmdRow ->
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                    cmdRow.forEach { cmd ->
+                        L5CommandCard(
+                            command = cmd,
+                            enabled = hintsActive && !isExecuting,
+                            onTap   = { onCommandTap(cmd) }
+                        )
+                    }
                 }
             }
-            Spacer(Modifier.height(4.dp))
         }
 
-        Spacer(Modifier.height(10.dp))
+        // Botones
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            L5ActionButton("↺  Reset",   Color(0xFFFF5252),
+            L5ActionButton("↺  Reset", Color(0xFFFF5252),
                 enabled = slots.any { it != null } && !isExecuting) { onReset() }
             L5ActionButton(
                 text    = if (phase == L5Phase.DEBUGGING) "⚔  ¡Vencer!" else "▶  Ejecutar",
@@ -584,59 +592,62 @@ private fun L5CommandSlot(
         else            -> Brush.radialGradient(listOf(Color(0xFF0D1B2A), Color(0xFF050A14)))
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Box(
+        modifier = Modifier
+            .size(72.dp, 52.dp)
+            .drawBehind {
+                if (isGlitched) {
+                    drawRoundRect(
+                        color = Color(0xFFEF5350).copy(alpha = glitchAnim.value * 0.3f),
+                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(12.dp.toPx()),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 18f)
+                    )
+                }
+            }
+            .clip(RoundedCornerShape(12.dp))
+            .background(bgBrush)
+            .border(2.dp, borderColor, RoundedCornerShape(12.dp))
+            .then(
+                if (isGlitched && isDebugging)
+                    Modifier.pointerInput(Unit) {
+                        detectTapGestures(onPress = { tryAwaitRelease(); onClear() })
+                    }
+                else Modifier
+            )
+    ) {
+        // Step number badge
         Text(
-            "Paso $stepNumber", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
+            "$stepNumber", fontSize = 7.sp, fontFamily = OrbitronFontFamily,
             color = when {
                 isGlitched -> Color(0xFFEF5350).copy(alpha = glitchAnim.value)
                 isHinted   -> Color(0xFFFFD600).copy(alpha = hintAlpha.value)
-                else       -> Color.White.copy(alpha = 0.4f)
-            }
+                else       -> Color.White.copy(alpha = 0.35f)
+            },
+            modifier = Modifier.align(Alignment.TopStart).padding(start = 4.dp, top = 2.dp)
         )
-        Spacer(Modifier.height(2.dp))
-
-        Box(
-            modifier = Modifier
-                .size(78.dp, 58.dp)
-                .drawBehind {
-                    if (isGlitched) {
-                        drawRoundRect(
-                            color = Color(0xFFEF5350).copy(alpha = glitchAnim.value * 0.3f),
-                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 18f)
-                        )
-                    }
-                }
-                .clip(RoundedCornerShape(14.dp))
-                .background(bgBrush)
-                .border(2.dp, borderColor, RoundedCornerShape(14.dp))
-                .then(
-                    if (isGlitched && isDebugging)
-                        Modifier.pointerInput(Unit) {
-                            detectTapGestures(onPress = { tryAwaitRelease(); onClear() })
-                        }
-                    else Modifier
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            if (command != null) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        command.icon, fontSize = 18.sp,
-                        color = if (isGlitched) Color(0xFFEF5350) else command.accentColor,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        if (isGlitched) "¡ERROR!" else command.label,
-                        fontSize = 7.sp, fontFamily = Baloo2FontFamily,
-                        color = if (isGlitched) Color(0xFFEF5350).copy(alpha = glitchAnim.value)
-                                else command.accentColor.copy(alpha = 0.85f),
-                        fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                    )
-                }
-            } else {
-                Text("___", fontSize = 14.sp, color = Color.White.copy(alpha = 0.2f))
+        if (command != null) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    command.icon, fontSize = 18.sp,
+                    color = if (isGlitched) Color(0xFFEF5350) else command.accentColor,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    if (isGlitched) "¡ERROR!" else command.label,
+                    fontSize = 7.sp, fontFamily = Baloo2FontFamily,
+                    color = if (isGlitched) Color(0xFFEF5350).copy(alpha = glitchAnim.value)
+                            else command.accentColor.copy(alpha = 0.85f),
+                    fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                )
             }
+        } else {
+            Text(
+                "·  ·  ·", fontSize = 12.sp, color = Color.White.copy(alpha = 0.2f),
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }
@@ -646,14 +657,14 @@ private fun L5CommandCard(command: GameCommand, enabled: Boolean, onTap: () -> U
     val pressAlpha = remember { Animatable(1f) }
     Box(
         modifier = Modifier
-            .size(72.dp, 60.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(68.dp, 52.dp)
+            .clip(RoundedCornerShape(12.dp))
             .background(
                 Brush.verticalGradient(
                     listOf(command.accentColor.copy(alpha = if (enabled) 0.20f else 0.06f), Color(0xFF050A14))
                 )
             )
-            .border(2.dp, command.accentColor.copy(alpha = if (enabled) 0.85f else 0.22f), RoundedCornerShape(14.dp))
+            .border(2.dp, command.accentColor.copy(alpha = if (enabled) 0.85f else 0.22f), RoundedCornerShape(12.dp))
             .graphicsLayer { alpha = pressAlpha.value }
             .pointerInput(enabled) {
                 if (enabled) detectTapGestures(onPress = {
@@ -680,7 +691,7 @@ private fun L5ActionButton(text: String, color: Color, enabled: Boolean, onClick
     val pressAlpha = remember { Animatable(1f) }
     Box(
         modifier = Modifier
-            .width(128.dp).height(46.dp)
+            .width(116.dp).height(40.dp)
             .drawBehind {
                 if (enabled) drawRoundRect(
                     color = color.copy(alpha = 0.22f),

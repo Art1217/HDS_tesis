@@ -10,6 +10,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -209,71 +211,81 @@ fun Game1CommandPanel(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 6.dp, vertical = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            "PROGRAMA", fontSize = 18.sp, fontWeight = FontWeight.ExtraBold,
-            fontFamily = OrbitronFontFamily, color = Color.Cyan, letterSpacing = 2.sp
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            if (!hintsActive) "Escucha a Atom primero"
-            else "Toca un comando para agregarlo",
-            fontSize = 11.sp, fontFamily = Baloo2FontFamily,
-            color = Color.White.copy(alpha = 0.6f), textAlign = TextAlign.Center
-        )
-        Spacer(Modifier.height(12.dp))
-
-        val rowsList = slots.chunked(3)
-        rowsList.forEachIndexed { rowIndex, rowSlots ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                rowSlots.forEachIndexed { indexInRow, _ ->
-                    val absoluteIndex = rowIndex * 3 + indexInRow
-                    G1CommandSlot(
-                        stepNumber = absoluteIndex + 1,
-                        command    = slots[absoluteIndex],
-                        isHinted   = hintsActive && hintSlotIndex == absoluteIndex
-                    )
-                }
-            }
-            if (rowIndex < rowsList.size - 1) Spacer(Modifier.height(8.dp))
+        // ── Título ──
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "PROGRAMA", fontSize = 14.sp, fontWeight = FontWeight.ExtraBold,
+                fontFamily = OrbitronFontFamily, color = Color.Cyan, letterSpacing = 2.sp
+            )
+            Text(
+                if (!hintsActive) "Escucha a Atom primero"
+                else "Toca un comando para agregarlo",
+                fontSize = 9.sp, fontFamily = Baloo2FontFamily,
+                color = Color.White.copy(alpha = 0.55f), textAlign = TextAlign.Center
+            )
         }
 
-        Spacer(Modifier.height(14.dp))
+        // ── Slots de programa ──
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            slots.chunked(3).forEachIndexed { rowIndex, rowSlots ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    rowSlots.forEachIndexed { indexInRow, _ ->
+                        val absoluteIndex = rowIndex * 3 + indexInRow
+                        G1CommandSlot(
+                            stepNumber = absoluteIndex + 1,
+                            command    = slots[absoluteIndex],
+                            isHinted   = hintsActive && hintSlotIndex == absoluteIndex
+                        )
+                    }
+                }
+            }
+        }
+
+        // ── Divisor ──
         Box(
             modifier = Modifier.fillMaxWidth().height(1.dp)
                 .background(Color(0xFF00E5FF).copy(alpha = 0.20f))
         )
-        Spacer(Modifier.height(10.dp))
 
-        Text(
-            "COMANDOS", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
-            color = Color.White.copy(alpha = 0.5f), letterSpacing = 2.sp
-        )
-        Spacer(Modifier.height(8.dp))
-
-        config.availableCommands.chunked(3).forEach { cmdRow ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                cmdRow.forEach { cmd ->
-                    G1CommandCard(
-                        command = cmd,
-                        enabled = hintsActive && !isExecuting,
-                        onTap   = { onCommandTap(cmd) }
-                    )
+        // ── Paleta de comandos ──
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                "COMANDOS", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
+                color = Color.White.copy(alpha = 0.5f), letterSpacing = 2.sp
+            )
+            config.availableCommands.chunked(3).forEach { cmdRow ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    cmdRow.forEach { cmd ->
+                        G1CommandCard(
+                            command = cmd,
+                            enabled = hintsActive && !isExecuting,
+                            onTap   = { onCommandTap(cmd) }
+                        )
+                    }
                 }
             }
-            Spacer(Modifier.height(6.dp))
         }
 
-        Spacer(Modifier.height(12.dp))
-
+        // ── Botones ──
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -312,52 +324,52 @@ private fun G1CommandSlot(stepNumber: Int, command: GameCommand?, isHinted: Bool
         else            -> Color.White.copy(alpha = 0.18f)
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            "Paso $stepNumber", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
-            color = if (isHinted) Color(0xFFFFD600).copy(alpha = hintAlpha.value)
-                    else Color.White.copy(alpha = 0.4f)
-        )
-        if (isHinted) {
-            Text("▼", fontSize = 12.sp, color = Color(0xFFFFD600).copy(alpha = hintAlpha.value),
-                fontWeight = FontWeight.Bold)
-        } else {
-            Spacer(Modifier.height(16.dp))
-        }
-        Box(
-            modifier = Modifier
-                .size(80.dp, 62.dp)
-                .drawBehind {
-                    if (isHinted) {
-                        drawRoundRect(
-                            color = Color(0xFFFFD600).copy(alpha = hintAlpha.value * 0.25f),
-                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(14.dp.toPx()),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 18f)
-                        )
-                    }
-                }
-                .clip(RoundedCornerShape(14.dp))
-                .background(
-                    if (command != null)
-                        Brush.radialGradient(listOf(command.accentColor.copy(alpha = 0.18f), Color(0xFF050A14)))
-                    else
-                        Brush.radialGradient(listOf(Color(0xFF0D1B2A), Color(0xFF050A14)))
-                )
-                .border(2.dp, borderColor, RoundedCornerShape(14.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            if (command != null) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(command.icon, fontSize = 20.sp, color = command.accentColor, fontWeight = FontWeight.Bold)
-                    Text(
-                        command.label, fontSize = 8.sp, fontFamily = Baloo2FontFamily,
-                        color = command.accentColor.copy(alpha = 0.85f),
-                        fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+    Box(
+        modifier = Modifier
+            .size(72.dp, 52.dp)
+            .drawBehind {
+                if (isHinted) {
+                    drawRoundRect(
+                        color = Color(0xFFFFD600).copy(alpha = hintAlpha.value * 0.25f),
+                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(12.dp.toPx()),
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(width = 18f)
                     )
                 }
-            } else {
-                Text("___", fontSize = 16.sp, color = Color.White.copy(alpha = 0.2f))
             }
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                if (command != null)
+                    Brush.radialGradient(listOf(command.accentColor.copy(alpha = 0.18f), Color(0xFF050A14)))
+                else
+                    Brush.radialGradient(listOf(Color(0xFF0D1B2A), Color(0xFF050A14)))
+            )
+            .border(2.dp, borderColor, RoundedCornerShape(12.dp))
+    ) {
+        // Step number badge — top-left
+        Text(
+            "$stepNumber", fontSize = 7.sp, fontFamily = OrbitronFontFamily,
+            color = if (isHinted) Color(0xFFFFD600).copy(alpha = hintAlpha.value)
+                    else Color.White.copy(alpha = 0.35f),
+            modifier = Modifier.align(Alignment.TopStart).padding(start = 4.dp, top = 2.dp)
+        )
+        // Content — centered
+        if (command != null) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(command.icon, fontSize = 18.sp, color = command.accentColor, fontWeight = FontWeight.Bold)
+                Text(
+                    command.label, fontSize = 7.sp, fontFamily = Baloo2FontFamily,
+                    color = command.accentColor.copy(alpha = 0.85f),
+                    fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            Text(
+                "·  ·  ·", fontSize = 12.sp, color = Color.White.copy(alpha = 0.2f),
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
     }
 }
@@ -368,8 +380,8 @@ private fun G1CommandCard(command: GameCommand, enabled: Boolean, onTap: () -> U
 
     Box(
         modifier = Modifier
-            .size(76.dp, 64.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .size(68.dp, 52.dp)
+            .clip(RoundedCornerShape(12.dp))
             .background(
                 Brush.verticalGradient(
                     listOf(
@@ -381,7 +393,7 @@ private fun G1CommandCard(command: GameCommand, enabled: Boolean, onTap: () -> U
             .border(
                 2.dp,
                 command.accentColor.copy(alpha = if (enabled) 0.85f else 0.25f),
-                RoundedCornerShape(14.dp)
+                RoundedCornerShape(12.dp)
             )
             .graphicsLayer { alpha = pressAlpha.value }
             .pointerInput(enabled) {
@@ -398,12 +410,12 @@ private fun G1CommandCard(command: GameCommand, enabled: Boolean, onTap: () -> U
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                command.icon, fontSize = 24.sp,
+                command.icon, fontSize = 20.sp,
                 color = command.accentColor.copy(alpha = if (enabled) 1f else 0.35f),
                 fontWeight = FontWeight.Bold
             )
             Text(
-                command.label, fontSize = 8.sp, fontFamily = Baloo2FontFamily,
+                command.label, fontSize = 7.sp, fontFamily = Baloo2FontFamily,
                 color = command.accentColor.copy(alpha = if (enabled) 0.85f else 0.3f),
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
             )
@@ -417,7 +429,7 @@ private fun G1ActionButton(text: String, accentColor: Color, enabled: Boolean, o
 
     Box(
         modifier = Modifier
-            .width(130.dp).height(48.dp)
+            .width(120.dp).height(42.dp)
             .drawBehind {
                 if (enabled) {
                     drawRoundRect(
