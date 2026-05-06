@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
+import com.example.hds_tesisapp.ui.theme.games.game1.G1MenuButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -64,7 +65,7 @@ private fun Context.findActivity(): Activity? = when (this) {
 //  Nivel 1: "El Camino a Casa"
 // ============================================================
 @Composable
-fun Level1Screen(onLevelComplete: () -> Unit) {
+fun Level1Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context = LocalContext.current
     val activity = remember { context.findActivity() }
     DisposableEffect(Unit) {
@@ -277,6 +278,12 @@ fun Level1Screen(onLevelComplete: () -> Unit) {
                     .zIndex(5f)
             ) { phase = GamePhase.TUTORIAL_DIALOG }
         }
+
+        // ── Botón menú ──
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
+            onClick  = onNavigateToMenu
+        )
 
         // ── Overlays (dialogs + victoria) ──
         when (phase) {

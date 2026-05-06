@@ -58,6 +58,6 @@ private val LEVEL3_CONFIG = LevelConfig(
 )
 
 @Composable
-fun Level3Screen(onLevelComplete: () -> Unit) {
-    Game1LevelScreen(config = LEVEL3_CONFIG, onLevelComplete = onLevelComplete)
+fun Level3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
+    Game1LevelScreen(config = LEVEL3_CONFIG, onLevelComplete = onLevelComplete, onNavigateToMenu = onNavigateToMenu)
 }

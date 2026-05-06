@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
+import com.example.hds_tesisapp.ui.theme.games.game1.G1MenuButton
 import com.example.hds_tesisapp.ui.theme.games.game2.*
 import kotlinx.coroutines.delay
 
@@ -50,7 +51,7 @@ private const val TIMER_SECONDS = 150
 private const val ROTATE_SECONDS = 20
 
 @Composable
-fun Level3G2Screen(onLevelComplete: () -> Unit) {
+fun Level3G2Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context  = LocalContext.current
     val activity = remember { context.findActivity() }
     DisposableEffect(Unit) {
@@ -175,7 +176,7 @@ fun Level3G2Screen(onLevelComplete: () -> Unit) {
             ) {
                 // 3 trees with dynamic fruit assignment
                 treeAssignment.forEachIndexed { i, acceptedFruit ->
-                    val treeType = TreeType.entries[i]
+                    val treeType = TreeType.entries.first { it.fruit == acceptedFruit }
                     Column(
                         modifier = Modifier.weight(1f).fillMaxHeight(0.9f),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -332,6 +333,11 @@ fun Level3G2Screen(onLevelComplete: () -> Unit) {
                 )
             }
         }
+
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+            onClick  = onNavigateToMenu
+        )
 
         if (showVictory) {
             G2VictoryOverlay(levelNumber = 3, onNext = onLevelComplete)

@@ -51,7 +51,7 @@ private fun Context.findG1Activity(): Activity? = when (this) {
 }
 
 @Composable
-fun Game1LevelScreen(config: LevelConfig, onLevelComplete: () -> Unit) {
+fun Game1LevelScreen(config: LevelConfig, onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context  = LocalContext.current
     val activity = remember { context.findG1Activity() }
     DisposableEffect(Unit) {
@@ -211,6 +211,12 @@ fun Game1LevelScreen(config: LevelConfig, onLevelComplete: () -> Unit) {
                 modifier = Modifier.align(Alignment.TopStart).padding(12.dp).zIndex(5f)
             ) { phase = G1Phase.TUTORIAL_DIALOG }
         }
+
+        // Menu button
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
+            onClick  = onNavigateToMenu
+        )
 
         // Overlays
         when (phase) {

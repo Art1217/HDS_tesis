@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
+import com.example.hds_tesisapp.ui.theme.games.game1.G1MenuButton
 import com.example.hds_tesisapp.ui.theme.games.game2.*
 import kotlinx.coroutines.delay
 
@@ -50,7 +51,7 @@ private const val TIMER_SECONDS  = 200
 private const val SWAP_INTERVAL  = 10
 
 @Composable
-fun Level5G2Screen(onLevelComplete: () -> Unit) {
+fun Level5G2Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context  = LocalContext.current
     val activity = remember { context.findActivity() }
     DisposableEffect(Unit) {
@@ -288,5 +289,10 @@ fun Level5G2Screen(onLevelComplete: () -> Unit) {
         if (showVictory) {
             G2VictoryOverlay(levelNumber = 5, onNext = onLevelComplete)
         }
+
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+            onClick  = onNavigateToMenu
+        )
     }
 }

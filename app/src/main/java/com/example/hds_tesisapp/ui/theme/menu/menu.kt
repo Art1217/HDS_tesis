@@ -592,7 +592,7 @@ fun HudMenuButton(
 }
 
 // ============================================================
-//  Settings Dialog — visual upgrade
+//  Settings Dialog — HUD sci-fi style
 // ============================================================
 @Composable
 fun SettingsDialog(
@@ -602,106 +602,152 @@ fun SettingsDialog(
     onVolumeChange: (Float) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .padding(16.dp)
-                .border(3.dp, Color(0xFF8D6E63), RoundedCornerShape(24.dp)),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF8E1))
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "CONFIGURACIÓN",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontFamily = Baloo2FontFamily,
-                    color = Color(0xFF5D4037),
-                    letterSpacing = 2.sp
-                )
-                Spacer(modifier = Modifier.height(28.dp))
+    val accent = Color(0xFF00E5FF)
+    val glowAlpha = remember { Animatable(0.4f) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            glowAlpha.animateTo(1f, tween(1100))
+            glowAlpha.animateTo(0.4f, tween(1100))
+        }
+    }
 
-                // Mute Toggle
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    // Outer bloom glow
+                    for (i in 3 downTo 1) {
+                        drawRoundRect(
+                            color = accent.copy(alpha = glowAlpha.value * 0.08f * (4 - i)),
+                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(24.dp.toPx()),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = i * 14f)
+                        )
+                    }
+                }
+                .clip(RoundedCornerShape(20.dp))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF000D1A), Color(0xFF001428), Color(0xFF000D1A))
+                    )
+                )
+                .border(
+                    width = 2.dp,
+                    brush = Brush.verticalGradient(
+                        listOf(accent.copy(alpha = 0.9f), accent.copy(alpha = 0.4f))
+                    ),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(horizontal = 24.dp, vertical = 20.dp)
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                // ── Título ──
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Icon(Icons.Default.Settings, contentDescription = null,
+                        tint = accent, modifier = Modifier.size(22.dp))
+                    Text(
+                        "CONFIGURACIÓN",
+                        fontSize = 18.sp, fontWeight = FontWeight.ExtraBold,
+                        fontFamily = OrbitronFontFamily, color = accent,
+                        letterSpacing = 1.sp
+                    )
+                }
+
+                Spacer(Modifier.height(4.dp))
+                Box(Modifier.fillMaxWidth().height(1.dp)
+                    .background(accent.copy(alpha = 0.25f)))
+                Spacer(Modifier.height(18.dp))
+
+                // ── Toggle música ──
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(2.dp, RoundedCornerShape(14.dp))
-                        .background(Color.White, RoundedCornerShape(14.dp))
-                        .border(1.dp, Color(0xFFD7CCC8), RoundedCornerShape(14.dp))
-                        .padding(14.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF001828))
+                        .border(1.5.dp,
+                            if (!isMuted) Color(0xFF69FF47).copy(alpha = 0.6f)
+                            else Color(0xFFFF5252).copy(alpha = 0.5f),
+                            RoundedCornerShape(12.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp)
                 ) {
-                    val icon = if (isMuted) Icons.Default.Close else Icons.Default.Check
+                    val musicIcon = if (!isMuted) Icons.Default.Check else Icons.Default.Close
                     Icon(
-                        imageVector = icon,
+                        imageVector = musicIcon,
                         contentDescription = null,
-                        tint = if (isMuted) Color(0xFFE53935) else Color(0xFF43A047),
-                        modifier = Modifier.size(32.dp)
+                        tint = if (!isMuted) Color(0xFF69FF47) else Color(0xFFFF5252),
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(14.dp))
+                    Spacer(Modifier.width(10.dp))
                     Text(
-                        text = "Música de Fondo",
-                        color = Color(0xFF5D4037),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = Baloo2FontFamily,
+                        "Música de Fondo",
+                        color = Color.White.copy(alpha = 0.9f),
+                        fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                        fontFamily = OrbitronFontFamily,
                         modifier = Modifier.weight(1f)
                     )
                     Switch(
                         checked = !isMuted,
                         onCheckedChange = { onMutedChange(!it) },
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color(0xFF43A047),
-                            checkedTrackColor = Color(0xFFA5D6A7),
-                            uncheckedThumbColor = Color(0xFFE53935),
-                            uncheckedTrackColor = Color(0xFFEF9A9A)
+                            checkedThumbColor  = Color(0xFF69FF47),
+                            checkedTrackColor  = Color(0xFF69FF47).copy(alpha = 0.35f),
+                            uncheckedThumbColor = Color(0xFFFF5252),
+                            uncheckedTrackColor = Color(0xFFFF5252).copy(alpha = 0.25f)
                         )
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(Modifier.height(18.dp))
 
-                // Volume Slider
-                Text(
-                    "Volumen Maestro",
-                    color = Color(0xFF5D4037),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = Baloo2FontFamily,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(bottom = 6.dp)
-                )
+                // ── Slider volumen ──
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        "🔊  VOLUMEN",
+                        color = accent.copy(alpha = 0.85f),
+                        fontSize = 11.sp, fontWeight = FontWeight.Bold,
+                        fontFamily = OrbitronFontFamily
+                    )
+                    Text(
+                        "${(volume * 100).toInt()}%",
+                        color = accent,
+                        fontSize = 11.sp, fontWeight = FontWeight.Bold,
+                        fontFamily = OrbitronFontFamily
+                    )
+                }
+                Spacer(Modifier.height(4.dp))
                 Slider(
                     value = volume,
                     onValueChange = onVolumeChange,
                     valueRange = 0f..1f,
                     enabled = !isMuted,
                     colors = SliderDefaults.colors(
-                        thumbColor = Color(0xFFFF8F00),
-                        activeTrackColor = Color(0xFFFFB300),
-                        inactiveTrackColor = Color(0xFFFFECB3)
-                    ),
-                    modifier = Modifier.height(20.dp)
+                        thumbColor        = accent,
+                        activeTrackColor  = accent,
+                        inactiveTrackColor = accent.copy(alpha = 0.18f),
+                        disabledThumbColor       = Color.White.copy(alpha = 0.25f),
+                        disabledActiveTrackColor = Color.White.copy(alpha = 0.15f)
+                    )
                 )
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(Modifier.height(20.dp))
 
+                // ── Botón cerrar ──
                 HudMenuButton(
                     text = "Cerrar",
                     icon = Icons.Default.Close,
                     accentColor = Color(0xFFFF5252),
-                    buttonHeight = 50.dp,
-                    iconSize = 24.dp,
-                    fontSize = 14,
-                    modifier = Modifier.width(200.dp)
-                ) {
-                    onDismiss()
-                }
+                    buttonHeight = 46.dp,
+                    iconSize = 20.dp,
+                    fontSize = 13,
+                    modifier = Modifier.fillMaxWidth(0.65f)
+                ) { onDismiss() }
             }
         }
     }

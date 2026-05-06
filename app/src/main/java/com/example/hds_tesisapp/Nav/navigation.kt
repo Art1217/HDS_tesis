@@ -62,43 +62,78 @@ fun AppNavigation() {
         // ── Zona 1: El Bit Perdido ────────────────────────────────────────────
 
         composable(Routes.Level1.route) {
-            Level1Screen(onLevelComplete = {
-                navController.navigate(game1TransitionRoute(2)) {
-                    popUpTo(Routes.Level1.route) { inclusive = true }
+            Level1Screen(
+                onLevelComplete = {
+                    navController.navigate(game1TransitionRoute(2)) {
+                        popUpTo(Routes.Level1.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level2.route) {
-            Level2Screen(onLevelComplete = {
-                navController.navigate(game1TransitionRoute(3)) {
-                    popUpTo(Routes.Level2.route) { inclusive = true }
+            Level2Screen(
+                onLevelComplete = {
+                    navController.navigate(game1TransitionRoute(3)) {
+                        popUpTo(Routes.Level2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level3.route) {
-            Level3Screen(onLevelComplete = {
-                navController.navigate(game1TransitionRoute(4)) {
-                    popUpTo(Routes.Level3.route) { inclusive = true }
+            Level3Screen(
+                onLevelComplete = {
+                    navController.navigate(game1TransitionRoute(4)) {
+                        popUpTo(Routes.Level3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level4.route) {
-            Level4Screen(onLevelComplete = {
-                navController.navigate(game1TransitionRoute(5)) {
-                    popUpTo(Routes.Level4.route) { inclusive = true }
+            Level4Screen(
+                onLevelComplete = {
+                    navController.navigate(game1TransitionRoute(5)) {
+                        popUpTo(Routes.Level4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level5.route) {
-            Level5Screen(onLevelComplete = {
-                navController.navigate(Routes.Zone1Complete.route) {
-                    popUpTo(Routes.Level5.route) { inclusive = true }
+            Level5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone1Complete.route) {
+                        popUpTo(Routes.Level5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Zone1Complete.route) {
@@ -138,43 +173,78 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G2.route) {
-            Level1G2Screen(onLevelComplete = {
-                navController.navigate(Routes.Level2G2.route) {
-                    popUpTo(Routes.Level1G2.route) { inclusive = true }
+            Level1G2Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G2.route) {
+                        popUpTo(Routes.Level1G2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level2G2.route) {
-            Level2G2Screen(onLevelComplete = {
-                navController.navigate(Routes.Level3G2.route) {
-                    popUpTo(Routes.Level2G2.route) { inclusive = true }
+            Level2G2Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G2.route) {
+                        popUpTo(Routes.Level2G2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level3G2.route) {
-            Level3G2Screen(onLevelComplete = {
-                navController.navigate(Routes.Level4G2.route) {
-                    popUpTo(Routes.Level3G2.route) { inclusive = true }
+            Level3G2Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G2.route) {
+                        popUpTo(Routes.Level3G2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level4G2.route) {
-            Level4G2Screen(onLevelComplete = {
-                navController.navigate(Routes.Level5G2.route) {
-                    popUpTo(Routes.Level4G2.route) { inclusive = true }
+            Level4G2Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G2.route) {
+                        popUpTo(Routes.Level4G2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Level5G2.route) {
-            Level5G2Screen(onLevelComplete = {
-                navController.navigate(Routes.Zone2Complete.route) {
-                    popUpTo(Routes.Level5G2.route) { inclusive = true }
+            Level5G2Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone2Complete.route) {
+                        popUpTo(Routes.Level5G2.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Routes.Zone2Complete.route) {

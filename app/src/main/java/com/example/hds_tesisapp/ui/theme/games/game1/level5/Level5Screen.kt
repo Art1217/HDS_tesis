@@ -60,6 +60,7 @@ import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
 import com.example.hds_tesisapp.ui.theme.games.game1.Direction
 import com.example.hds_tesisapp.ui.theme.games.game1.G1AtomDialog
 import com.example.hds_tesisapp.ui.theme.games.game1.G1HelpButton
+import com.example.hds_tesisapp.ui.theme.games.game1.G1MenuButton
 import com.example.hds_tesisapp.ui.theme.games.game1.G1VictoryOverlay
 import com.example.hds_tesisapp.ui.theme.games.game1.Game1Board
 import com.example.hds_tesisapp.ui.theme.games.game1.GameCommand
@@ -110,7 +111,7 @@ private fun Context.findL5Activity(): Activity? = when (this) {
 // ─── Level5Screen ─────────────────────────────────────────────────────────────
 
 @Composable
-fun Level5Screen(onLevelComplete: () -> Unit) {
+fun Level5Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context  = LocalContext.current
     val activity = remember { context.findL5Activity() }
     DisposableEffect(Unit) {
@@ -297,6 +298,12 @@ fun Level5Screen(onLevelComplete: () -> Unit) {
                 modifier = Modifier.align(Alignment.TopStart).padding(12.dp).zIndex(5f)
             ) { phase = L5Phase.INTRO }
         }
+
+        // Menu button
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
+            onClick  = onNavigateToMenu
+        )
 
         // ── Overlays ──
         when (phase) {

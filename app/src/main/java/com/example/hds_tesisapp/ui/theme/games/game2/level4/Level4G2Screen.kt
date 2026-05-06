@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.hds_tesisapp.R
+import com.example.hds_tesisapp.ui.theme.games.game1.G1MenuButton
 import com.example.hds_tesisapp.ui.theme.games.game2.*
 import kotlinx.coroutines.delay
 
@@ -35,7 +36,7 @@ private fun buildLevel4Pool(): List<DragItem> {
 private const val TIMER_SECONDS = 180
 
 @Composable
-fun Level4G2Screen(onLevelComplete: () -> Unit) {
+fun Level4G2Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {}) {
     val context  = LocalContext.current
     val activity = remember { context.findActivity() }
     DisposableEffect(Unit) {
@@ -196,5 +197,10 @@ fun Level4G2Screen(onLevelComplete: () -> Unit) {
         if (showVictory) {
             G2VictoryOverlay(levelNumber = 4, onNext = onLevelComplete)
         }
+
+        G1MenuButton(
+            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+            onClick  = onNavigateToMenu
+        )
     }
 }

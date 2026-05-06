@@ -624,6 +624,35 @@ fun G1VictoryOverlay(levelNumber: Int, onNext: () -> Unit) {
     }
 }
 
+// ─── Menu Button ─────────────────────────────────────────────────────────────
+
+@Composable
+fun G1MenuButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFF0A0F1F))
+            .border(1.5.dp, Color.White.copy(alpha = 0.30f), RoundedCornerShape(12.dp))
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = { tryAwaitRelease(); onClick() })
+            }
+            .padding(horizontal = 10.dp, vertical = 7.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text("⌂", fontSize = 15.sp, color = Color.White.copy(alpha = 0.75f))
+            Text(
+                "MENÚ", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
+                color = Color.White.copy(alpha = 0.65f), fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+        }
+    }
+}
+
 // ─── Help Button ─────────────────────────────────────────────────────────────
 
 @Composable
