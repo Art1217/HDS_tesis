@@ -178,7 +178,7 @@ fun Zone2CompleteScreen(onContinue: () -> Unit) {
                         .padding(horizontal = 32.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        "Volver al Menú  →", fontSize = 13.sp,
+                        "Continuar a Zona 3  →", fontSize = 13.sp,
                         fontFamily = OrbitronFontFamily, fontWeight = FontWeight.Bold,
                         color = Color.White
                     )

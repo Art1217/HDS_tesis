@@ -15,6 +15,7 @@ import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 import com.example.hds_tesisapp.ui.theme.story.StoryScreen
 import com.example.hds_tesisapp.ui.theme.story.AlgorithmTutorialScreen
 import com.example.hds_tesisapp.ui.theme.story.ClassificationTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.SortingTutorialScreen
 import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
@@ -29,6 +30,12 @@ import com.example.hds_tesisapp.ui.theme.games.game2.level3.Level3G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level4.Level4G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level5.Level5G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.Zone2CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game3.level1.Level1G3Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.level2.Level2G3Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.level3.Level3G3Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.level4.Level4G3Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.level5.Level5G3Screen
+import com.example.hds_tesisapp.ui.theme.games.game3.Zone3CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -249,8 +256,97 @@ fun AppNavigation() {
 
         composable(Routes.Zone2Complete.route) {
             Zone2CompleteScreen(onContinue = {
-                navController.navigate(Routes.Menu.route) {
+                navController.navigate(Routes.SortingTutorial.route) {
                     popUpTo(Routes.Zone2Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 3: Las Cascadas en Secuencia ────────────────────────────────
+
+        composable(Routes.SortingTutorial.route) {
+            SortingTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G3.route) {
+            Level1G3Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G3.route) {
+                        popUpTo(Routes.Level1G3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level2G3.route) {
+            Level2G3Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G3.route) {
+                        popUpTo(Routes.Level2G3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level3G3.route) {
+            Level3G3Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G3.route) {
+                        popUpTo(Routes.Level3G3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level4G3.route) {
+            Level4G3Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G3.route) {
+                        popUpTo(Routes.Level4G3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level5G3.route) {
+            Level5G3Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone3Complete.route) {
+                        popUpTo(Routes.Level5G3.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Zone3Complete.route) {
+            Zone3CompleteScreen(onContinue = {
+                navController.navigate(Routes.Menu.route) {
+                    popUpTo(0) { inclusive = true }
                 }
             })
         }

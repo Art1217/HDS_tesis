@@ -6,7 +6,17 @@
       "Bash(cp \"C:/Imagenes tesis/HistoriIntro/M1-1.1.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/m1_1_1.png\")",
       "Bash(cp \"C:/Imagenes tesis/HistoriIntro/M1-2.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/m1_2.png\")",
       "Bash(cp \"C:/Imagenes tesis/HistoriIntro/M1-3.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/m1_3.png\")",
-      "PowerShell(Get-ChildItem \"C:\\\\Imagenes tesis\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name })"
+      "PowerShell(Get-ChildItem \"C:\\\\Imagenes tesis\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name })",
+      "Bash(cp \"C:/Imagenes tesis/Game3/bridge_bg.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/bridge_bg.png\")",
+      "Bash(cp \"C:/Imagenes tesis/Game3/garden_bg.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/garden_bg.png\")",
+      "Bash(cp \"C:/Imagenes tesis/Game3/miniboss_zone3.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/miniboss_zone3.png\")",
+      "Bash(cp \"C:/Imagenes tesis/Game3/plank_wood.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/plank_wood.png\")",
+      "Bash(cp \"C:/Imagenes tesis/Game3/rocks.png\" \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/res/drawable-nodpi/rocks.png\")",
+      "Bash(mkdir -p \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/java/com/example/hds_tesisapp/ui/theme/games/game3/level1\")",
+      "Bash(mkdir -p \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/java/com/example/hds_tesisapp/ui/theme/games/game3/level2\")",
+      "Bash(mkdir -p \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/java/com/example/hds_tesisapp/ui/theme/games/game3/level3\")",
+      "Bash(mkdir -p \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/java/com/example/hds_tesisapp/ui/theme/games/game3/level4\")",
+      "Bash(mkdir -p \"c:/Nueva carpeta \\(5\\)/HDS_tesis/app/src/main/java/com/example/hds_tesisapp/ui/theme/games/game3/level5\")"
     ]
   }
 }
