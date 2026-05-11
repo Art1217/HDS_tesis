@@ -3,7 +3,12 @@ package com.example.hds_tesisapp.ui.theme.levels
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -93,6 +98,26 @@ private val ZONE2 = ZoneData(
     levelTitles  = listOf("Frutas", "Hábitats", "Rotación", "Mezcla", "Mapache")
 )
 
+private val ZONE3 = ZoneData(
+    zoneNumber   = 3,
+    title        = "Las Cascadas en Secuencia",
+    subtitle     = "Ordenamiento y Bubble Sort",
+    icon         = "💧",
+    accentColor  = Color(0xFF00B0FF),
+    bgGradient   = listOf(Color(0xFF001828), Color(0xFF002840), Color(0xFF003050)),
+    borderColor  = Color(0xFF00E5FF),
+    levelRoutes  = listOf(
+        Routes.Level1G3.route,
+        Routes.Level2G3.route,
+        Routes.Level3G3.route,
+        Routes.Level4G3.route,
+        Routes.Level5G3.route,
+    ),
+    levelTitles  = listOf("El Puente", "Las Piedras", "El Jardín", "La Cascada", "Mini Jefe")
+)
+
+private const val MAX_PAGE = 1   // 0 = Zonas 1+2  |  1 = Zona 3
+
 @Composable
 fun LevelsScreen(navController: NavController) {
     val context  = LocalContext.current
@@ -102,8 +127,7 @@ fun LevelsScreen(navController: NavController) {
         onDispose {}
     }
 
-    val fadeIn = remember { Animatable(0f) }
-    LaunchedEffect(Unit) { fadeIn.animateTo(1f, tween(500)) }
+    var currentPage by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = Modifier
@@ -112,7 +136,6 @@ fun LevelsScreen(navController: NavController) {
                 Brush.verticalGradient(listOf(Color(0xFF000510), Color(0xFF000A18), Color(0xFF001020)))
             )
     ) {
-        // Estrellas de fondo
         StarField()
 
         // Back button
@@ -135,7 +158,7 @@ fun LevelsScreen(navController: NavController) {
             )
         }
 
-        // Título principal
+        // Title
         Column(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -155,26 +178,130 @@ fun LevelsScreen(navController: NavController) {
             )
         }
 
-        // Dos paneles de zona
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 52.dp, bottom = 12.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            ZonePanel(
-                zone        = ZONE1,
-                startDelay  = 0,
-                onNavigate  = { route -> navController.navigate(route) },
-                modifier    = Modifier.weight(1f).fillMaxHeight()
-            )
-            ZonePanel(
-                zone        = ZONE2,
-                startDelay  = 150,
-                onNavigate  = { route -> navController.navigate(route) },
-                modifier    = Modifier.weight(1f).fillMaxHeight()
+        // ← arrow (previous page)
+        if (currentPage > 0) {
+            PageArrowButton(
+                label     = "‹",
+                modifier  = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp),
+                onClick   = { currentPage-- }
             )
         }
+
+        // → arrow (next page)
+        if (currentPage < MAX_PAGE) {
+            PageArrowButton(
+                label     = "›",
+                modifier  = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp),
+                onClick   = { currentPage++ }
+            )
+        }
+
+        // Page indicator dots
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(MAX_PAGE + 1) { page ->
+                val dotColor by animateColorAsState(
+                    targetValue = if (page == currentPage) Color.White.copy(0.85f) else Color.White.copy(0.22f),
+                    animationSpec = tween(300),
+                    label = "dot$page"
+                )
+                Box(
+                    modifier = Modifier
+                        .size(if (page == currentPage) 9.dp else 6.dp)
+                        .clip(CircleShape)
+                        .background(dotColor)
+                )
+            }
+        }
+
+        // Page content with slide animation
+        val arrowPadding = 48.dp
+        AnimatedContent(
+            targetState = currentPage,
+            transitionSpec = {
+                if (targetState > initialState)
+                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+                else
+                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            },
+            label = "pageContent",
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                    top = 52.dp,
+                    bottom = 24.dp,
+                    start = arrowPadding,
+                    end = arrowPadding
+                )
+        ) { page ->
+            when (page) {
+                0 -> Row(
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)
+                ) {
+                    ZonePanel(
+                        zone        = ZONE1,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.weight(1f).fillMaxHeight()
+                    )
+                    ZonePanel(
+                        zone        = ZONE2,
+                        startDelay  = 150,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.weight(1f).fillMaxHeight()
+                    )
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ZonePanel(
+                        zone        = ZONE3,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ── Botón flecha de página ────────────────────────────────────────────────────
+
+@Composable
+private fun PageArrowButton(label: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    val pulse = remember { Animatable(0.5f) }
+    LaunchedEffect(Unit) {
+        while (true) { pulse.animateTo(1f, tween(700)); pulse.animateTo(0.5f, tween(700)) }
+    }
+    Box(
+        modifier = modifier
+            .size(40.dp)
+            .drawBehind {
+                drawCircle(Color(0xFF00B0FF).copy(alpha = pulse.value * 0.25f), radius = size.minDimension / 2f + 8f)
+            }
+            .clip(CircleShape)
+            .background(Color.White.copy(alpha = 0.07f))
+            .border(1.5.dp, Color(0xFF00B0FF).copy(alpha = pulse.value * 0.7f + 0.2f), CircleShape)
+            .pointerInput(Unit) {
+                detectTapGestures(onPress = { tryAwaitRelease(); onClick() })
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            label, fontSize = 26.sp, fontWeight = FontWeight.Bold,
+            color = Color.White.copy(alpha = 0.80f)
+        )
     }
 }
 
