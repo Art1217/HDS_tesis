@@ -142,7 +142,8 @@ fun Level1G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                G1MenuButton(onClick = onNavigateToMenu)
+                Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
                     Text(
                         "NIVEL 1  ·  EL PUENTE ROTO",
                         fontSize = 10.sp, fontFamily = OrbitronFontFamily,
@@ -154,7 +155,6 @@ fun Level1G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                         color = Color.White.copy(alpha = 0.75f)
                     )
                 }
-                // Lives
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     repeat(MAX_LIVES) { i ->
                         Text(if (i < lives) "❤️" else "🖤", fontSize = 16.sp)
@@ -253,10 +253,6 @@ fun Level1G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
             BridgeVictoryOverlay(onNext = onLevelComplete)
         }
 
-        G1MenuButton(
-            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
-            onClick  = onNavigateToMenu
-        )
     }
 }
 

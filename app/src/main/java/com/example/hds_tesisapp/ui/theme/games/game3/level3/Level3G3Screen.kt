@@ -155,7 +155,8 @@ fun Level3G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                G1MenuButton(onClick = onNavigateToMenu)
+                Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
                     Text("NIVEL 3  ·  EL JARDÍN DE LAS FLORES",
                         fontSize = 10.sp, fontFamily = OrbitronFontFamily,
                         color = Color(0xFFF48FB1), letterSpacing = 1.sp)
@@ -285,10 +286,6 @@ fun Level3G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
             FlowerVictoryOverlay(onNext = onLevelComplete)
         }
 
-        G1MenuButton(
-            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
-            onClick  = onNavigateToMenu
-        )
     }
 }
 

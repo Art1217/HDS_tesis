@@ -154,7 +154,8 @@ fun Level5G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
+                    G1MenuButton(onClick = onNavigateToMenu)
+                    Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
                         Text("NIVEL 5  ·  MINI JEFE",
                             fontSize = 10.sp, fontFamily = OrbitronFontFamily,
                             color = Color(0xFFFF5252), letterSpacing = 1.sp)
@@ -244,10 +245,6 @@ fun Level5G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
             BossVictoryOverlay(onNext = onLevelComplete)
         }
 
-        G1MenuButton(
-            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
-            onClick  = onNavigateToMenu
-        )
     }
 }
 

@@ -134,7 +134,8 @@ fun Level4G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                G1MenuButton(onClick = onNavigateToMenu)
+                Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp)) {
                     Text("NIVEL 4  ·  LA CASCADA",
                         fontSize = 10.sp, fontFamily = OrbitronFontFamily,
                         color = Color(0xFF00E5FF), letterSpacing = 1.sp)
@@ -218,10 +219,6 @@ fun Level4G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
             CascadeVictoryOverlay(onNext = onLevelComplete)
         }
 
-        G1MenuButton(
-            modifier = Modifier.align(Alignment.TopEnd).padding(12.dp).zIndex(5f),
-            onClick  = onNavigateToMenu
-        )
     }
 }
 
