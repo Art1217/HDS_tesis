@@ -8,6 +8,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -30,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
-import com.example.hds_tesisapp.ui.theme.games.game4.GlitchRound
 import com.example.hds_tesisapp.ui.theme.games.game4.buildGlitchRound
 import com.example.hds_tesisapp.ui.theme.games.game4.level1.DoneOverlay
 import com.example.hds_tesisapp.ui.theme.games.game4.level1.FailOverlay
@@ -45,10 +45,9 @@ private fun Context.findL5G4Activity(): Activity? = when (this) {
     else              -> null
 }
 
-private val GLITCH_C  = Color(0xFFE040FB)
-private val GLITCH_D  = Color(0xFF1A0033)
-private val HP_GREEN  = Color(0xFF69FF47)
-private val HP_RED    = Color(0xFFFF1744)
+private val GLITCH_C = Color(0xFFE040FB)
+private val HP_GREEN = Color(0xFF69FF47)
+private val HP_RED   = Color(0xFFFF1744)
 
 @Composable
 fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
@@ -60,12 +59,12 @@ fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     }
 
     val TOTAL = 6
-    var roundIndex   by remember { mutableIntStateOf(0) }
-    var lives        by remember { mutableIntStateOf(3) }
-    var flash        by remember { mutableStateOf<Boolean?>(null) }
-    var levelDone    by remember { mutableStateOf(false) }
-    var gameOver     by remember { mutableStateOf(false) }
-    var selectedIdx  by remember { mutableIntStateOf(-1) }
+    var roundIndex  by remember { mutableIntStateOf(0) }
+    var lives       by remember { mutableIntStateOf(3) }
+    var flash       by remember { mutableStateOf<Boolean?>(null) }
+    var levelDone   by remember { mutableStateOf(false) }
+    var gameOver    by remember { mutableStateOf(false) }
+    var selectedIdx by remember { mutableIntStateOf(-1) }
 
     val round = remember(roundIndex) { buildGlitchRound(roundIndex) }
     val scope = rememberCoroutineScope()
@@ -85,7 +84,7 @@ fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
                 bossShake.animateTo(6f, tween(50))
                 bossShake.animateTo(0f, tween(50))
             }
-            delay(700)
+            delay(800)
             if (ok) {
                 if (roundIndex + 1 >= TOTAL) levelDone = true
                 else roundIndex++
@@ -101,31 +100,31 @@ fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(painterResource(R.drawable.glitch_valley_bg), null,
             Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-        Box(Modifier.fillMaxSize().background(Color.Black.copy(0.60f)))
+        Box(Modifier.fillMaxSize().background(Color.Black.copy(0.62f)))
 
-        // Glitch scan-lines effect
+        // Scan-lines glitch effect
         Box(modifier = Modifier.fillMaxSize().drawBehind {
             val h = size.height
-            for (i in 0..30) {
-                drawLine(
-                    Color(0xFFE040FB).copy(alpha = 0.04f),
-                    Offset(0f, h * i / 30f), Offset(size.width, h * i / 30f), 2f
-                )
-            }
+            for (i in 0..28) drawLine(
+                GLITCH_C.copy(alpha = 0.035f),
+                Offset(0f, h * i / 28f), Offset(size.width, h * i / 28f), 2f
+            )
         })
 
         flash?.let { ok ->
             Box(Modifier.fillMaxSize().background(
-                if (ok) Color(0xFF69FF47).copy(0.20f) else Color(0xFFFF5252).copy(0.20f)))
+                if (ok) HP_GREEN.copy(0.18f) else HP_RED.copy(0.18f)
+            ))
         }
 
         Row(modifier = Modifier.fillMaxSize().padding(12.dp)) {
 
-            // Left: game area
+            // ── Área de juego ─────────────────────────────────────────────────
             Column(
                 modifier = Modifier.weight(1f).fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Header
                 Row(Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -137,43 +136,95 @@ fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
                     }
                 }
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(8.dp))
 
                 Text("ENCUENTRA EL ERROR", fontSize = 14.sp,
                     fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold,
                     color = GLITCH_C, letterSpacing = 2.sp)
-                Spacer(Modifier.height(4.dp))
-                Text("Toca el símbolo que NO sigue el patrón", fontSize = 10.sp,
-                    fontFamily = Baloo2FontFamily, color = Color.White.copy(0.60f))
 
-                Spacer(Modifier.height(14.dp))
+                Spacer(Modifier.height(10.dp))
 
-                // Sequence - wrap in rows of up to 5
-                val seqChunks = round.sequence.chunked(5)
-                seqChunks.forEachIndexed { rowIdx, chunk ->
-                    val baseOffset = rowIdx * 5
+                // ── Panel de pista: ciclo correcto ────────────────────────────
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.90f)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(Color(0xFF1A0033))
+                        .border(1.5.dp, GLITCH_C.copy(0.50f), RoundedCornerShape(10.dp))
+                        .padding(horizontal = 12.dp, vertical = 7.dp)
+                ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        modifier = Modifier.padding(vertical = 4.dp)
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        chunk.forEachIndexed { colIdx, sym ->
-                            val idx = baseOffset + colIdx
-                            val isSelected = selectedIdx == idx
-                            val isError = flash == true && idx == round.errorIndex
-                            val borderColor = when {
-                                isError    -> HP_GREEN
-                                isSelected && flash == false -> HP_RED
-                                isSelected -> GLITCH_C
-                                else       -> sym.color.copy(0.55f)
-                            }
-                            val bgAlpha = if (isSelected) 0.40f else 0.15f
-
+                        Text("Ciclo:", fontSize = 10.sp,
+                            fontFamily = OrbitronFontFamily, color = GLITCH_C.copy(0.80f))
+                        // Repeat the cycle twice so the pattern is obvious
+                        val hint = round.cycleHint + round.cycleHint
+                        hint.forEach { sym ->
                             Box(
                                 modifier = Modifier
-                                    .size(48.dp)
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                                    .background(sym.color.copy(0.25f))
+                                    .border(1.dp, sym.color.copy(0.70f), RoundedCornerShape(6.dp)),
+                                contentAlignment = Alignment.Center
+                            ) { Text(sym.emoji, fontSize = 16.sp) }
+                        }
+                        Text("…", fontSize = 14.sp, color = GLITCH_C.copy(0.55f))
+                        Spacer(Modifier.width(4.dp))
+                        Text("¿Cuál rompe el ciclo?", fontSize = 9.sp,
+                            fontFamily = Baloo2FontFamily, color = Color.White.copy(0.45f))
+                    }
+                }
+
+                Spacer(Modifier.height(12.dp))
+
+                // ── Secuencia completa en una sola fila ───────────────────────
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    round.sequence.forEachIndexed { idx, sym ->
+                        val isSelected = selectedIdx == idx
+                        val isCorrectAnswer = flash == true && idx == round.errorIndex
+                        val isWrongAnswer   = flash == false && isSelected
+
+                        val borderColor = when {
+                            isCorrectAnswer -> HP_GREEN
+                            isWrongAnswer   -> HP_RED
+                            isSelected      -> GLITCH_C
+                            else            -> sym.color.copy(0.55f)
+                        }
+                        val bgAlpha   = if (isSelected || isCorrectAnswer) 0.45f else 0.18f
+                        val cellScale by animateFloatAsState(
+                            if (isSelected) 1.10f else 1f,
+                            spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessHigh),
+                            label = "sc$idx"
+                        )
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.graphicsLayer { scaleX = cellScale; scaleY = cellScale }
+                        ) {
+                            // Position number above cell
+                            Text(
+                                "${idx + 1}", fontSize = 7.sp,
+                                fontFamily = OrbitronFontFamily,
+                                color = Color.White.copy(0.30f)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
                                     .clip(RoundedCornerShape(10.dp))
                                     .background(sym.color.copy(bgAlpha))
                                     .border(2.dp, borderColor, RoundedCornerShape(10.dp))
+                                    .drawBehind {
+                                        if (isCorrectAnswer) drawRoundRect(
+                                            HP_GREEN.copy(0.35f),
+                                            cornerRadius = androidx.compose.ui.geometry.CornerRadius(10.dp.toPx())
+                                        )
+                                    }
                                     .pointerInput(idx) {
                                         detectTapGestures(onPress = {
                                             tryAwaitRelease(); onSymbolTapped(idx)
@@ -181,26 +232,24 @@ fun Level5G4Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(sym.emoji, fontSize = 22.sp)
+                                Text(sym.emoji, fontSize = 20.sp)
                             }
                         }
                     }
                 }
 
                 Spacer(Modifier.weight(1f))
-
-                // Round counter
                 Text("Ronda ${roundIndex + 1} / $TOTAL", fontSize = 10.sp,
-                    fontFamily = OrbitronFontFamily, color = GLITCH_C.copy(0.70f))
+                    fontFamily = OrbitronFontFamily, color = GLITCH_C.copy(0.65f))
             }
 
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(10.dp))
 
-            // Right: boss panel
+            // ── Panel del jefe ────────────────────────────────────────────────
             BossPanel(
-                hpFraction = hpFraction,
+                hpFraction  = hpFraction,
                 shakeOffset = bossShake.value,
-                modifier = Modifier.width(140.dp).fillMaxHeight()
+                modifier    = Modifier.width(130.dp).fillMaxHeight()
             )
         }
 
@@ -230,35 +279,42 @@ private fun BossPanel(hpFraction: Float, shakeOffset: Float, modifier: Modifier 
             letterSpacing = 2.sp, color = GLITCH_C)
         Spacer(Modifier.height(4.dp))
 
+        // HP label
+        Row(
+            modifier = Modifier.fillMaxWidth(0.88f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("HP", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
+                color = GLITCH_C.copy(0.60f))
+            Text("${(animHp * 100).toInt()}%", fontSize = 8.sp,
+                fontFamily = OrbitronFontFamily, color = GLITCH_C.copy(0.60f))
+        }
+        Spacer(Modifier.height(3.dp))
+
         // HP bar
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.85f)
-                .height(10.dp)
-                .clip(RoundedCornerShape(5.dp))
-                .background(Color.White.copy(0.12f))
+                .fillMaxWidth(0.88f)
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(Color.White.copy(0.10f))
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(animHp.coerceIn(0f, 1f))
                     .fillMaxHeight()
-                    .clip(RoundedCornerShape(5.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(HP_RED, GLITCH_C)
-                        )
-                    )
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(Brush.horizontalGradient(listOf(HP_RED, GLITCH_C)))
             )
         }
 
         Spacer(Modifier.height(8.dp))
 
-        // Boss image
         Image(
             painter = painterResource(R.drawable.miniboss_zone4),
             contentDescription = "Glitch Boss",
             modifier = Modifier
-                .size(110.dp)
+                .size(100.dp)
                 .graphicsLayer { translationX = shakeOffset },
             contentScale = ContentScale.Fit
         )

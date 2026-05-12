@@ -137,7 +137,8 @@ fun buildBridgeRound(roundIndex: Int): BridgeRound {
 data class GlitchRound(
     val sequence: List<PatternSymbol>,
     val errorIndex: Int,                // which position has the wrong symbol
-    val correctSymbol: PatternSymbol    // what should be there
+    val correctSymbol: PatternSymbol,   // what should be there
+    val cycleHint: List<PatternSymbol>  // the correct repeating unit shown as hint
 )
 
 val GLITCH_SYMBOLS = listOf(
@@ -168,6 +169,7 @@ fun buildGlitchRound(roundIndex: Int): GlitchRound {
     return GlitchRound(
         sequence      = corrupted,
         errorIndex    = errorIdx,
-        correctSymbol = correct[errorIdx]
+        correctSymbol = correct[errorIdx],
+        cycleHint     = cycle.map { GLITCH_SYMBOLS[it] }
     )
 }
