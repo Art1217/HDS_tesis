@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.ActivityInfo
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -223,7 +224,7 @@ fun Level3G3Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit = {
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Bottom
             ) {
                 pool.forEach { flower ->
                     FlowerChip(
@@ -373,26 +374,50 @@ private fun FlowerSlot(index: Int, flower: FlowerItem?, isTarget: Boolean, onTap
 
 @Composable
 private fun FlowerChip(flower: FlowerItem, isSelected: Boolean, onTap: () -> Unit) {
-    val scale by animateFloatAsState(if (isSelected) 1.12f else 1f, spring(), label = "fs")
-    Box(
+    // Sizes scale with flower.type.height (1 = tulipán corto … 5 = rosa alta)
+    val h = flower.type.height                       // 1..5
+    val chipHeight = (36 + h * 11).dp               // 47dp → 91dp
+    val emojiSizeSp = (14 + h * 4).sp              // 18sp → 34sp
+    val stemHeight  = (h * 6).dp                    // 6dp  → 30dp
+
+    val borderGlow by animateColorAsState(
+        if (isSelected) Color.White else Color(0xFF880E4F),
+        tween(200), label = "fc"
+    )
+
+    Column(
         modifier = Modifier
-            .size(width = 60.dp, height = 64.dp)
-            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .width(58.dp)
+            .height(chipHeight)
             .clip(RoundedCornerShape(8.dp))
             .background(
                 if (isSelected) Brush.verticalGradient(listOf(Color(0xFFF48FB1), Color(0xFFAD1457)))
                 else Brush.verticalGradient(listOf(Color(0xFF4A0035), Color(0xFF2A0020)))
             )
-            .border(2.dp, if (isSelected) Color.White else Color(0xFF880E4F), RoundedCornerShape(8.dp))
-            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onTap),
-        contentAlignment = Alignment.Center
+            .border(2.dp, borderGlow, RoundedCornerShape(8.dp))
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onTap)
+            .padding(horizontal = 4.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(flower.type.emoji, fontSize = 22.sp)
-            Text(flower.type.label, fontSize = 8.sp, fontFamily = Baloo2FontFamily,
-                color = if (isSelected) Color.White else Color(0xFFF48FB1),
-                textAlign = TextAlign.Center)
+        // Emoji — bigger for taller flowers
+        Text(flower.type.emoji, fontSize = emojiSizeSp)
+        // Stem — taller for taller flowers
+        if (stemHeight.value > 0f) {
+            Box(
+                modifier = Modifier
+                    .width(3.dp)
+                    .height(stemHeight)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(if (isSelected) Color(0xFF81C784) else Color(0xFF4CAF50).copy(0.75f))
+            )
         }
+        // Label
+        Text(
+            flower.type.label, fontSize = 7.sp, fontFamily = Baloo2FontFamily,
+            color = if (isSelected) Color.White else Color(0xFFF48FB1),
+            textAlign = TextAlign.Center, maxLines = 1
+        )
     }
 }
 

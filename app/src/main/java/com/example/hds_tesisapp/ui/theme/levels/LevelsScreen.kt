@@ -116,7 +116,25 @@ private val ZONE3 = ZoneData(
     levelTitles  = listOf("El Puente", "Las Piedras", "El Jardín", "La Cascada", "Mini Jefe")
 )
 
-private const val MAX_PAGE = 1   // 0 = Zonas 1+2  |  1 = Zona 3
+private val ZONE4 = ZoneData(
+    zoneNumber   = 4,
+    title        = "El Valle de los Patrones",
+    subtitle     = "Patrones y secuencias",
+    icon         = "🔁",
+    accentColor  = Color(0xFF8BC34A),
+    bgGradient   = listOf(Color(0xFF0A1A00), Color(0xFF102800), Color(0xFF152E00)),
+    borderColor  = Color(0xFF8BC34A),
+    levelRoutes  = listOf(
+        Routes.Level1G4.route,
+        Routes.Level2G4.route,
+        Routes.Level3G4.route,
+        Routes.Level4G4.route,
+        Routes.Level5G4.route,
+    ),
+    levelTitles  = listOf("Las Flores", "Luciérnagas", "Las Piedras", "El Puente", "Glitch")
+)
+
+private const val MAX_PAGE = 2   // 0 = Zonas 1+2  |  1 = Zona 3  |  2 = Zona 4
 
 @Composable
 fun LevelsScreen(navController: NavController) {
@@ -260,12 +278,23 @@ fun LevelsScreen(navController: NavController) {
                         modifier    = Modifier.weight(1f).fillMaxHeight()
                     )
                 }
-                else -> Box(
+                1 -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     ZonePanel(
                         zone        = ZONE3,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
+                    )
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ZonePanel(
+                        zone        = ZONE4,
                         startDelay  = 0,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()

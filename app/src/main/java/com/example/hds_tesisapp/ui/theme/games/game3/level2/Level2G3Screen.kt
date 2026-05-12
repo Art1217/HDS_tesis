@@ -449,14 +449,14 @@ private fun RockTutorialBubble(onDismiss: () -> Unit) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Brush.horizontalGradient(listOf(Color(0xFF37474F), Color(0xFF546E7A))))
-                    .border(1.5.dp, Color(0xFF90A4AE), RoundedCornerShape(12.dp))
+                    .background(Brush.horizontalGradient(listOf(Color(0xFF1B5E20), Color(0xFF2E7D32))))
+                    .border(1.5.dp, Color(0xFF69FF47), RoundedCornerShape(12.dp))
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onDismiss)
                     .padding(horizontal = 28.dp, vertical = 10.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text("¡Entendido!", fontSize = 14.sp, fontFamily = Baloo2FontFamily,
-                    fontWeight = FontWeight.Bold, color = Color(0xFFB0BEC5))
+                    fontWeight = FontWeight.Bold, color = Color.White)
             }
         }
     }

@@ -36,6 +36,13 @@ import com.example.hds_tesisapp.ui.theme.games.game3.level3.Level3G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level4.Level4G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level5.Level5G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.Zone3CompleteScreen
+import com.example.hds_tesisapp.ui.theme.story.PatternTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game4.level1.Level1G4Screen
+import com.example.hds_tesisapp.ui.theme.games.game4.level2.Level2G4Screen
+import com.example.hds_tesisapp.ui.theme.games.game4.level3.Level3G4Screen
+import com.example.hds_tesisapp.ui.theme.games.game4.level4.Level4G4Screen
+import com.example.hds_tesisapp.ui.theme.games.game4.level5.Level5G4Screen
+import com.example.hds_tesisapp.ui.theme.games.game4.Zone4CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -345,6 +352,95 @@ fun AppNavigation() {
 
         composable(Routes.Zone3Complete.route) {
             Zone3CompleteScreen(onContinue = {
+                navController.navigate(Routes.PatternTutorial.route) {
+                    popUpTo(Routes.Zone3Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 4: El Valle de los Patrones ─────────────────────────────────
+
+        composable(Routes.PatternTutorial.route) {
+            PatternTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G4.route) {
+            Level1G4Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G4.route) {
+                        popUpTo(Routes.Level1G4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level2G4.route) {
+            Level2G4Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G4.route) {
+                        popUpTo(Routes.Level2G4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level3G4.route) {
+            Level3G4Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G4.route) {
+                        popUpTo(Routes.Level3G4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level4G4.route) {
+            Level4G4Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G4.route) {
+                        popUpTo(Routes.Level4G4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level5G4.route) {
+            Level5G4Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone4Complete.route) {
+                        popUpTo(Routes.Level5G4.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Zone4Complete.route) {
+            Zone4CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
                     popUpTo(0) { inclusive = true }
                 }
