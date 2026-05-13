@@ -43,6 +43,13 @@ import com.example.hds_tesisapp.ui.theme.games.game4.level3.Level3G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level4.Level4G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level5.Level5G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.Zone4CompleteScreen
+import com.example.hds_tesisapp.ui.theme.story.PortalTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game5.level1.Level1G5Screen
+import com.example.hds_tesisapp.ui.theme.games.game5.level2.Level2G5Screen
+import com.example.hds_tesisapp.ui.theme.games.game5.level3.Level3G5Screen
+import com.example.hds_tesisapp.ui.theme.games.game5.level4.Level4G5Screen
+import com.example.hds_tesisapp.ui.theme.games.game5.level5.Level5G5Screen
+import com.example.hds_tesisapp.ui.theme.games.game5.Zone5CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -441,6 +448,95 @@ fun AppNavigation() {
 
         composable(Routes.Zone4Complete.route) {
             Zone4CompleteScreen(onContinue = {
+                navController.navigate(Routes.PortalTutorial.route) {
+                    popUpTo(Routes.Zone4Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 5: La Ciudad de los Portales ────────────────────────────────
+
+        composable(Routes.PortalTutorial.route) {
+            PortalTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G5.route) {
+            Level1G5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G5.route) {
+                        popUpTo(Routes.Level1G5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level2G5.route) {
+            Level2G5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G5.route) {
+                        popUpTo(Routes.Level2G5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level3G5.route) {
+            Level3G5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G5.route) {
+                        popUpTo(Routes.Level3G5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level4G5.route) {
+            Level4G5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G5.route) {
+                        popUpTo(Routes.Level4G5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level5G5.route) {
+            Level5G5Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone5Complete.route) {
+                        popUpTo(Routes.Level5G5.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Zone5Complete.route) {
+            Zone5CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
                     popUpTo(0) { inclusive = true }
                 }
