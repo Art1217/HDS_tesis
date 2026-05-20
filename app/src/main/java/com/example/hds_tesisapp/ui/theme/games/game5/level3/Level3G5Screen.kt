@@ -108,13 +108,13 @@ fun Level3G5Screen(
             Box(
                 modifier = Modifier.fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFF44336).copy(alpha = 0.18f))
-                    .border(1.dp, Color(0xFFFF5252).copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                    .background(AMBER.copy(alpha = 0.12f))
+                    .border(1.dp, AMBER.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
                     .padding(horizontal = 12.dp, vertical = 5.dp)
             ) {
-                Text("⚡ El portal que CUMPLE la condición está ROTO. ¡Entra al OTRO!",
+                Text("Ambas condiciones deben cumplirse para elegir Portal Azul. Si no, Portal Rojo.",
                     fontSize = 11.sp, fontFamily = Baloo2FontFamily,
-                    color = Color(0xFFFF8A80), textAlign = TextAlign.Center,
+                    color = AMBER.copy(alpha = 0.9f), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth())
             }
 

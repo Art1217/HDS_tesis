@@ -50,6 +50,13 @@ import com.example.hds_tesisapp.ui.theme.games.game5.level3.Level3G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level4.Level4G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level5.Level5G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.Zone5CompleteScreen
+import com.example.hds_tesisapp.ui.theme.story.FactoryTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game6.level1.Level1G6Screen
+import com.example.hds_tesisapp.ui.theme.games.game6.level2.Level2G6Screen
+import com.example.hds_tesisapp.ui.theme.games.game6.level3.Level3G6Screen
+import com.example.hds_tesisapp.ui.theme.games.game6.level4.Level4G6Screen
+import com.example.hds_tesisapp.ui.theme.games.game6.level5.Level5G6Screen
+import com.example.hds_tesisapp.ui.theme.games.game6.Zone6CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -537,6 +544,95 @@ fun AppNavigation() {
 
         composable(Routes.Zone5Complete.route) {
             Zone5CompleteScreen(onContinue = {
+                navController.navigate(Routes.FactoryTutorial.route) {
+                    popUpTo(Routes.Zone5Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 6: La Fábrica de Bits ────────────────────────────────────────
+
+        composable(Routes.FactoryTutorial.route) {
+            FactoryTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G6.route) {
+            Level1G6Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G6.route) {
+                        popUpTo(Routes.Level1G6.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level2G6.route) {
+            Level2G6Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G6.route) {
+                        popUpTo(Routes.Level2G6.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level3G6.route) {
+            Level3G6Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G6.route) {
+                        popUpTo(Routes.Level3G6.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level4G6.route) {
+            Level4G6Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G6.route) {
+                        popUpTo(Routes.Level4G6.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level5G6.route) {
+            Level5G6Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone6Complete.route) {
+                        popUpTo(Routes.Level5G6.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Zone6Complete.route) {
+            Zone6CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
                     popUpTo(0) { inclusive = true }
                 }

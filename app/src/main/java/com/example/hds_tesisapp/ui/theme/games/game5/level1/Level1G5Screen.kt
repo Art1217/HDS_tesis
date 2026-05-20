@@ -296,18 +296,18 @@ fun Level1G5Screen(
                 G5LivesRow(lives)
             }
 
-            // Glitch warning banner
+            // Instrucción clara
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFF44336).copy(alpha = 0.18f))
-                    .border(1.dp, Color(0xFFFF5252).copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                    .background(Color(0xFF9C27B0).copy(alpha = 0.18f))
+                    .border(1.dp, Color(0xFFCE93D8).copy(alpha = 0.4f), RoundedCornerShape(8.dp))
                     .padding(horizontal = 12.dp, vertical = 5.dp)
             ) {
-                Text("⚡ El portal que CUMPLE la condición está ROTO. ¡Entra al OTRO!",
+                Text("Evalúa la condición con el número y toca el portal correcto.",
                     fontSize = 11.sp, fontFamily = Baloo2FontFamily,
-                    color = Color(0xFFFF8A80), textAlign = TextAlign.Center,
+                    color = Color(0xFFCE93D8), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth())
             }
 

@@ -1,0 +1,180 @@
+package com.example.hds_tesisapp.ui.theme.games.game6.level3
+
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import com.example.hds_tesisapp.R
+import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
+import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
+import com.example.hds_tesisapp.ui.theme.games.game6.*
+import com.example.hds_tesisapp.ui.theme.games.game6.level1.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private const val TOTAL_ROUNDS = 4
+
+@Composable
+fun Level3G6Screen(
+    onLevelComplete: () -> Unit,
+    onNavigateToMenu: () -> Unit
+) {
+    val context  = LocalContext.current
+    val activity = remember { context as? Activity }
+    DisposableEffect(Unit) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        onDispose {}
+    }
+
+    var roundIndex by remember { mutableIntStateOf(0) }
+    var lives      by remember { mutableIntStateOf(3) }
+    var flash      by remember { mutableStateOf<Boolean?>(null) }
+    var done       by remember { mutableStateOf(false) }
+    var failed     by remember { mutableStateOf(false) }
+    val scope      = rememberCoroutineScope()
+
+    val round = remember(roundIndex) { buildL3G6Round(roundIndex) }
+
+    fun onTap(option: Int) {
+        if (flash != null || done || failed) return
+        val correct = option == round.correct
+        scope.launch {
+            flash = correct
+            delay(600)
+            flash = null
+            if (correct) {
+                if (roundIndex + 1 >= TOTAL_ROUNDS) done = true
+                else roundIndex++
+            } else {
+                lives--
+                if (lives <= 0) failed = true
+            }
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.factory_warehouse_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.40f)))
+
+        flash?.let { ok ->
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background((if (ok) Color(0xFF69FF47) else Color(0xFFFF5252)).copy(alpha = 0.22f))
+                    .zIndex(5f)
+            )
+        }
+
+        Column(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                G6MenuButton(onNavigateToMenu)
+                Column(modifier = Modifier.weight(1f).padding(horizontal = 10.dp)) {
+                    Text("NIVEL 3 · Línea de Producción", fontSize = 13.sp,
+                        fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold, color = Color.White)
+                    Text("Bits Obreros · calcula el total de acciones", fontSize = 9.sp,
+                        fontFamily = Baloo2FontFamily, color = G6_AMBER.copy(alpha = 0.8f))
+                }
+                G6LivesRow(lives)
+            }
+
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(G6_ORANGE.copy(alpha = 0.12f))
+                    .border(1.dp, G6_AMBER.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                    .padding(horizontal = 12.dp, vertical = 5.dp)
+            ) {
+                Text("Lee el código y calcula cuántas acciones en total realizan los Bits Obreros.",
+                    fontSize = 11.sp, fontFamily = Baloo2FontFamily,
+                    color = G6_AMBER.copy(alpha = 0.9f), textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth())
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Left: worker bits visual
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.width(160.dp)
+                ) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        repeat(3) {
+                            Image(
+                                painter = painterResource(R.drawable.bit_obrero),
+                                contentDescription = null,
+                                modifier = Modifier.size(40.dp),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    }
+                    TaskCard(round.taskTitle, round.taskDesc, Color(0xFF4CAF50))
+                }
+
+                // Center: code block
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("¿Cuántas acciones en total?", fontSize = 10.sp,
+                        fontFamily = Baloo2FontFamily, color = G6_AMBER.copy(alpha = 0.7f))
+                    CodeBlock(round.codeLines)
+                }
+
+                // Right: options
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text("Total =", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
+                        color = G6_AMBER.copy(alpha = 0.7f))
+                    round.options.forEach { opt ->
+                        LoopOptionButton(
+                            value   = opt,
+                            color   = Color(0xFF4CAF50),
+                            enabled = flash == null && !done && !failed,
+                            onClick = { onTap(opt) }
+                        )
+                    }
+                }
+            }
+
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                G6RoundDots(roundIndex, TOTAL_ROUNDS)
+                Text("Ronda ${roundIndex + 1} / $TOTAL_ROUNDS", fontSize = 10.sp,
+                    fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.5f))
+            }
+        }
+
+        if (done)   G6DoneOverlay { onLevelComplete() }
+        if (failed) G6FailOverlay { roundIndex = 0; lives = 3; failed = false }
+    }
+}

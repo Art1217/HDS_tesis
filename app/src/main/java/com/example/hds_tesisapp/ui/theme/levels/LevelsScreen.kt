@@ -152,7 +152,25 @@ private val ZONE5 = ZoneData(
     levelTitles  = listOf("El Portal Inicial", "Sí y No", "Portales Dobles", "Sala Múltiple", "Caóticos")
 )
 
-private const val MAX_PAGE = 3   // 0 = Z1+Z2  |  1 = Z3  |  2 = Z4  |  3 = Z5
+private val ZONE6 = ZoneData(
+    zoneNumber   = 6,
+    title        = "La Fábrica de Bits",
+    subtitle     = "Bucles y repetición",
+    icon         = "⚙️",
+    accentColor  = Color(0xFFFF6D00),
+    bgGradient   = listOf(Color(0xFF1A0A00), Color(0xFF2D1200), Color(0xFF3D1500)),
+    borderColor  = Color(0xFFFFB300),
+    levelRoutes  = listOf(
+        Routes.Level1G6.route,
+        Routes.Level2G6.route,
+        Routes.Level3G6.route,
+        Routes.Level4G6.route,
+        Routes.Level5G6.route,
+    ),
+    levelTitles  = listOf("La Máquina", "Bits Dañados", "Producción", "El Almacén", "Glitch Boss")
+)
+
+private const val MAX_PAGE = 4   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6
 
 @Composable
 fun LevelsScreen(navController: NavController) {
@@ -318,12 +336,23 @@ fun LevelsScreen(navController: NavController) {
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
                 }
-                else -> Box(
+                3 -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     ZonePanel(
                         zone        = ZONE5,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
+                    )
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ZonePanel(
+                        zone        = ZONE6,
                         startDelay  = 0,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()

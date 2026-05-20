@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TOTAL_ROUNDS = 5
+private val CYAN = Color(0xFF00B0FF)
 
 @Composable
 fun Level2G5Screen(
@@ -51,8 +52,6 @@ fun Level2G5Screen(
     val scope      = rememberCoroutineScope()
 
     val round = remember(roundIndex) { buildLevel2Round(roundIndex) }
-
-    val CYAN = Color(0xFF00B0FF)
 
     fun onTap(portal: Portal) {
         if (flash != null || done || failed) return
@@ -104,17 +103,17 @@ fun Level2G5Screen(
                 G5LivesRow(lives)
             }
 
-            // Warning
+            // Instrucción
             Box(
                 modifier = Modifier.fillMaxWidth()
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color(0xFFF44336).copy(alpha = 0.18f))
-                    .border(1.dp, Color(0xFFFF5252).copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                    .background(CYAN.copy(alpha = 0.12f))
+                    .border(1.dp, CYAN.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
                     .padding(horizontal = 12.dp, vertical = 5.dp)
             ) {
-                Text("⚡ El portal que CUMPLE la condición está ROTO. ¡Entra al OTRO!",
+                Text("Decide si el número es par o impar y toca el portal correcto.",
                     fontSize = 11.sp, fontFamily = Baloo2FontFamily,
-                    color = Color(0xFFFF8A80), textAlign = TextAlign.Center,
+                    color = CYAN.copy(alpha = 0.9f), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth())
             }
 

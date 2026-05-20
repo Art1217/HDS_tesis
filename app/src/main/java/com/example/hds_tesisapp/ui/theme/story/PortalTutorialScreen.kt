@@ -54,17 +54,17 @@ private val SLIDES = listOf(
     ),
     PSlide(
         title = "Los Portales de la Ciudad",
-        body  = "Cada portal tiene una regla.\nEl número que aparece decide\na qué portal deberías ir.",
+        body  = "Cada portal tiene una regla.\nAparece un número y debes decidir\na cuál portal entrar según la condición.",
         extra = PExtra.PORTAL_DEMO
     ),
     PSlide(
-        title = "⚠️ ¡El Glitch Invirtió Todo!",
-        body  = "El portal que CUMPLE la condición\nestá ROTO y no funciona.\n¡Debes entrar al OTRO portal!",
+        title = "¿Cómo elegir el portal?",
+        body  = "Lee la condición, evalúa el número\ny entra al portal que la condición indica.\n¡Así repararás los portales!",
         extra = PExtra.GLITCH_WARN
     ),
     PSlide(
         title = "¡Tú Eres el Guardián!",
-        body  = "Primero evalúa la condición.\nLuego entra al portal CONTRARIO.\n¡Así repararás la Ciudad de los Portales!",
+        body  = "Evalúa la condición paso a paso.\nCada nivel tiene reglas más complejas.\n¡Concéntrate y elige el portal correcto!",
         extra = PExtra.TIP_LIST
     )
 )
@@ -347,7 +347,7 @@ private fun PGlitchWarn() {
                 fontWeight = FontWeight.Bold, color = Color(0xFFFF5252))
         }
         Text(
-            "Portal que CUMPLE la condición = ROTO ❌\nPortal que NO la cumple = CORRECTO ✅",
+            "La condición te dice qué portal usar.\nEvalúa bien el número y entra al correcto.",
             fontSize = 12.sp, fontFamily = Baloo2FontFamily,
             color = Color.White.copy(alpha = 0.9f), lineHeight = 18.sp
         )
@@ -358,9 +358,9 @@ private fun PGlitchWarn() {
 private fun PTipList() {
     val tips = listOf(
         "1️⃣  Lee la condición con calma",
-        "2️⃣  Evalúa: ¿el número la cumple?",
-        "3️⃣  Identifica el portal que la cumple",
-        "4️⃣  ¡Toca el OTRO portal!"
+        "2️⃣  Evalúa el número contra la regla",
+        "3️⃣  Identifica el portal que corresponde",
+        "4️⃣  ¡Toca ese portal!"
     )
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
         tips.forEach { tip ->

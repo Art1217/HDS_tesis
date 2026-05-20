@@ -30,6 +30,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TOTAL_ROUNDS = 5
+private val ORANGE = Color(0xFFFF6D00)
 
 @Composable
 fun Level4G5Screen(
@@ -51,8 +52,6 @@ fun Level4G5Screen(
     val scope      = rememberCoroutineScope()
 
     val round = remember(roundIndex) { buildLevel4Round(roundIndex) }
-
-    val ORANGE = Color(0xFFFF6D00)
 
     fun onTap(portal: Portal) {
         if (flash != null || done || failed) return
@@ -78,115 +77,100 @@ fun Level4G5Screen(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.35f)))
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.38f)))
 
         flash?.let { ok ->
-            Box(modifier = Modifier.fillMaxSize()
-                .background((if (ok) Color(0xFF69FF47) else Color(0xFFFF5252)).copy(alpha = 0.22f))
-                .zIndex(5f))
+            Box(
+                modifier = Modifier.fillMaxSize()
+                    .background((if (ok) Color(0xFF69FF47) else Color(0xFFFF5252)).copy(alpha = 0.22f))
+                    .zIndex(5f)
+            )
         }
 
         Column(
             modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            // ── Header ──────────────────────────────────────────────────────
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 G5MenuButton(onNavigateToMenu)
                 Column(modifier = Modifier.weight(1f).padding(horizontal = 10.dp)) {
                     Text("NIVEL 4 · Sala de Múltiples Portales", fontSize = 13.sp,
-                        fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold, color = Color.White)
-                    Text("if · else if · else · 3 portales", fontSize = 9.sp,
+                        fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold,
+                        color = Color.White)
+                    Text("if · else if · else", fontSize = 9.sp,
                         fontFamily = Baloo2FontFamily, color = ORANGE.copy(alpha = 0.8f))
                 }
                 G5LivesRow(lives)
             }
 
-            // Warning + rotation hint
-            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                Box(
+            // ── Instrucción ──────────────────────────────────────────────────
+            Box(
+                modifier = Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(ORANGE.copy(alpha = 0.12f))
+                    .border(1.dp, ORANGE.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                    .padding(horizontal = 12.dp, vertical = 5.dp)
+            ) {
+                Text(
+                    "Evalúa en qué rango está el número y entra al portal que indica la regla.",
+                    fontSize = 11.sp, fontFamily = Baloo2FontFamily,
+                    color = ORANGE.copy(alpha = 0.9f), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFFF44336).copy(alpha = 0.18f))
-                        .border(1.dp, Color(0xFFFF5252).copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 5.dp)
-                ) {
-                    Text("⚡ El portal que CUMPLE la condición está ROTO. ¡Entra al OTRO!",
-                        fontSize = 11.sp, fontFamily = Baloo2FontFamily,
-                        color = Color(0xFFFF8A80), textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth())
-                }
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(ORANGE.copy(alpha = 0.12f))
-                        .border(1.dp, ORANGE.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
-                ) {
-                    Text("⚡ La energía caída fluye al SIGUIENTE portal: Azul→Verde · Verde→Rojo · Rojo→Azul",
-                        fontSize = 10.sp, fontFamily = Baloo2FontFamily,
-                        color = ORANGE.copy(alpha = 0.9f), textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth())
-                }
+                )
             }
 
+            // ── Centro ──────────────────────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Izquierda: número + dónde cae + condición
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     NumberCard(round.number, ORANGE)
-                    // Range indicator
+
+                    // Muestra en qué rango cae el número
                     val n = round.number
-                    val rangeLabel = when {
-                        n < 3  -> "< 3  →  región Azul"
-                        n <= 7 -> "3–7  →  región Verde"
-                        else   -> "> 7  →  región Roja"
+                    val (rangeText, rangeColor) = when {
+                        n < 3  -> "¿$n < 3? → Sí"  to Color(0xFF2196F3)
+                        n <= 7 -> "¿3 ≤ $n ≤ 7? → Sí" to Color(0xFF4CAF50)
+                        else   -> "¿$n > 7? → Sí"  to Color(0xFFF44336)
                     }
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(ORANGE.copy(alpha = 0.15f))
-                            .border(1.dp, ORANGE.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                            .padding(horizontal = 12.dp, vertical = 5.dp)
+                            .background(rangeColor.copy(alpha = 0.15f))
+                            .border(1.5.dp, rangeColor.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 14.dp, vertical = 7.dp)
                     ) {
-                        Text(rangeLabel, fontSize = 12.sp, fontFamily = Baloo2FontFamily,
-                            color = Color.White.copy(alpha = 0.9f))
+                        Text(rangeText, fontSize = 12.sp, fontFamily = Baloo2FontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White.copy(alpha = 0.95f))
                     }
+
                     ConditionCard(round.conditionLines)
                 }
 
-                // 3 portals in a row
+                // Derecha: 3 portales, el que es TRAMPA tiene badge ⚠️
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(18.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     round.portals.forEach { p ->
-                        val isLogical = p.id == round.logicalPortal.id
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            if (isLogical) {
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(4.dp))
-                                        .background(Color(0xFFFF5252).copy(alpha = 0.25f))
-                                        .padding(horizontal = 6.dp, vertical = 2.dp)
-                                ) {
-                                    Text("ROTO", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
-                                        fontWeight = FontWeight.Bold, color = Color(0xFFFF5252))
-                                }
-                            } else {
-                                Spacer(Modifier.height(20.dp))
-                            }
-                            PortalButton(p, flash == null && !done && !failed) { onTap(p) }
-                        }
+                        PortalButton(
+                            portal  = p,
+                            enabled = flash == null && !done && !failed,
+                            onClick = { onTap(p) }
+                        )
                     }
                 }
             }
 
+            // ── Footer ───────────────────────────────────────────────────────
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 G5RoundDots(roundIndex, TOTAL_ROUNDS)
                 Text("Ronda ${roundIndex + 1} / $TOTAL_ROUNDS", fontSize = 10.sp,

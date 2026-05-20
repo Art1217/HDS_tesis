@@ -22,7 +22,9 @@
       "Bash(cp \"C:\\\\Imagenes tesis\\\\Game4\\\\miniboss_zone4.png\" \"c:\\\\Nueva carpeta \\(5\\)\\\\HDS_tesis\\\\app\\\\src\\\\main\\\\res\\\\drawable-nodpi\\\\miniboss_zone4.png\")",
       "Bash(cp \"C:\\\\Imagenes tesis\\\\Game4\\\\rhythm_bridge_bg.png\" \"c:\\\\Nueva carpeta \\(5\\)\\\\HDS_tesis\\\\app\\\\src\\\\main\\\\res\\\\drawable-nodpi\\\\rhythm_bridge_bg.png\")",
       "Bash(cp \"C:\\\\Imagenes tesis\\\\Game4\\\\stone_path_bg.png\" \"c:\\\\Nueva carpeta \\(5\\)\\\\HDS_tesis\\\\app\\\\src\\\\main\\\\res\\\\drawable-nodpi\\\\stone_path_bg.png\")",
-      "Bash(./gradlew compileDebugKotlin)"
+      "Bash(./gradlew compileDebugKotlin)",
+      "Bash(ls \"C:/Imagenes tesis/Game6/\")",
+      "Read(//c/Imagenes tesis/Game6/**)"
     ]
   }
 }
