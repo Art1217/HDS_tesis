@@ -58,6 +58,13 @@ import com.example.hds_tesisapp.ui.theme.games.game6.level4.Level4G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level5.Level5G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.Zone6CompleteScreen
 import com.example.hds_tesisapp.ui.theme.story.LabTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.CityTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.Level1G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level2.Level2G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level3.Level3G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level4.Level4G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level5.Level5G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.Zone8CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game7.level1.Level1G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level2.Level2G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level3.Level3G7Screen
@@ -729,6 +736,55 @@ fun AppNavigation() {
 
         composable(Routes.Zone7Complete.route) {
             Zone7CompleteScreen(onContinue = {
+                navController.navigate(Routes.CityTutorial.route) {
+                    popUpTo(Routes.Zone7Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 8: La Ciudad de las Reacciones ───────────────────────────────
+
+        composable(Routes.CityTutorial.route) {
+            CityTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G8.route) {
+            Level1G8Screen(
+                onLevelComplete = { navController.navigate(Routes.Level2G8.route) { popUpTo(Routes.Level1G8.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level2G8.route) {
+            Level2G8Screen(
+                onLevelComplete = { navController.navigate(Routes.Level3G8.route) { popUpTo(Routes.Level2G8.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level3G8.route) {
+            Level3G8Screen(
+                onLevelComplete = { navController.navigate(Routes.Level4G8.route) { popUpTo(Routes.Level3G8.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level4G8.route) {
+            Level4G8Screen(
+                onLevelComplete = { navController.navigate(Routes.Level5G8.route) { popUpTo(Routes.Level4G8.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level5G8.route) {
+            Level5G8Screen(
+                onLevelComplete = { navController.navigate(Routes.Zone8Complete.route) { popUpTo(Routes.Level5G8.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Zone8Complete.route) {
+            Zone8CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
                     popUpTo(0) { inclusive = true }
                 }
