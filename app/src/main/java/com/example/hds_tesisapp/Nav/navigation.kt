@@ -57,6 +57,13 @@ import com.example.hds_tesisapp.ui.theme.games.game6.level3.Level3G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level4.Level4G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level5.Level5G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.Zone6CompleteScreen
+import com.example.hds_tesisapp.ui.theme.story.LabTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game7.level1.Level1G7Screen
+import com.example.hds_tesisapp.ui.theme.games.game7.level2.Level2G7Screen
+import com.example.hds_tesisapp.ui.theme.games.game7.level3.Level3G7Screen
+import com.example.hds_tesisapp.ui.theme.games.game7.level4.Level4G7Screen
+import com.example.hds_tesisapp.ui.theme.games.game7.level5.Level5G7Screen
+import com.example.hds_tesisapp.ui.theme.games.game7.Zone7CompleteScreen
 
 @Composable
 fun AppNavigation() {
@@ -633,6 +640,95 @@ fun AppNavigation() {
 
         composable(Routes.Zone6Complete.route) {
             Zone6CompleteScreen(onContinue = {
+                navController.navigate(Routes.LabTutorial.route) {
+                    popUpTo(Routes.Zone6Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 7: El Laboratorio del Cambio ────────────────────────────────
+
+        composable(Routes.LabTutorial.route) {
+            LabTutorialScreen(navController)
+        }
+
+        composable(Routes.Level1G7.route) {
+            Level1G7Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level2G7.route) {
+                        popUpTo(Routes.Level1G7.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level2G7.route) {
+            Level2G7Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level3G7.route) {
+                        popUpTo(Routes.Level2G7.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level3G7.route) {
+            Level3G7Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level4G7.route) {
+                        popUpTo(Routes.Level3G7.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level4G7.route) {
+            Level4G7Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Level5G7.route) {
+                        popUpTo(Routes.Level4G7.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Level5G7.route) {
+            Level5G7Screen(
+                onLevelComplete = {
+                    navController.navigate(Routes.Zone7Complete.route) {
+                        popUpTo(Routes.Level5G7.route) { inclusive = true }
+                    }
+                },
+                onNavigateToMenu = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.Zone7Complete.route) {
+            Zone7CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) {
                     popUpTo(0) { inclusive = true }
                 }
