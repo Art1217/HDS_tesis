@@ -82,6 +82,15 @@ sealed class Routes(val route: String) {
     object Level4G8        : Routes("level4_g8")
     object Level5G8        : Routes("level5_g8")
     object Zone8Complete   : Routes("zone8_complete")
+
+    // Zona 9
+    object WorkshopTutorial : Routes("workshop_tutorial")
+    object Level1G9         : Routes("level1_g9")
+    object Level2G9         : Routes("level2_g9")
+    object Level3G9         : Routes("level3_g9")
+    object Level4G9         : Routes("level4_g9")
+    object Level5G9         : Routes("level5_g9")
+    object Zone9Complete    : Routes("zone9_complete")
 }
 
 fun game1TransitionRoute(toLevel: Int) = "game1_transition/$toLevel"

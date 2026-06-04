@@ -2,15 +2,37 @@ package com.example.hds_tesisapp.ui.theme.games.game8.level4
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -21,8 +43,29 @@ import androidx.compose.ui.zIndex
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
-import com.example.hds_tesisapp.ui.theme.games.game8.*
-import com.example.hds_tesisapp.ui.theme.games.game8.level1.*
+import com.example.hds_tesisapp.ui.theme.games.game8.G8Hero
+import com.example.hds_tesisapp.ui.theme.games.game8.G8Obj
+import com.example.hds_tesisapp.ui.theme.games.game8.G8ObjType
+import com.example.hds_tesisapp.ui.theme.games.game8.G8_LEVEL_CONFIGS
+import com.example.hds_tesisapp.ui.theme.games.game8.displayLabel
+import com.example.hds_tesisapp.ui.theme.games.game8.generateEventSequence
+import com.example.hds_tesisapp.ui.theme.games.game8.hero
+import com.example.hds_tesisapp.ui.theme.games.game8.isGround
+import com.example.hds_tesisapp.ui.theme.games.game8.label
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.ActionButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.EventProgressBar
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.FallingObjCard
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8DoneOverlay
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8FailOverlay
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8LivesRow
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8MenuButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_CYAN
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_GREEN
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_RED
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.GroundObjCard
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.HeroFaceButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.color
+import com.example.hds_tesisapp.ui.theme.games.game8.spriteRes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -67,6 +110,14 @@ fun Level4G8Screen(
     var seqIndex by remember(gameKey) { mutableIntStateOf(0) }
     val rng      = remember(gameKey) { java.util.Random() }
 
+    // Auto-target: when hero is chosen, highlight the matching object automatically
+    LaunchedEffect(selectedHero, handled) {
+        val hero = selectedHero ?: return@LaunchedEffect
+        val match = objs.filter { it.id !in handled && it.type != G8ObjType.EVIL_BOMB }
+            .firstOrNull { it.type.hero == hero }
+        if (match != null) targetObjId = match.id
+    }
+
     fun loseLife() {
         if (hasShield) { hasShield = false; return }
         lives--; if (lives <= 0) failed = true
@@ -99,9 +150,12 @@ fun Level4G8Screen(
 
     fun onAction() {
         val hero = selectedHero ?: return
-        val obj  = objs.firstOrNull { it.id == targetObjId && it.id !in handled } ?: return
         if (flash != null) return
-        if (obj.type == G8ObjType.EVIL_BOMB) return  // can't be handled by hero directly
+        // Resolve target: use selected, or auto-find matching object (skip evil bombs)
+        val obj = objs.firstOrNull { it.id == targetObjId && it.id !in handled && it.type != G8ObjType.EVIL_BOMB }
+            ?: objs.filter { it.id !in handled && it.type != G8ObjType.EVIL_BOMB }
+                .firstOrNull { it.type.hero == hero }
+            ?: return
         val correct = obj.type.hero == hero && (obj.type.isGround || inRange(obj))
         handled = handled + obj.id
         scope.launch {
@@ -127,8 +181,13 @@ fun Level4G8Screen(
     }
 
     fun onUseBomb() {
-        val obj = objs.firstOrNull { it.id == targetObjId && it.id !in handled } ?: return
         if (!hasBomb) return
+        // Smart bomb: prioritize the evil bomb; fallback to targeted or any active object
+        val obj = objs.filter { it.id !in handled }
+            .firstOrNull { it.type == G8ObjType.EVIL_BOMB }
+            ?: objs.firstOrNull { it.id == targetObjId && it.id !in handled }
+            ?: objs.firstOrNull { it.id !in handled }
+            ?: return
         hasBomb = false; handled = handled + obj.id
         scope.launch {
             flash = true; delay(500); flash = null
@@ -197,7 +256,7 @@ fun Level4G8Screen(
                 Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
                     Text("NIVEL 4 · ¡Bombas!", fontSize = 12.sp,
                         fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold, color = Color.White)
-                    Text("Esquiva las bombas malignas — o usa la bomba de Lina", fontSize = 9.sp,
+                    Text("Elige héroe → acción · 💣 Bomba destruye la ⚠️ bomba maligna", fontSize = 9.sp,
                         fontFamily = Baloo2FontFamily, color = G8_RED.copy(alpha = 0.9f))
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

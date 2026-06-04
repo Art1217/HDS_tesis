@@ -2,19 +2,40 @@ package com.example.hds_tesisapp.ui.theme.games.game8
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -85,11 +106,11 @@ fun Zone8CompleteScreen(onContinue: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(28.dp)
         ) {
-            // Heroes lineup
+            // Left column: heroes + defeated boss
             Column(
                 modifier = Modifier.width(160.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // 2x2 hero grid
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -122,6 +143,29 @@ fun Zone8CompleteScreen(onContinue: () -> Unit) {
                 }
                 Text("LOS 4 HÉROES", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
                     fontWeight = FontWeight.Bold, color = Z8_CYAN)
+
+                // Defeated boss
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF1A0000).copy(alpha = 0.7f))
+                        .border(1.5.dp, Color(0xFFFF1744).copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Image(
+                            painterResource(R.drawable.bossgame8), "El Glitch",
+                            Modifier
+                                .height(64.dp)
+                                .graphicsLayer { alpha = 0.75f; scaleX = -1f },
+                            contentScale = ContentScale.Fit
+                        )
+                        Text("⚡ GLITCH\nDERROTADO", fontSize = 7.sp, fontFamily = OrbitronFontFamily,
+                            fontWeight = FontWeight.Bold, color = Color(0xFFFF1744),
+                            textAlign = TextAlign.Center)
+                    }
+                }
             }
 
             // Content panel

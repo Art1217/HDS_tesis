@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -60,7 +59,6 @@ import com.example.hds_tesisapp.Nav.Routes
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // ─── Datos de cada slide ──────────────────────────────────────────────────────

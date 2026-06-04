@@ -5,13 +5,33 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -19,13 +39,19 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -206,7 +232,20 @@ private val ZONE8 = ZoneData(
     levelTitles  = listOf("La Ciudad Reacciona", "Velocidad", "Doble Evento", "¡Bombas!", "El Glitch Muta")
 )
 
-private const val MAX_PAGE = 6   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6 | 5=Z7 | 6=Z8
+private val ZONE9 = ZoneData(
+    zoneNumber   = 9,
+    title        = "El Taller de Correcciones",
+    subtitle     = "Depuración de errores",
+    icon         = "🔧",
+    accentColor  = Color(0xFF00BCD4),
+    bgGradient   = listOf(Color(0xFF060E1A), Color(0xFF0D1F35)),
+    borderColor  = Color(0xFF00BCD4).copy(alpha = 0.4f),
+    levelRoutes  = listOf(Routes.WorkshopTutorial.route, Routes.Level1G9.route, Routes.Level2G9.route,
+                          Routes.Level3G9.route, Routes.Level4G9.route, Routes.Level5G9.route),
+    levelTitles  = listOf("Depuración Básica", "Datos Borrosos", "Código en Movimiento", "Confirma el Error", "El Glitch Interfiere")
+)
+
+private const val MAX_PAGE = 7   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6 | 5=Z7 | 6=Z8 | 7=Z9
 
 @Composable
 fun LevelsScreen(navController: NavController) {
@@ -405,12 +444,23 @@ fun LevelsScreen(navController: NavController) {
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
                 }
-                else -> Box(
+                6 -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     ZonePanel(
                         zone        = ZONE8,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
+                    )
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ZonePanel(
+                        zone        = ZONE9,
                         startDelay  = 0,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()

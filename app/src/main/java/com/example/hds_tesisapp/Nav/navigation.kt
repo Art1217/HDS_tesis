@@ -1,76 +1,83 @@
 package com.example.hds_tesisapp.Nav
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
-import com.example.hds_tesisapp.ui.theme.splash.SplashScreen
-import com.example.hds_tesisapp.ui.theme.personajes.MaxScreen
-import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
-import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
-import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
-import com.example.hds_tesisapp.ui.theme.story.StoryScreen
-import com.example.hds_tesisapp.ui.theme.story.AlgorithmTutorialScreen
-import com.example.hds_tesisapp.ui.theme.story.ClassificationTutorialScreen
-import com.example.hds_tesisapp.ui.theme.story.SortingTutorialScreen
-import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
+import com.example.hds_tesisapp.ui.theme.games.game1.Game1TransitionScreen
+import com.example.hds_tesisapp.ui.theme.games.game1.Zone1CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level2.Level2Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level3.Level3Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level4.Level4Screen
 import com.example.hds_tesisapp.ui.theme.games.game1.level5.Level5Screen
-import com.example.hds_tesisapp.ui.theme.games.game1.Game1TransitionScreen
-import com.example.hds_tesisapp.ui.theme.games.game1.Zone1CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game2.Zone2CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game2.level1.Level1G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level2.Level2G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level3.Level3G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level4.Level4G2Screen
 import com.example.hds_tesisapp.ui.theme.games.game2.level5.Level5G2Screen
-import com.example.hds_tesisapp.ui.theme.games.game2.Zone2CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game3.Zone3CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game3.level1.Level1G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level2.Level2G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level3.Level3G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level4.Level4G3Screen
 import com.example.hds_tesisapp.ui.theme.games.game3.level5.Level5G3Screen
-import com.example.hds_tesisapp.ui.theme.games.game3.Zone3CompleteScreen
-import com.example.hds_tesisapp.ui.theme.story.PatternTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game4.Zone4CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game4.level1.Level1G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level2.Level2G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level3.Level3G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level4.Level4G4Screen
 import com.example.hds_tesisapp.ui.theme.games.game4.level5.Level5G4Screen
-import com.example.hds_tesisapp.ui.theme.games.game4.Zone4CompleteScreen
-import com.example.hds_tesisapp.ui.theme.story.PortalTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game5.Zone5CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game5.level1.Level1G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level2.Level2G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level3.Level3G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level4.Level4G5Screen
 import com.example.hds_tesisapp.ui.theme.games.game5.level5.Level5G5Screen
-import com.example.hds_tesisapp.ui.theme.games.game5.Zone5CompleteScreen
-import com.example.hds_tesisapp.ui.theme.story.FactoryTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game6.Zone6CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game6.level1.Level1G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level2.Level2G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level3.Level3G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level4.Level4G6Screen
 import com.example.hds_tesisapp.ui.theme.games.game6.level5.Level5G6Screen
-import com.example.hds_tesisapp.ui.theme.games.game6.Zone6CompleteScreen
-import com.example.hds_tesisapp.ui.theme.story.LabTutorialScreen
-import com.example.hds_tesisapp.ui.theme.story.CityTutorialScreen
-import com.example.hds_tesisapp.ui.theme.games.game8.level1.Level1G8Screen
-import com.example.hds_tesisapp.ui.theme.games.game8.level2.Level2G8Screen
-import com.example.hds_tesisapp.ui.theme.games.game8.level3.Level3G8Screen
-import com.example.hds_tesisapp.ui.theme.games.game8.level4.Level4G8Screen
-import com.example.hds_tesisapp.ui.theme.games.game8.level5.Level5G8Screen
-import com.example.hds_tesisapp.ui.theme.games.game8.Zone8CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game7.Zone7CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game7.level1.Level1G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level2.Level2G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level3.Level3G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level4.Level4G7Screen
 import com.example.hds_tesisapp.ui.theme.games.game7.level5.Level5G7Screen
-import com.example.hds_tesisapp.ui.theme.games.game7.Zone7CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game8.Zone8CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.Level1G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level2.Level2G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level3.Level3G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level4.Level4G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game8.level5.Level5G8Screen
+import com.example.hds_tesisapp.ui.theme.games.game9.WorkshopTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game9.Zone9CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game9.level1.Level1G9Screen
+import com.example.hds_tesisapp.ui.theme.games.game9.level2.Level2G9Screen
+import com.example.hds_tesisapp.ui.theme.games.game9.level3.Level3G9Screen
+import com.example.hds_tesisapp.ui.theme.games.game9.level4.Level4G9Screen
+import com.example.hds_tesisapp.ui.theme.games.game9.level5.Level5G9Screen
+import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
+import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
+import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
+import com.example.hds_tesisapp.ui.theme.personajes.MaxScreen
+import com.example.hds_tesisapp.ui.theme.personajes.TomAtomScreen
+import com.example.hds_tesisapp.ui.theme.splash.SplashScreen
+import com.example.hds_tesisapp.ui.theme.story.AlgorithmTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.CityTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.ClassificationTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.FactoryTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.LabTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.PatternTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.PortalTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.SortingTutorialScreen
+import com.example.hds_tesisapp.ui.theme.story.StoryScreen
+import com.example.hds_tesisapp.ui.theme.story.ZoneIntroScreen
 
 @Composable
 fun AppNavigation() {
@@ -785,9 +792,59 @@ fun AppNavigation() {
 
         composable(Routes.Zone8Complete.route) {
             Zone8CompleteScreen(onContinue = {
-                navController.navigate(Routes.Menu.route) {
-                    popUpTo(0) { inclusive = true }
+                navController.navigate(Routes.WorkshopTutorial.route) {
+                    popUpTo(Routes.Zone8Complete.route) { inclusive = true }
                 }
+            })
+        }
+
+        // ── Zona 9 ────────────────────────────────────────────────────────────
+
+        composable(Routes.WorkshopTutorial.route) {
+            WorkshopTutorialScreen(
+                onStart = { navController.navigate(Routes.Level1G9.route) { popUpTo(Routes.WorkshopTutorial.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level1G9.route) {
+            Level1G9Screen(
+                onLevelComplete = { navController.navigate(Routes.Level2G9.route) { popUpTo(Routes.Level1G9.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level2G9.route) {
+            Level2G9Screen(
+                onLevelComplete = { navController.navigate(Routes.Level3G9.route) { popUpTo(Routes.Level2G9.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level3G9.route) {
+            Level3G9Screen(
+                onLevelComplete = { navController.navigate(Routes.Level4G9.route) { popUpTo(Routes.Level3G9.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level4G9.route) {
+            Level4G9Screen(
+                onLevelComplete = { navController.navigate(Routes.Level5G9.route) { popUpTo(Routes.Level4G9.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level5G9.route) {
+            Level5G9Screen(
+                onLevelComplete = { navController.navigate(Routes.Zone9Complete.route) { popUpTo(Routes.Level5G9.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Zone9Complete.route) {
+            Zone9CompleteScreen(onContinue = {
+                navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } }
             })
         }
 

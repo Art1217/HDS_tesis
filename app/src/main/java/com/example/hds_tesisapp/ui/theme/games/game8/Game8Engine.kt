@@ -167,7 +167,11 @@ val G8_LEVEL_CONFIGS = listOf(
 
 // ─── Sequence generator ───────────────────────────────────────────────────────
 
-// Generates a balanced sequence: ensures mix of heroes, no 3 identical consecutive
+// Generates a balanced sequence: ensures mix of heroes, no 3 identical consecutive.
+// Generates totalEvents + EXTRA_BUFFER extra events so the pool never runs dry
+// even if the player misses several objects (handledCount only counts correct actions).
+private const val SEQUENCE_EXTRA_BUFFER = 20
+
 fun generateEventSequence(config: G8LevelConfig, seed: Long = System.currentTimeMillis()): List<G8ObjType> {
     val rng = java.util.Random(seed)
     val types = config.availableTypes.toMutableList()
@@ -175,12 +179,14 @@ fun generateEventSequence(config: G8LevelConfig, seed: Long = System.currentTime
     var lastType: G8ObjType? = null
     var lastLastType: G8ObjType? = null
 
-    // Ensure at least 1 of each hero present in first 8 events
+    // Ensure at least 1 of each hero present in first events
     val heroes = listOf(G8Hero.MAX, G8Hero.LINA, G8Hero.TOM, G8Hero.ATOM)
     val guaranteed = heroes.mapNotNull { h -> types.filter { it.hero == h }.randomOrNull() }
     val shuffled = guaranteed.toMutableList().also { it.shuffle(rng) }
 
-    repeat(config.totalEvents) { i ->
+    // Generate enough events to complete even with failures
+    val generateCount = config.totalEvents + SEQUENCE_EXTRA_BUFFER
+    repeat(generateCount) { i ->
         val candidates = if (i < shuffled.size) {
             listOf(shuffled[i])
         } else {

@@ -2,15 +2,37 @@ package com.example.hds_tesisapp.ui.theme.games.game8.level5
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -21,8 +43,30 @@ import androidx.compose.ui.zIndex
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
-import com.example.hds_tesisapp.ui.theme.games.game8.*
-import com.example.hds_tesisapp.ui.theme.games.game8.level1.*
+import com.example.hds_tesisapp.ui.theme.games.game8.G8Hero
+import com.example.hds_tesisapp.ui.theme.games.game8.G8Obj
+import com.example.hds_tesisapp.ui.theme.games.game8.G8ObjType
+import com.example.hds_tesisapp.ui.theme.games.game8.G8_LEVEL_CONFIGS
+import com.example.hds_tesisapp.ui.theme.games.game8.MORPHABLE_TYPES
+import com.example.hds_tesisapp.ui.theme.games.game8.displayLabel
+import com.example.hds_tesisapp.ui.theme.games.game8.generateEventSequence
+import com.example.hds_tesisapp.ui.theme.games.game8.hero
+import com.example.hds_tesisapp.ui.theme.games.game8.isGround
+import com.example.hds_tesisapp.ui.theme.games.game8.label
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.ActionButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.EventProgressBar
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.FallingObjCard
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8DoneOverlay
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8FailOverlay
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8LivesRow
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8MenuButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_CYAN
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_GREEN
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.G8_RED
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.GroundObjCard
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.HeroFaceButton
+import com.example.hds_tesisapp.ui.theme.games.game8.level1.color
+import com.example.hds_tesisapp.ui.theme.games.game8.spriteRes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -116,6 +160,15 @@ fun Level5G8Screen(
         return !mo.hasMorphed && y in (MORPH_AT_YFRAC - 0.12f)..(MORPH_AT_YFRAC + 0.02f)
     }
 
+    // Auto-target: match hero → object using the CURRENT (possibly morphed) type.
+    // Must be after currentTypeOf is defined. Re-runs when hero or handled changes.
+    LaunchedEffect(selectedHero, handled) {
+        val hero = selectedHero ?: return@LaunchedEffect
+        val match = morphObjs.filter { it.base.id !in handled && it.base.type != G8ObjType.EVIL_BOMB }
+            .firstOrNull { currentTypeOf(it).hero == hero }
+        if (match != null) targetObjId = match.base.id
+    }
+
     fun applyBeneficial(type: G8ObjType) {
         when (type) {
             G8ObjType.HEART_BLOCK  -> if (lives < 3) lives++
@@ -131,9 +184,12 @@ fun Level5G8Screen(
 
     fun onAction() {
         val hero = selectedHero ?: return
-        val mo   = morphObjs.firstOrNull { it.base.id == targetObjId && it.base.id !in handled } ?: return
         if (flash != null) return
-        if (mo.base.type == G8ObjType.EVIL_BOMB) return
+        // Resolve target using current (possibly morphed) type — skip evil bombs
+        val mo = morphObjs.firstOrNull { it.base.id == targetObjId && it.base.id !in handled && it.base.type != G8ObjType.EVIL_BOMB }
+            ?: morphObjs.filter { it.base.id !in handled && it.base.type != G8ObjType.EVIL_BOMB }
+                .firstOrNull { currentTypeOf(it).hero == hero }
+            ?: return
         val effectiveType = currentTypeOf(mo)
         val correct = effectiveType.hero == hero && (mo.base.type.isGround || inRange(mo.base))
         handled = handled + mo.base.id
@@ -160,8 +216,13 @@ fun Level5G8Screen(
     }
 
     fun onUseBomb() {
-        val mo = morphObjs.firstOrNull { it.base.id == targetObjId && it.base.id !in handled } ?: return
         if (!hasBomb) return
+        // Smart bomb: prioritize evil bomb first, then targeted, then any active
+        val mo = morphObjs.filter { it.base.id !in handled }
+            .firstOrNull { it.base.type == G8ObjType.EVIL_BOMB }
+            ?: morphObjs.firstOrNull { it.base.id == targetObjId && it.base.id !in handled }
+            ?: morphObjs.firstOrNull { it.base.id !in handled }
+            ?: return
         hasBomb = false; handled = handled + mo.base.id
         scope.launch {
             flash = true; delay(500); flash = null
@@ -223,10 +284,13 @@ fun Level5G8Screen(
 
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 G8MenuButton(onNavigateToMenu)
-                Column(Modifier.weight(1f).padding(horizontal = 10.dp)) {
+                // Boss image
+                Image(painterResource(R.drawable.bossgame8), "El Glitch",
+                    Modifier.height(52.dp), contentScale = ContentScale.Fit)
+                Column(Modifier.weight(1f).padding(horizontal = 8.dp)) {
                     Text("NIVEL 5 · El Glitch Muta", fontSize = 12.sp,
                         fontFamily = OrbitronFontFamily, fontWeight = FontWeight.ExtraBold, color = Color.White)
-                    Text("⚡ ¡Los objetos cambian de tipo mientras caen! Atiende el pixeleo.", fontSize = 9.sp,
+                    Text("Elige héroe → acción · ⚡ Si pixelea, cambia de héroe antes de actuar", fontSize = 9.sp,
                         fontFamily = Baloo2FontFamily, color = Color(0xFFFF1744).copy(alpha = 0.9f))
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {

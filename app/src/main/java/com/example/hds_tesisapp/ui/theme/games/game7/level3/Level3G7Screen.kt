@@ -3,7 +3,6 @@ package com.example.hds_tesisapp.ui.theme.games.game7.level3
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
