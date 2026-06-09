@@ -385,10 +385,10 @@ private fun SortDialogCard(
         Spacer(Modifier.height(10.dp))
         Text(
             text = when (index) {
-                0 -> "💡 Google ordena millones de resultados en menos de un segundo usando algoritmos de sorting"
-                1 -> "💡 Bubble Sort compara A y B: si A > B, los intercambia — como burbujas que suben"
-                2 -> "💡 Bubble Sort tiene O(n²) comparaciones en el peor caso — hay algoritmos más rápidos, pero es el más fácil de entender"
-                3 -> "💡 Cuando lo domines, aprenderás QuickSort y MergeSort — ¡mucho más rápidos!"
+                0 -> "💡 ¡Ordenar de menor a mayor es útil en todos lados: filas de altura en el colegio, ranking de puntajes!"
+                1 -> "💡 ¡Compara como un árbitro: mira los dos elementos, decide cuál va primero y cámbialos si hace falta!"
+                2 -> "💡 ¡El elemento más grande sube como una burbuja de aire en el agua — por eso se llama ordenamiento burbuja!"
+                3 -> "💡 ¡Ordena todas las gotas de la Cascada y el agua fluirá en perfecta armonía!"
                 else -> ""
             },
             fontSize = 10.sp, fontFamily = Baloo2FontFamily,

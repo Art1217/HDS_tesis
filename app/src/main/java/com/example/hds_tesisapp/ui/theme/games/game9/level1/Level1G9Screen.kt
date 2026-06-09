@@ -189,15 +189,8 @@ internal fun G9SymbolCell(
         if (isFixed) {
             Text("✓", fontSize = 20.sp, color = G9_GREEN, fontWeight = FontWeight.ExtraBold)
         } else if (isBlurry) {
-            // Simulated blur: 3 offset layers at low alpha
-            Box(contentAlignment = Alignment.Center) {
-                Text(symbol, fontSize = 22.sp, modifier = Modifier.offset(2.dp, 2.dp)
-                    .graphicsLayer { alpha = 0.20f })
-                Text(symbol, fontSize = 22.sp, modifier = Modifier.offset((-2).dp, (-2).dp)
-                    .graphicsLayer { alpha = 0.20f })
-                Text(symbol, fontSize = 22.sp, modifier = Modifier.graphicsLayer { alpha = 0.45f },
-                    textAlign = TextAlign.Center)
-            }
+            Text(symbol, fontSize = 22.sp, textAlign = TextAlign.Center,
+                modifier = Modifier.graphicsLayer { alpha = 0.45f })
         } else {
             Text(symbol, fontSize = 24.sp, textAlign = TextAlign.Center)
         }

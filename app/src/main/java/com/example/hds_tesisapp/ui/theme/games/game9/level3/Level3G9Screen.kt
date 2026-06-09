@@ -71,8 +71,8 @@ fun Level3G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     var flashRowIdx by remember { mutableStateOf<Int?>(null) }
     var flashOk     by remember { mutableStateOf<Boolean?>(null) }
 
-    var rows        by remember(gameKey) { mutableStateOf(generateG9Rows(CONFIG)) }
-    var rowOffsets  by remember(gameKey) { mutableStateOf(List(5) { 0f }) }
+    var rows       by remember(gameKey) { mutableStateOf(generateG9Rows(CONFIG)) }
+    val rowOffsets  = remember(gameKey) { androidx.compose.runtime.mutableStateListOf(*Array(5) { 0f }) }
 
     fun onSymbolTap(rowIdx: Int, logicalColIdx: Int) {
         if (flashRowIdx != null || done || failed) return
@@ -95,12 +95,12 @@ fun Level3G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     LaunchedEffect(gameKey) {
         val start = System.currentTimeMillis()
         while (!done && !failed) {
-            delay(16L)
+            delay(32L)
             val elapsed = System.currentTimeMillis() - start
             timerMs = (CONFIG.timerMs - elapsed).coerceAtLeast(0L)
             if (timerMs <= 0L) { failReason = "⏰ Tiempo Agotado"; failed = true; break }
-            val delta = 16f / CONFIG.scrollSpeedMs
-            rowOffsets = rowOffsets.map { off -> (off + delta) % 1f }
+            val delta = 32f / CONFIG.scrollSpeedMs
+            for (i in rowOffsets.indices) rowOffsets[i] = (rowOffsets[i] + delta) % 1f
         }
     }
 
@@ -132,6 +132,7 @@ fun Level3G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     rows.forEachIndexed { rowIdx, row ->
+                        androidx.compose.runtime.key(rowIdx) {
                         Row(verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Box(Modifier.width(38.dp), contentAlignment = Alignment.CenterEnd) {
@@ -153,6 +154,7 @@ fun Level3G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
                                 onSymbolTap = { logIdx -> onSymbolTap(rowIdx, logIdx) }
                             )
                         }
+                        } // key
                     }
                 }
             }

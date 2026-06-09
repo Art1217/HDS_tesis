@@ -2,6 +2,8 @@ package com.example.hds_tesisapp.ui.theme.games.game9
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,13 +15,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -39,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
+import kotlinx.coroutines.launch
 
 private val WT_CYAN   = Color(0xFF00BCD4)
 private val WT_GREEN  = Color(0xFF4CAF50)
@@ -76,6 +84,14 @@ fun WorkshopTutorialScreen(onStart: () -> Unit, onNavigateToMenu: () -> Unit) {
     var page by remember { mutableIntStateOf(0) }
     val slide = SLIDES[page]
 
+    val floatAnim = remember { Animatable(0f) }
+    val glow      = remember { Animatable(0.4f) }
+
+    LaunchedEffect(Unit) {
+        launch { while (true) { floatAnim.animateTo(9f, tween(1300)); floatAnim.animateTo(-9f, tween(1300)) } }
+        launch { while (true) { glow.animateTo(1f, tween(900)); glow.animateTo(0.4f, tween(900)) } }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -89,20 +105,66 @@ fun WorkshopTutorialScreen(onStart: () -> Unit, onNavigateToMenu: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(32.dp)
         ) {
-            // Icon + page dots
+            // Personaje + dots
             Column(
-                modifier = Modifier.width(140.dp),
+                modifier = Modifier.width(150.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(slide.icon, fontSize = 64.sp)
-                Text("ZONA 9", fontSize = 10.sp, fontFamily = OrbitronFontFamily,
-                    fontWeight = FontWeight.Bold, color = WT_CYAN.copy(alpha = 0.7f))
+                // Badge emoji del slide
+                Box(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(slide.accent.copy(alpha = 0.15f))
+                        .border(2.dp, slide.accent.copy(alpha = 0.65f), CircleShape)
+                        .size(44.dp),
+                    contentAlignment = Alignment.Center
+                ) { Text(slide.icon, fontSize = 20.sp) }
+
+                Spacer(Modifier.height(2.dp))
+
+                // Imagen de Bit Maestro flotando con glow
+                Box(
+                    modifier = Modifier
+                        .offset(y = floatAnim.value.dp)
+                        .size(148.dp)
+                        .drawBehind {
+                            drawCircle(
+                                slide.accent.copy(alpha = glow.value * 0.28f),
+                                radius = size.minDimension / 2f + 22f
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.bit_maestro),
+                        contentDescription = "Bit Maestro",
+                        modifier = Modifier.fillMaxSize(0.90f),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                // Badge de nombre
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(WT_CYAN.copy(alpha = 0.12f))
+                        .border(1.dp, WT_CYAN.copy(alpha = 0.50f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 14.dp, vertical = 4.dp)
+                ) {
+                    Text("BIT", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                        fontWeight = FontWeight.Bold, color = WT_CYAN, letterSpacing = 3.sp)
+                }
+
+                Text("ZONA 9", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
+                    fontWeight = FontWeight.Bold, color = WT_CYAN.copy(alpha = 0.65f))
+
+                // Dots de progreso
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     SLIDES.indices.forEach { i ->
                         Box(
                             Modifier.size(if (i == page) 10.dp else 7.dp)
-                                .clip(RoundedCornerShape(50))
+                                .clip(CircleShape)
                                 .background(if (i == page) slide.accent else Color.White.copy(alpha = 0.2f))
                         )
                     }

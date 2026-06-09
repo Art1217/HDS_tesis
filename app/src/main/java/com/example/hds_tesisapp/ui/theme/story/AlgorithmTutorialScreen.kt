@@ -536,10 +536,10 @@ private fun DialogCard(
         Spacer(Modifier.height(12.dp))
         Text(
             text = when (currentSlide) {
-                0 -> "💡 Un algoritmo puede describirse en palabras, diagramas o código"
-                1 -> "💡 Los computadores siguen instrucciones exactamente como se las damos"
-                2 -> "💡 ¡Los programadores son los que dan instrucciones a las computadoras!"
-                3 -> "💡 Cada nivel te hará pensar como un verdadero programador"
+                0 -> "💡 ¡Los robots en los videojuegos siguen algoritmos, igual que tú le das instrucciones a Bit!"
+                1 -> "💡 ¡Es como ponerse los zapatos antes que los calcetines — el orden lo cambia todo!"
+                2 -> "💡 ¡Tú eres el programador! Bit solo puede moverse si le das la secuencia correcta."
+                3 -> "💡 ¡Cada nivel tiene una sola secuencia ganadora — encuéntrala y Bit llegará a casa!"
                 else -> ""
             },
             fontSize = 10.sp,

@@ -271,15 +271,34 @@ private fun LCodeDemo() {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.Black.copy(alpha = 0.35f))
+            .background(Color.Black.copy(alpha = 0.30f))
             .border(1.dp, LAB_CYAN_L.copy(alpha = 0.2f), RoundedCornerShape(8.dp))
             .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("var energia = 5", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = LAB_CYAN_L)
-        Text("energia = energia + 1  // → 6", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.85f))
-        Text("energia = energia × 2  // → 12", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.85f))
-        Text("// ¡Meta: 12! ✅", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = Color(0xFF69FF47).copy(alpha = 0.8f))
+        Text(
+            "Cada operación cambia el valor del contenedor:",
+            fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = LAB_CYAN_L.copy(0.80f)
+        )
+        // Visualización: caja → operación → caja → operación → caja resultado
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            VarBox("energia", "5", LAB_CYAN_L)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("+ 1", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                    fontWeight = FontWeight.Bold, color = Color(0xFF69FF47))
+                Text("→", fontSize = 14.sp, color = Color.White.copy(0.5f))
+            }
+            VarBox("energia", "6", Color(0xFF69FF47))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("× 2", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                    fontWeight = FontWeight.Bold, color = Color(0xFFFFB300))
+                Text("→", fontSize = 14.sp, color = Color.White.copy(0.5f))
+            }
+            VarBox("energia", "12 ✅", LAB_TEAL_L)
+        }
     }
 }
 

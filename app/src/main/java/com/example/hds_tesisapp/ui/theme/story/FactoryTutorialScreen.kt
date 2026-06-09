@@ -292,12 +292,26 @@ fun FactoryTutorialScreen(navController: NavController) {
 
 // ─── Extras ───────────────────────────────────────────────────────────────────
 
+/** Círculo con número para representar "REPETIR N" sin código */
+@Composable
+private fun LoopBadge(n: String, color: Color) {
+    Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .background(color.copy(alpha = 0.22f))
+            .border(1.5.dp, color.copy(alpha = 0.7f), CircleShape)
+            .size(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(n, fontSize = 12.sp, fontFamily = OrbitronFontFamily,
+            fontWeight = FontWeight.ExtraBold, color = color)
+    }
+}
+
 @Composable
 private fun FLoopCompare() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        // Sin bucle — lista repetida de acciones
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -305,14 +319,20 @@ private fun FLoopCompare() {
                 .background(Color(0xFFF44336).copy(alpha = 0.10f))
                 .border(1.dp, Color(0xFFF44336).copy(alpha = 0.35f), RoundedCornerShape(8.dp))
                 .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text("❌ Sin bucle", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
                 fontWeight = FontWeight.Bold, color = Color(0xFFFF5252))
-            Text("apretar()", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.8f))
-            Text("apretar()", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.8f))
-            Text("apretar()", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.8f))
+            repeat(3) {
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text("🔩", fontSize = 13.sp)
+                    Text("apretar", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
+                        color = Color.White.copy(0.75f))
+                }
+            }
         }
+        // Con bucle — REPETIR N VECES visual
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -320,13 +340,24 @@ private fun FLoopCompare() {
                 .background(Color(0xFF4CAF50).copy(alpha = 0.10f))
                 .border(1.dp, Color(0xFF4CAF50).copy(alpha = 0.35f), RoundedCornerShape(8.dp))
                 .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(3.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text("✅ Con bucle", fontSize = 9.sp, fontFamily = OrbitronFontFamily,
                 fontWeight = FontWeight.Bold, color = Color(0xFF69FF47))
-            Text("repetir(3) {", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color(0xFFFFB300))
-            Text("  apretar()", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.8f))
-            Text("}", fontSize = 10.sp, fontFamily = Baloo2FontFamily, color = Color(0xFFFFB300))
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Text("REPETIR", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
+                    color = FACTORY_AMBER)
+                LoopBadge("3", FACTORY_AMBER)
+                Text("VECES", fontSize = 8.sp, fontFamily = OrbitronFontFamily,
+                    color = FACTORY_AMBER)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Text("  🔩", fontSize = 13.sp)
+                Text("apretar", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
+                    color = Color.White.copy(0.75f))
+            }
         }
     }
 }
@@ -336,17 +367,35 @@ private fun FCodeDemo() {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.Black.copy(alpha = 0.35f))
+            .background(Color.Black.copy(alpha = 0.30f))
             .border(1.dp, FACTORY_AMBER.copy(alpha = 0.25f), RoundedCornerShape(8.dp))
             .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text("repetir(3) {", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = FACTORY_AMBER)
-        Text("  apretar_tornillo()", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.85f))
-        Text("}", fontSize = 12.sp, fontFamily = Baloo2FontFamily, color = FACTORY_AMBER)
-        Spacer(Modifier.height(4.dp))
-        Text("// Se ejecuta 3 veces ✅", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
-            color = Color(0xFF69FF47).copy(alpha = 0.8f))
+        // Encabezado REPETIR N VECES
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            Text("REPETIR", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                fontWeight = FontWeight.Bold, color = FACTORY_AMBER)
+            LoopBadge("3", FACTORY_AMBER)
+            Text("VECES  →", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                fontWeight = FontWeight.Bold, color = FACTORY_AMBER)
+        }
+        // Resultado visual: 3 tornillos
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            repeat(3) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(FACTORY_ORANGE.copy(0.15f))
+                        .border(1.dp, FACTORY_ORANGE.copy(0.5f), RoundedCornerShape(6.dp))
+                        .padding(horizontal = 7.dp, vertical = 5.dp),
+                    contentAlignment = Alignment.Center
+                ) { Text("🔩", fontSize = 18.sp) }
+            }
+            Text("✅", fontSize = 18.sp)
+        }
     }
 }
 
@@ -355,19 +404,40 @@ private fun FNestedDemo() {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color.Black.copy(alpha = 0.35f))
+            .background(Color.Black.copy(alpha = 0.30f))
             .border(1.dp, FACTORY_AMBER.copy(alpha = 0.25f), RoundedCornerShape(8.dp))
             .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text("repetir(2) { // estantes", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = FACTORY_AMBER)
-        Text("  repetir(3) {", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = Color(0xFF40C4FF))
-        Text("    cargar_caja()", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = Color.White.copy(alpha = 0.85f))
-        Text("  }", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = Color(0xFF40C4FF))
-        Text("}", fontSize = 11.sp, fontFamily = Baloo2FontFamily, color = FACTORY_AMBER)
-        Spacer(Modifier.height(4.dp))
-        Text("// 2 × 3 = 6 cajas en total", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
-            color = Color(0xFF69FF47).copy(alpha = 0.8f))
+        // Fórmula visual: 2 × 3 = 6
+        Row(horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            LoopBadge("2", FACTORY_AMBER)
+            Text("estantes  ×", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
+                color = FACTORY_AMBER)
+            LoopBadge("3", Color(0xFF40C4FF))
+            Text("cajas  =", fontSize = 10.sp, fontFamily = Baloo2FontFamily,
+                color = Color(0xFF40C4FF))
+            Text("6 📦", fontSize = 12.sp, fontFamily = OrbitronFontFamily,
+                fontWeight = FontWeight.ExtraBold, color = Color(0xFF69FF47))
+        }
+        // Cuadrícula 2 filas × 3 cajas
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            repeat(2) {
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    repeat(3) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Color(0xFF40C4FF).copy(0.10f))
+                                .border(1.dp, Color(0xFF40C4FF).copy(0.35f), RoundedCornerShape(4.dp))
+                                .size(26.dp),
+                            contentAlignment = Alignment.Center
+                        ) { Text("📦", fontSize = 13.sp) }
+                    }
+                }
+            }
+        }
     }
 }
 

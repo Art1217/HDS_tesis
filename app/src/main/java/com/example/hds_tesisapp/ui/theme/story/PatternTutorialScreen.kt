@@ -383,10 +383,10 @@ private fun PtrDialogCard(
         Spacer(Modifier.height(10.dp))
         Text(
             text = when (index) {
-                0 -> "💡 Los algoritmos de compresión como ZIP buscan patrones repetidos en los datos"
-                1 -> "💡 El ADN es un patrón de 4 letras (A, T, C, G) que define a cada ser vivo"
-                2 -> "💡 Los antivirus detectan virus buscando patrones maliciosos en los programas"
-                3 -> "💡 El reconocimiento de voz convierte patrones de sonido en texto"
+                0 -> "💡 ¡Los patrones están en tus canciones favoritas, en los diseños de tu ropa y en los juegos que juegas!"
+                1 -> "💡 ¡Una vez que identificas el ciclo, puedes predecir cualquier elemento que siga en el patrón!"
+                2 -> "💡 ¡Los distractores son trampas — si sigues el patrón con cuidado, siempre los detectarás!"
+                3 -> "💡 ¡Protege el Valle de los Patrones — el Glitch intentará confundirte con distractores!"
                 else -> ""
             },
             fontSize = 10.sp, fontFamily = Baloo2FontFamily,

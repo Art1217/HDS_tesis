@@ -72,7 +72,7 @@ fun Level4G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     var modalOptions by remember { mutableStateOf<List<String>>(emptyList()) }
 
     var rows       by remember(gameKey) { mutableStateOf(generateG9Rows(CONFIG)) }
-    var rowOffsets by remember(gameKey) { mutableStateOf(List(5) { 0f }) }
+    val rowOffsets  = remember(gameKey) { androidx.compose.runtime.mutableStateListOf(*Array(5) { 0f }) }
 
     fun openModal(rowIdx: Int) {
         if (rows[rowIdx].isFixed || flashRowIdx != null) return
@@ -100,10 +100,10 @@ fun Level4G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     // Scroll loop (no timer in L4)
     LaunchedEffect(gameKey) {
         while (!done && !failed) {
-            delay(16L)
+            delay(32L)
             if (modalRowIdx == null) {  // pause scroll while modal is open
-                val delta = 16f / CONFIG.scrollSpeedMs
-                rowOffsets = rowOffsets.map { off -> (off + delta) % 1f }
+                val delta = 32f / CONFIG.scrollSpeedMs
+                for (i in rowOffsets.indices) rowOffsets[i] = (rowOffsets[i] + delta) % 1f
             }
         }
     }

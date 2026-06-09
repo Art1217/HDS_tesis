@@ -414,10 +414,10 @@ private fun ClsDialogCard(
         Spacer(Modifier.height(10.dp))
         Text(
             text = when (index) {
-                0 -> "💡 En bases de datos, cada fila es un dato y cada columna es una propiedad"
-                1 -> "💡 Las condiciones SI→ENTONCES se llaman sentencias condicionales en programación"
-                2 -> "💡 Los programadores prueban sus reglas para encontrar y eliminar bugs"
-                3 -> "💡 Los motores de búsqueda como Google clasifican millones de datos por segundo"
+                0 -> "💡 ¡Clasificar es ordenar el mundo! En el supermercado, cada producto va en su sección correcta."
+                1 -> "💡 ¡Cada vez que decides si algo es una fruta o una verdura, usas una regla SI→ENTONCES!"
+                2 -> "💡 ¡Un bug es como poner la leche en la sección de verduras — simplemente no pertenece ahí!"
+                3 -> "💡 ¡Clasifica todas las frutas sin bugs y el Bosque volverá a brillar!"
                 else -> ""
             },
             fontSize = 10.sp, fontFamily = Baloo2FontFamily,

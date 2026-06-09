@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.pm.ActivityInfo
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,13 +38,16 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
+import com.example.hds_tesisapp.R
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
 import kotlinx.coroutines.launch
@@ -106,19 +111,26 @@ fun PortalTutorialScreen(navController: NavController) {
     val slide = SLIDES[slideIndex]
     val scope = rememberCoroutineScope()
 
-    val charY   = remember { Animatable(60f) }
+    val charY     = remember { Animatable(60f) }
     val charAlpha = remember { Animatable(0f) }
-    val glow    = remember { Animatable(0.4f) }
+    val glow      = remember { Animatable(0.4f) }
+    val floatAnim = remember { Animatable(0f) }
 
     LaunchedEffect(slideIndex) {
         charY.snapTo(60f); charAlpha.snapTo(0f)
-        launch { charY.animateTo(0f,   tween(500)) }
+        launch { charY.animateTo(0f,    tween(500)) }
         launch { charAlpha.animateTo(1f, tween(400)) }
         launch {
             while (true) {
-                glow.animateTo(1f, tween(900))
+                glow.animateTo(1f,    tween(900))
                 glow.animateTo(0.4f, tween(900))
             }
+        }
+    }
+    LaunchedEffect(Unit) {
+        while (true) {
+            floatAnim.animateTo(9f,  tween(1300))
+            floatAnim.animateTo(-9f, tween(1300))
         }
     }
 
@@ -158,33 +170,59 @@ fun PortalTutorialScreen(navController: NavController) {
         ) {
             // ── Character panel ──────────────────────────────────────────────
             Column(
-                modifier = Modifier.width(160.dp),
+                modifier = Modifier
+                    .width(160.dp)
+                    .offset(y = charY.value.dp)
+                    .drawBehind { /* entrance alpha applied via graphicsLayer below */ },
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                // Character circle with glow
+                // Emoji badge
                 Box(
                     modifier = Modifier
-                        .size(110.dp)
+                        .clip(CircleShape)
+                        .background(PURPLE.copy(alpha = 0.15f))
+                        .border(2.dp, PURPLE_LT.copy(alpha = 0.6f), CircleShape)
+                        .size(44.dp),
+                    contentAlignment = Alignment.Center
+                ) { Text("🌀", fontSize = 20.sp) }
+
+                Spacer(Modifier.height(4.dp))
+
+                // Imagen de Lina flotando con glow
+                Box(
+                    modifier = Modifier
+                        .offset(y = floatAnim.value.dp)
+                        .size(148.dp)
                         .drawBehind {
                             drawCircle(
-                                PURPLE.copy(alpha = glow.value * 0.4f),
-                                radius = size.minDimension / 2f + 18f
+                                PURPLE.copy(alpha = glow.value * 0.28f),
+                                radius = size.minDimension / 2f + 22f
                             )
-                        }
-                        .clip(CircleShape)
-                        .background(PURPLE.copy(alpha = 0.18f))
-                        .border(2.dp, PURPLE_LT.copy(alpha = glow.value * 0.8f + 0.1f), CircleShape),
+                        },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("🧙", fontSize = 52.sp)
+                    Image(
+                        painter = painterResource(R.drawable.lina_character),
+                        contentDescription = "Lina",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
+                    )
                 }
 
-                Text(
-                    "Lina",
-                    fontSize = 14.sp, fontFamily = OrbitronFontFamily,
-                    fontWeight = FontWeight.Bold, color = PURPLE_LT
-                )
+                // Badge de nombre
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(PURPLE.copy(alpha = 0.12f))
+                        .border(1.dp, PURPLE_LT.copy(alpha = 0.50f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        "LINA", fontSize = 11.sp, fontFamily = OrbitronFontFamily,
+                        fontWeight = FontWeight.Bold, color = PURPLE_LT, letterSpacing = 3.sp
+                    )
+                }
 
                 // Slide dots
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {

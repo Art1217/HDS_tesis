@@ -83,7 +83,7 @@ fun Level5G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     var swapCounter  by remember { mutableIntStateOf(100) }  // unique row IDs after swaps
 
     var rows       by remember(gameKey) { mutableStateOf(generateG9Rows(CONFIG)) }
-    var rowOffsets by remember(gameKey) { mutableStateOf(List(5) { 0f }) }
+    val rowOffsets  = remember(gameKey) { androidx.compose.runtime.mutableStateListOf(*Array(5) { 0f }) }
 
     // Boss lives = number of incorrect rows (derived)
     val bossLives = rows.count { !it.isFixed }
@@ -114,10 +114,10 @@ fun Level5G9Screen(onLevelComplete: () -> Unit, onNavigateToMenu: () -> Unit) {
     // Scroll loop
     LaunchedEffect(gameKey) {
         while (!done && !failed) {
-            delay(16L)
+            delay(32L)
             if (modalRowIdx == null) {
-                val delta = 16f / CONFIG.scrollSpeedMs
-                rowOffsets = rowOffsets.map { off -> (off + delta) % 1f }
+                val delta = 32f / CONFIG.scrollSpeedMs
+                for (i in rowOffsets.indices) rowOffsets[i] = (rowOffsets[i] + delta) % 1f
             }
         }
     }
