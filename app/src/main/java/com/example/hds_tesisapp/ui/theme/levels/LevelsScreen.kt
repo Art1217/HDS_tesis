@@ -245,7 +245,20 @@ private val ZONE9 = ZoneData(
     levelTitles  = listOf("Depuración Básica", "Datos Borrosos", "Código en Movimiento", "Confirma el Error", "El Glitch Interfiere")
 )
 
-private const val MAX_PAGE = 7   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6 | 5=Z7 | 6=Z8 | 7=Z9
+private val ZONE10 = ZoneData(
+    zoneNumber   = 10,
+    title        = "Cuartel Central de CodeLand",
+    subtitle     = "Enfrentamiento final",
+    icon         = "🏢",
+    accentColor  = Color(0xFFFFC107),
+    bgGradient   = listOf(Color(0xFF06060E), Color(0xFF1A0A0A)),
+    borderColor  = Color(0xFFFFC107).copy(alpha = 0.4f),
+    levelRoutes  = listOf(Routes.CuartelTutorial.route, Routes.Level1G10.route, Routes.Level2G10.route,
+                          Routes.Level3G10.route, Routes.Level4G10.route, Routes.Level5G10.route),
+    levelTitles  = listOf("Lobby del Cuartel", "Sala de Seguridad", "Área de Operaciones", "Laboratorio Central", "La Azotea")
+)
+
+private const val MAX_PAGE = 8   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6 | 5=Z7 | 6=Z8 | 7=Z9 | 8=Z10
 
 @Composable
 fun LevelsScreen(navController: NavController) {
@@ -455,12 +468,23 @@ fun LevelsScreen(navController: NavController) {
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
                 }
-                else -> Box(
+                7 -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     ZonePanel(
                         zone        = ZONE9,
+                        startDelay  = 0,
+                        onNavigate  = { route -> navController.navigate(route) },
+                        modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
+                    )
+                }
+                else -> Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    ZonePanel(
+                        zone        = ZONE10,
                         startDelay  = 0,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()

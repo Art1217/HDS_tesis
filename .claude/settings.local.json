@@ -24,7 +24,12 @@
       "Bash(cp \"C:\\\\Imagenes tesis\\\\Game4\\\\stone_path_bg.png\" \"c:\\\\Nueva carpeta \\(5\\)\\\\HDS_tesis\\\\app\\\\src\\\\main\\\\res\\\\drawable-nodpi\\\\stone_path_bg.png\")",
       "Bash(./gradlew compileDebugKotlin)",
       "Bash(ls \"C:/Imagenes tesis/Game6/\")",
-      "Read(//c/Imagenes tesis/Game6/**)"
+      "Read(//c/Imagenes tesis/Game6/**)",
+      "Bash(cp \"C:\\\\Imagenes tesis\\\\Game10\\\\cuartel_tutorial_bg .png\" cuartel_tutorial_bg.png)",
+      "Bash(cp \"C:\\\\Imagenes tesis\\\\Game10\\\\g10_central_lab_bg.png\" g10_central_lab_bg.png)",
+      "Bash(cp \"C:\\\\Imagenes tesis\\\\Game10\\\\g10_lobby_bg.png\" g10_lobby_bg.png)",
+      "Bash(cp \"C:\\\\Imagenes tesis\\\\Game10\\\\g10_operations_room_bg.png\" g10_operations_room_bg.png)",
+      "Bash(cp \"C:\\\\Imagenes tesis\\\\Game10\\\\g10_rooftop_bg.png\" g10_rooftop_bg.png)"
     ]
   }
 }

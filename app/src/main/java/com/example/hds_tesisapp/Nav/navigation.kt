@@ -62,6 +62,13 @@ import com.example.hds_tesisapp.ui.theme.games.game9.level2.Level2G9Screen
 import com.example.hds_tesisapp.ui.theme.games.game9.level3.Level3G9Screen
 import com.example.hds_tesisapp.ui.theme.games.game9.level4.Level4G9Screen
 import com.example.hds_tesisapp.ui.theme.games.game9.level5.Level5G9Screen
+import com.example.hds_tesisapp.ui.theme.games.game10.CuartelTutorialScreen
+import com.example.hds_tesisapp.ui.theme.games.game10.Zone10CompleteScreen
+import com.example.hds_tesisapp.ui.theme.games.game10.level1.Level1G10Screen
+import com.example.hds_tesisapp.ui.theme.games.game10.level2.Level2G10Screen
+import com.example.hds_tesisapp.ui.theme.games.game10.level3.Level3G10Screen
+import com.example.hds_tesisapp.ui.theme.games.game10.level4.Level4G10Screen
+import com.example.hds_tesisapp.ui.theme.games.game10.level5.Level5G10Screen
 import com.example.hds_tesisapp.ui.theme.levels.LevelsScreen
 import com.example.hds_tesisapp.ui.theme.menu.MenuScreen
 import com.example.hds_tesisapp.ui.theme.personajes.LinaScreen
@@ -844,6 +851,58 @@ fun AppNavigation() {
 
         composable(Routes.Zone9Complete.route) {
             Zone9CompleteScreen(onContinue = {
+                navController.navigate(Routes.CuartelTutorial.route) {
+                    popUpTo(Routes.Zone9Complete.route) { inclusive = true }
+                }
+            })
+        }
+
+        // ── Zona 10 ───────────────────────────────────────────────────────────
+
+        composable(Routes.CuartelTutorial.route) {
+            CuartelTutorialScreen(
+                onStart = { navController.navigate(Routes.Level1G10.route) { popUpTo(Routes.CuartelTutorial.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level1G10.route) {
+            Level1G10Screen(
+                onLevelComplete = { navController.navigate(Routes.Level2G10.route) { popUpTo(Routes.Level1G10.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level2G10.route) {
+            Level2G10Screen(
+                onLevelComplete = { navController.navigate(Routes.Level3G10.route) { popUpTo(Routes.Level2G10.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level3G10.route) {
+            Level3G10Screen(
+                onLevelComplete = { navController.navigate(Routes.Level4G10.route) { popUpTo(Routes.Level3G10.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level4G10.route) {
+            Level4G10Screen(
+                onLevelComplete = { navController.navigate(Routes.Level5G10.route) { popUpTo(Routes.Level4G10.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Level5G10.route) {
+            Level5G10Screen(
+                onLevelComplete = { navController.navigate(Routes.Zone10Complete.route) { popUpTo(Routes.Level5G10.route) { inclusive = true } } },
+                onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
+            )
+        }
+
+        composable(Routes.Zone10Complete.route) {
+            Zone10CompleteScreen(onContinue = {
                 navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } }
             })
         }
