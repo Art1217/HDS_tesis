@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
@@ -44,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -70,6 +72,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
 import com.example.hds_tesisapp.R
@@ -83,8 +86,9 @@ fun Context.findActivity(): Activity? = when (this) {
 }
 
 @Composable
-fun MenuScreen(navController: NavController) {
+fun MenuScreen(navController: NavController, viewModel: MenuViewModel = hiltViewModel()) {
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
 
     // Force Landscape Orientation
     val activity = remember { context.findActivity() }
@@ -258,6 +262,14 @@ fun MenuScreen(navController: NavController) {
                 volume = volume,
                 onMutedChange = { isMuted = it },
                 onVolumeChange = { volume = it },
+                isLoggingOut = uiState.isLoggingOut,
+                onLogout = {
+                    viewModel.logout {
+                        navController.navigate(Routes.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                },
                 onDismiss = { showSettings = false }
             )
         }
@@ -395,10 +407,12 @@ fun HudMenuButton(
     buttonHeight: Dp = 70.dp,
     iconSize: Dp = 32.dp,
     fontSize: Int = 20,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     var isPressed by remember { mutableStateOf(false) }
+    val effectiveAccent = if (enabled) accentColor else accentColor.copy(alpha = 0.35f)
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.96f else 1f,
         animationSpec = spring(
@@ -448,7 +462,7 @@ fun HudMenuButton(
                     }
                     drawPath(
                         path = glowPath,
-                        color = accentColor.copy(alpha = glowAlpha.value * 0.12f * (6 - i)),
+                        color = effectiveAccent.copy(alpha = glowAlpha.value * 0.12f * (6 - i)),
                         style = androidx.compose.ui.graphics.drawscope.Stroke(width = blurPad * 2)
                     )
                 }
@@ -486,7 +500,7 @@ fun HudMenuButton(
                 var y = lineSpacing
                 while (y < h) {
                     drawLine(
-                        color = accentColor.copy(alpha = 0.07f),
+                        color = effectiveAccent.copy(alpha = 0.07f),
                         start = Offset(c, y),
                         end = Offset(w, y),
                         strokeWidth = 1f
@@ -507,13 +521,13 @@ fun HudMenuButton(
                 // Soft outer pass
                 drawPath(
                     path = borderPath,
-                    color = accentColor.copy(alpha = glowAlpha.value * 0.55f),
+                    color = effectiveAccent.copy(alpha = glowAlpha.value * 0.55f),
                     style = androidx.compose.ui.graphics.drawscope.Stroke(width = 6f)
                 )
                 // Sharp inner pass
                 drawPath(
                     path = borderPath,
-                    color = accentColor.copy(alpha = glowAlpha.value),
+                    color = effectiveAccent.copy(alpha = glowAlpha.value),
                     style = androidx.compose.ui.graphics.drawscope.Stroke(width = 2.5f)
                 )
 
@@ -521,19 +535,20 @@ fun HudMenuButton(
                 val markLen = 16f
                 val markOff = 3f
                 // top-left
-                drawLine(accentColor, Offset(markOff, c + markOff), Offset(markOff, c + markLen + markOff), 3f)
-                drawLine(accentColor, Offset(markOff, c + markOff), Offset(markLen + markOff, c + markOff), 3f)
+                drawLine(effectiveAccent, Offset(markOff, c + markOff), Offset(markOff, c + markLen + markOff), 3f)
+                drawLine(effectiveAccent, Offset(markOff, c + markOff), Offset(markLen + markOff, c + markOff), 3f)
                 // top-right
-                drawLine(accentColor, Offset(w - markOff, markOff), Offset(w - markLen - markOff, markOff), 3f)
-                drawLine(accentColor, Offset(w - markOff, markOff), Offset(w - markOff, markLen + markOff), 3f)
+                drawLine(effectiveAccent, Offset(w - markOff, markOff), Offset(w - markLen - markOff, markOff), 3f)
+                drawLine(effectiveAccent, Offset(w - markOff, markOff), Offset(w - markOff, markLen + markOff), 3f)
                 // bottom-left
-                drawLine(accentColor, Offset(markOff, h - markOff), Offset(markLen + markOff, h - markOff), 3f)
-                drawLine(accentColor, Offset(markOff, h - markOff), Offset(markOff, h - markLen - markOff), 3f)
+                drawLine(effectiveAccent, Offset(markOff, h - markOff), Offset(markLen + markOff, h - markOff), 3f)
+                drawLine(effectiveAccent, Offset(markOff, h - markOff), Offset(markOff, h - markLen - markOff), 3f)
                 // bottom-right
-                drawLine(accentColor, Offset(w - c - markOff, h - markOff), Offset(w - c - markLen - markOff, h - markOff), 3f)
-                drawLine(accentColor, Offset(w - c - markOff, h - markOff), Offset(w - c - markOff, h - markLen - markOff), 3f)
+                drawLine(effectiveAccent, Offset(w - c - markOff, h - markOff), Offset(w - c - markLen - markOff, h - markOff), 3f)
+                drawLine(effectiveAccent, Offset(w - c - markOff, h - markOff), Offset(w - c - markOff, h - markLen - markOff), 3f)
             }
-            .pointerInput(Unit) {
+            .pointerInput(enabled) {
+                if (!enabled) return@pointerInput
                 detectTapGestures(
                     onPress = {
                         isPressed = true
@@ -554,7 +569,7 @@ fun HudMenuButton(
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    tint = accentColor,
+                    tint = effectiveAccent,
                     modifier = Modifier.size(iconSize)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -564,14 +579,14 @@ fun HudMenuButton(
                 fontSize = fontSize.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = OrbitronFontFamily,
-                color = Color.White,
+                color = if (enabled) Color.White else Color.White.copy(alpha = 0.4f),
                 letterSpacing = 2.sp,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontSize = fontSize.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = OrbitronFontFamily,
                     shadow = androidx.compose.ui.graphics.Shadow(
-                        color = accentColor,
+                        color = effectiveAccent,
                         offset = Offset(0f, 0f),
                         blurRadius = 18f
                     )
@@ -590,6 +605,8 @@ fun SettingsDialog(
     volume: Float,
     onMutedChange: (Boolean) -> Unit,
     onVolumeChange: (Float) -> Unit,
+    isLoggingOut: Boolean,
+    onLogout: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val accent = Color(0xFF00E5FF)
@@ -727,6 +744,20 @@ fun SettingsDialog(
                 )
 
                 Spacer(Modifier.height(20.dp))
+
+                // ── Botón cerrar sesión ──
+                HudMenuButton(
+                    text = if (isLoggingOut) "Cerrando..." else "Cerrar Sesión",
+                    icon = Icons.Default.Lock,
+                    accentColor = Color(0xFFFFA726),
+                    buttonHeight = 46.dp,
+                    iconSize = 20.dp,
+                    fontSize = 13,
+                    enabled = !isLoggingOut,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) { onLogout() }
+
+                Spacer(Modifier.height(12.dp))
 
                 // ── Botón cerrar ──
                 HudMenuButton(

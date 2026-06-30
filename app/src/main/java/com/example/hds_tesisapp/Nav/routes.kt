@@ -2,6 +2,8 @@ package com.example.hds_tesisapp.Nav
 
 sealed class Routes(val route: String) {
     object Splash          : Routes("splash")
+    object Login           : Routes("login")
+    object Register        : Routes("register")
     object Menu            : Routes("menu")
     object Story           : Routes("story")
     object ZoneIntro       : Routes("zone_intro")

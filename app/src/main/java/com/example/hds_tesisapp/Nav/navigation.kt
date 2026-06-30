@@ -1,11 +1,15 @@
 package com.example.hds_tesisapp.Nav
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.hds_tesisapp.ui.auth.LoginScreen
+import com.example.hds_tesisapp.ui.auth.RegisterScreen
+import com.example.hds_tesisapp.ui.progress.ProgressViewModel
 import com.example.hds_tesisapp.ui.theme.games.game1.Game1TransitionScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.Zone1CompleteScreen
 import com.example.hds_tesisapp.ui.theme.games.game1.level1.Level1Screen
@@ -99,6 +103,32 @@ fun AppNavigation() {
             SplashScreen(navController)
         }
 
+        composable(Routes.Login.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(Routes.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToRegister = {
+                    navController.navigate(Routes.Register.route)
+                }
+            )
+        }
+
+        composable(Routes.Register.route) {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate(Routes.Menu.route) {
+                        popUpTo(Routes.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable(Routes.Menu.route) {
             MenuScreen(navController)
         }
@@ -118,10 +148,13 @@ fun AppNavigation() {
         // ── Zona 1: El Bit Perdido ────────────────────────────────────────────
 
         composable(Routes.Level1.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1Screen(
                 onLevelComplete = {
-                    navController.navigate(game1TransitionRoute(2)) {
-                        popUpTo(Routes.Level1.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = 1) {
+                        navController.navigate(game1TransitionRoute(2)) {
+                            popUpTo(Routes.Level1.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {

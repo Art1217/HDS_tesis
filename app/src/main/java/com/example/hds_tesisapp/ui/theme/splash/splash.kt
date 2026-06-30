@@ -9,18 +9,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hds_tesisapp.Nav.Routes
 import com.example.hds_tesisapp.R
+import com.example.hds_tesisapp.ui.splash.SplashViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController, viewModel: SplashViewModel = hiltViewModel()) {
 
     LaunchedEffect(true) {
         delay(6000)
-        navController.navigate(Routes.Menu.route) {
+        val destination = if (viewModel.hasActiveSession()) Routes.Menu.route else Routes.Login.route
+        navController.navigate(destination) {
             popUpTo(Routes.Splash.route) { inclusive = true }
         }
     }
