@@ -36,12 +36,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,11 +66,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.hds_tesisapp.Nav.Routes
+import com.example.hds_tesisapp.domain.model.LevelCatalog
+import com.example.hds_tesisapp.ui.levels.LevelsViewModel
 import com.example.hds_tesisapp.ui.theme.Baloo2FontFamily
 import com.example.hds_tesisapp.ui.theme.OrbitronFontFamily
 import kotlinx.coroutines.delay
+
+private fun isLevelUnlocked(levelId: Int?, completedLevels: Set<Int>): Boolean =
+    levelId == null || levelId == 1 || completedLevels.contains(levelId - 1)
 
 private fun Context.findLevelsActivity(): Activity? = when (this) {
     is Activity -> this
@@ -85,6 +93,7 @@ private data class ZoneData(
     val bgGradient: List<Color>,
     val borderColor: Color,
     val levelRoutes: List<String>,
+    val levelIds: List<Int?>,
     val levelTitles: List<String>
 )
 
@@ -103,6 +112,7 @@ private val ZONE1 = ZoneData(
         Routes.Level4.route,
         Routes.Level5.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(1, it) },
     levelTitles  = listOf("El Regreso", "El Callejón", "Rutas Falsas", "Doble Obstáculo", "Mini-Glitch")
 )
 
@@ -121,6 +131,7 @@ private val ZONE2 = ZoneData(
         Routes.Level4G2.route,
         Routes.Level5G2.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(2, it) },
     levelTitles  = listOf("Frutas", "Hábitats", "Rotación", "Mezcla", "Mapache")
 )
 
@@ -139,6 +150,7 @@ private val ZONE3 = ZoneData(
         Routes.Level4G3.route,
         Routes.Level5G3.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(3, it) },
     levelTitles  = listOf("El Puente", "Las Piedras", "El Jardín", "La Cascada", "Mini Jefe")
 )
 
@@ -157,6 +169,7 @@ private val ZONE4 = ZoneData(
         Routes.Level4G4.route,
         Routes.Level5G4.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(4, it) },
     levelTitles  = listOf("Las Flores", "Luciérnagas", "Las Piedras", "El Puente", "Glitch")
 )
 
@@ -175,6 +188,7 @@ private val ZONE5 = ZoneData(
         Routes.Level4G5.route,
         Routes.Level5G5.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(5, it) },
     levelTitles  = listOf("El Portal Inicial", "Sí y No", "Portales Dobles", "Sala Múltiple", "Caóticos")
 )
 
@@ -193,6 +207,7 @@ private val ZONE6 = ZoneData(
         Routes.Level4G6.route,
         Routes.Level5G6.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(6, it) },
     levelTitles  = listOf("La Máquina", "Bits Dañados", "Producción", "El Almacén", "Glitch Boss")
 )
 
@@ -211,6 +226,7 @@ private val ZONE7 = ZoneData(
         Routes.Level4G7.route,
         Routes.Level5G7.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(7, it) },
     levelTitles  = listOf("La Puerta", "Sobrecarga", "Frasco Verde", "Frasco Morado", "Sala Central")
 )
 
@@ -229,6 +245,7 @@ private val ZONE8 = ZoneData(
         Routes.Level4G8.route,
         Routes.Level5G8.route,
     ),
+    levelIds     = (1..5).map { LevelCatalog.idFor(8, it) },
     levelTitles  = listOf("La Ciudad Reacciona", "Velocidad", "Doble Evento", "¡Bombas!", "El Glitch Muta")
 )
 
@@ -242,6 +259,7 @@ private val ZONE9 = ZoneData(
     borderColor  = Color(0xFF00BCD4).copy(alpha = 0.4f),
     levelRoutes  = listOf(Routes.WorkshopTutorial.route, Routes.Level1G9.route, Routes.Level2G9.route,
                           Routes.Level3G9.route, Routes.Level4G9.route, Routes.Level5G9.route),
+    levelIds     = listOf(null, LevelCatalog.idFor(9, 1), LevelCatalog.idFor(9, 2), LevelCatalog.idFor(9, 3), LevelCatalog.idFor(9, 4)),
     levelTitles  = listOf("Depuración Básica", "Datos Borrosos", "Código en Movimiento", "Confirma el Error", "El Glitch Interfiere")
 )
 
@@ -255,13 +273,16 @@ private val ZONE10 = ZoneData(
     borderColor  = Color(0xFFFFC107).copy(alpha = 0.4f),
     levelRoutes  = listOf(Routes.CuartelTutorial.route, Routes.Level1G10.route, Routes.Level2G10.route,
                           Routes.Level3G10.route, Routes.Level4G10.route, Routes.Level5G10.route),
+    levelIds     = listOf(null, LevelCatalog.idFor(10, 1), LevelCatalog.idFor(10, 2), LevelCatalog.idFor(10, 3), LevelCatalog.idFor(10, 4)),
     levelTitles  = listOf("Lobby del Cuartel", "Sala de Seguridad", "Área de Operaciones", "Laboratorio Central", "La Azotea")
 )
 
 private const val MAX_PAGE = 8   // 0=Z1+Z2 | 1=Z3 | 2=Z4 | 3=Z5 | 4=Z6 | 5=Z7 | 6=Z8 | 7=Z9 | 8=Z10
 
 @Composable
-fun LevelsScreen(navController: NavController) {
+fun LevelsScreen(navController: NavController, viewModel: LevelsViewModel = hiltViewModel()) {
+    val uiState = viewModel.uiState.collectAsState().value
+    val completedLevels = uiState.completedLevels
     val context  = LocalContext.current
     val activity = remember { context.findLevelsActivity() }
     DisposableEffect(Unit) {
@@ -392,12 +413,14 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE1,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.weight(1f).fillMaxHeight()
                     )
                     ZonePanel(
                         zone        = ZONE2,
                         startDelay  = 150,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.weight(1f).fillMaxHeight()
                     )
@@ -409,6 +432,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE3,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -420,6 +444,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE4,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -431,6 +456,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE5,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -442,6 +468,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE6,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -453,6 +480,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE7,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -464,6 +492,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE8,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -475,6 +504,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE9,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -486,6 +516,7 @@ fun LevelsScreen(navController: NavController) {
                     ZonePanel(
                         zone        = ZONE10,
                         startDelay  = 0,
+                        completedLevels = completedLevels,
                         onNavigate  = { route -> navController.navigate(route) },
                         modifier    = Modifier.fillMaxWidth(0.52f).fillMaxHeight()
                     )
@@ -560,6 +591,7 @@ private fun StarField() {
 private fun ZonePanel(
     zone: ZoneData,
     startDelay: Int,
+    completedLevels: Set<Int>,
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -621,10 +653,11 @@ private fun ZonePanel(
 
             // Level path
             LevelPath(
-                zone       = zone,
-                startDelay = startDelay,
-                onNavigate = onNavigate,
-                modifier   = Modifier.weight(1f).fillMaxWidth()
+                zone            = zone,
+                startDelay      = startDelay,
+                completedLevels = completedLevels,
+                onNavigate      = onNavigate,
+                modifier        = Modifier.weight(1f).fillMaxWidth()
             )
         }
     }
@@ -687,6 +720,7 @@ private fun ZoneHeader(zone: ZoneData) {
 private fun LevelPath(
     zone: ZoneData,
     startDelay: Int,
+    completedLevels: Set<Int>,
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -699,18 +733,20 @@ private fun LevelPath(
         ) {
             // Top row: niveles 1, 2, 3
             LevelRow(
-                indices    = listOf(0, 1, 2),
-                zone       = zone,
-                startDelay = startDelay,
-                onNavigate = onNavigate
+                indices         = listOf(0, 1, 2),
+                zone            = zone,
+                startDelay      = startDelay,
+                completedLevels = completedLevels,
+                onNavigate      = onNavigate
             )
             // Bottom row: niveles 4, 5 (centrados)
             LevelRow(
-                indices    = listOf(3, 4),
-                zone       = zone,
-                startDelay = startDelay,
-                onNavigate = onNavigate,
-                centered   = true
+                indices         = listOf(3, 4),
+                zone            = zone,
+                startDelay      = startDelay,
+                completedLevels = completedLevels,
+                onNavigate      = onNavigate,
+                centered        = true
             )
         }
     }
@@ -721,6 +757,7 @@ private fun LevelRow(
     indices: List<Int>,
     zone: ZoneData,
     startDelay: Int,
+    completedLevels: Set<Int>,
     onNavigate: (String) -> Unit,
     centered: Boolean = false
 ) {
@@ -733,6 +770,8 @@ private fun LevelRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         indices.forEachIndexed { rowPos, levelIndex ->
+            val levelId = zone.levelIds.getOrNull(levelIndex)
+            val unlocked = isLevelUnlocked(levelId, completedLevels)
             LevelNode(
                 levelNumber = levelIndex + 1,
                 title       = zone.levelTitles[levelIndex],
@@ -740,7 +779,8 @@ private fun LevelRow(
                 bgGradient  = zone.bgGradient,
                 nodeBorder  = zone.borderColor,
                 animDelay   = startDelay + levelIndex * 100,
-                onClick     = { onNavigate(zone.levelRoutes[levelIndex]) }
+                locked      = !unlocked,
+                onClick     = { if (unlocked) onNavigate(zone.levelRoutes[levelIndex]) }
             )
             // Flecha conectora entre nodos (excepto el último de la fila)
             if (rowPos < indices.size - 1) {
@@ -765,6 +805,7 @@ private fun LevelNode(
     nodeBorder: Color,
     animDelay: Int,
     nodeSize: Dp = 56.dp,
+    locked: Boolean = false,
     onClick: () -> Unit
 ) {
     val scale = remember { Animatable(0f) }
@@ -780,6 +821,9 @@ private fun LevelNode(
         label = "press"
     )
 
+    val effectiveAccent = if (locked) Color.White.copy(alpha = 0.22f) else accentColor
+    val effectiveBorder = if (locked) Color.White.copy(alpha = 0.22f) else nodeBorder
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value }
@@ -791,23 +835,23 @@ private fun LevelNode(
                 .drawBehind {
                     // glow ring
                     drawCircle(
-                        color = accentColor.copy(alpha = if (pressed) 0.5f else 0.2f),
+                        color = effectiveAccent.copy(alpha = if (pressed) 0.5f else 0.2f),
                         radius = size.minDimension / 2f + 6f
                     )
                 }
                 .shadow(if (pressed) 2.dp else 8.dp, CircleShape,
-                    spotColor = accentColor.copy(alpha = 0.4f),
-                    ambientColor = accentColor.copy(alpha = 0.2f))
+                    spotColor = effectiveAccent.copy(alpha = 0.4f),
+                    ambientColor = effectiveAccent.copy(alpha = 0.2f))
                 .clip(CircleShape)
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            accentColor.copy(alpha = 0.35f),
-                            bgGradient.last().copy(alpha = 0.8f)
+                            effectiveAccent.copy(alpha = 0.35f),
+                            bgGradient.last().copy(alpha = if (locked) 0.9f else 0.8f)
                         )
                     )
                 )
-                .border(2.dp, nodeBorder.copy(alpha = if (pressed) 1f else 0.7f), CircleShape)
+                .border(2.dp, effectiveBorder.copy(alpha = if (pressed) 1f else 0.7f), CircleShape)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onPress = {
@@ -831,12 +875,21 @@ private fun LevelNode(
                         )
                     )
             )
-            Text(
-                text = "$levelNumber",
-                fontSize = 20.sp, fontFamily = OrbitronFontFamily,
-                fontWeight = FontWeight.ExtraBold, color = Color.White,
-                textAlign = TextAlign.Center
-            )
+            if (locked) {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = "Bloqueado",
+                    tint = Color.White.copy(alpha = 0.55f),
+                    modifier = Modifier.size(20.dp)
+                )
+            } else {
+                Text(
+                    text = "$levelNumber",
+                    fontSize = 20.sp, fontFamily = OrbitronFontFamily,
+                    fontWeight = FontWeight.ExtraBold, color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
         Spacer(Modifier.height(4.dp))
@@ -845,7 +898,7 @@ private fun LevelNode(
         Text(
             text = title,
             fontSize = 8.sp, fontFamily = Baloo2FontFamily,
-            color = accentColor.copy(alpha = 0.75f),
+            color = if (locked) Color.White.copy(alpha = 0.35f) else accentColor.copy(alpha = 0.75f),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold,
             maxLines = 1

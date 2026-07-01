@@ -2,6 +2,7 @@ package com.example.hds_tesisapp.data.remote
 
 import com.example.hds_tesisapp.data.remote.dto.LoginRequest
 import com.example.hds_tesisapp.data.remote.dto.PlayerResponse
+import com.example.hds_tesisapp.data.remote.dto.ProgressListResponse
 import com.example.hds_tesisapp.data.remote.dto.ProgressSaveRequest
 import com.example.hds_tesisapp.data.remote.dto.RegisterRequest
 import com.example.hds_tesisapp.data.remote.dto.SimpleResponse
@@ -23,4 +24,7 @@ interface ApiService {
 
     @POST("progress/save")
     suspend fun saveProgress(@Body body: ProgressSaveRequest): Response<SimpleResponse>
+
+    @GET("progress/{uid}")
+    suspend fun getProgress(@Path("uid") uid: String): Response<ProgressListResponse>
 }

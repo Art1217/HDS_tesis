@@ -14,3 +14,13 @@ data class SimpleResponse(
     val success: Boolean,
     val message: String
 )
+
+data class ProgressListResponse(
+    val success: Boolean,
+    val message: String,
+    val data: ProgressListDataDto?
+)
+
+data class ProgressListDataDto(
+    val completedLevels: List<Int>
+)

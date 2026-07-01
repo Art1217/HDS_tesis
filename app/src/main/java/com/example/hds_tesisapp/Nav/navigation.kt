@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.hds_tesisapp.domain.model.LevelCatalog
 import com.example.hds_tesisapp.ui.auth.LoginScreen
 import com.example.hds_tesisapp.ui.auth.RegisterScreen
 import com.example.hds_tesisapp.ui.progress.ProgressViewModel
@@ -151,7 +152,7 @@ fun AppNavigation() {
             val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1Screen(
                 onLevelComplete = {
-                    progressViewModel.saveLevelCompleted(idLevel = 1) {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(1, 1)) {
                         navController.navigate(game1TransitionRoute(2)) {
                             popUpTo(Routes.Level1.route) { inclusive = true }
                         }
@@ -166,10 +167,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2Screen(
                 onLevelComplete = {
-                    navController.navigate(game1TransitionRoute(3)) {
-                        popUpTo(Routes.Level2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(1, 2)) {
+                        navController.navigate(game1TransitionRoute(3)) {
+                            popUpTo(Routes.Level2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -181,10 +185,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3Screen(
                 onLevelComplete = {
-                    navController.navigate(game1TransitionRoute(4)) {
-                        popUpTo(Routes.Level3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(1, 3)) {
+                        navController.navigate(game1TransitionRoute(4)) {
+                            popUpTo(Routes.Level3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -196,10 +203,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4Screen(
                 onLevelComplete = {
-                    navController.navigate(game1TransitionRoute(5)) {
-                        popUpTo(Routes.Level4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(1, 4)) {
+                        navController.navigate(game1TransitionRoute(5)) {
+                            popUpTo(Routes.Level4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -211,10 +221,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone1Complete.route) {
-                        popUpTo(Routes.Level5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(1, 5)) {
+                        navController.navigate(Routes.Zone1Complete.route) {
+                            popUpTo(Routes.Level5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -262,10 +275,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G2Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G2.route) {
-                        popUpTo(Routes.Level1G2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(2, 1)) {
+                        navController.navigate(Routes.Level2G2.route) {
+                            popUpTo(Routes.Level1G2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -277,10 +293,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G2Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G2.route) {
-                        popUpTo(Routes.Level2G2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(2, 2)) {
+                        navController.navigate(Routes.Level3G2.route) {
+                            popUpTo(Routes.Level2G2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -292,10 +311,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G2Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G2.route) {
-                        popUpTo(Routes.Level3G2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(2, 3)) {
+                        navController.navigate(Routes.Level4G2.route) {
+                            popUpTo(Routes.Level3G2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -307,10 +329,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G2Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G2.route) {
-                        popUpTo(Routes.Level4G2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(2, 4)) {
+                        navController.navigate(Routes.Level5G2.route) {
+                            popUpTo(Routes.Level4G2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -322,10 +347,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G2.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G2Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone2Complete.route) {
-                        popUpTo(Routes.Level5G2.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(2, 5)) {
+                        navController.navigate(Routes.Zone2Complete.route) {
+                            popUpTo(Routes.Level5G2.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -351,10 +379,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G3Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G3.route) {
-                        popUpTo(Routes.Level1G3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(3, 1)) {
+                        navController.navigate(Routes.Level2G3.route) {
+                            popUpTo(Routes.Level1G3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -366,10 +397,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G3Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G3.route) {
-                        popUpTo(Routes.Level2G3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(3, 2)) {
+                        navController.navigate(Routes.Level3G3.route) {
+                            popUpTo(Routes.Level2G3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -381,10 +415,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G3Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G3.route) {
-                        popUpTo(Routes.Level3G3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(3, 3)) {
+                        navController.navigate(Routes.Level4G3.route) {
+                            popUpTo(Routes.Level3G3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -396,10 +433,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G3Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G3.route) {
-                        popUpTo(Routes.Level4G3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(3, 4)) {
+                        navController.navigate(Routes.Level5G3.route) {
+                            popUpTo(Routes.Level4G3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -411,10 +451,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G3.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G3Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone3Complete.route) {
-                        popUpTo(Routes.Level5G3.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(3, 5)) {
+                        navController.navigate(Routes.Zone3Complete.route) {
+                            popUpTo(Routes.Level5G3.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -440,10 +483,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G4Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G4.route) {
-                        popUpTo(Routes.Level1G4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(4, 1)) {
+                        navController.navigate(Routes.Level2G4.route) {
+                            popUpTo(Routes.Level1G4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -455,10 +501,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G4Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G4.route) {
-                        popUpTo(Routes.Level2G4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(4, 2)) {
+                        navController.navigate(Routes.Level3G4.route) {
+                            popUpTo(Routes.Level2G4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -470,10 +519,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G4Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G4.route) {
-                        popUpTo(Routes.Level3G4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(4, 3)) {
+                        navController.navigate(Routes.Level4G4.route) {
+                            popUpTo(Routes.Level3G4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -485,10 +537,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G4Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G4.route) {
-                        popUpTo(Routes.Level4G4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(4, 4)) {
+                        navController.navigate(Routes.Level5G4.route) {
+                            popUpTo(Routes.Level4G4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -500,10 +555,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G4.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G4Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone4Complete.route) {
-                        popUpTo(Routes.Level5G4.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(4, 5)) {
+                        navController.navigate(Routes.Zone4Complete.route) {
+                            popUpTo(Routes.Level5G4.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -529,10 +587,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G5.route) {
-                        popUpTo(Routes.Level1G5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(5, 1)) {
+                        navController.navigate(Routes.Level2G5.route) {
+                            popUpTo(Routes.Level1G5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -544,10 +605,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G5.route) {
-                        popUpTo(Routes.Level2G5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(5, 2)) {
+                        navController.navigate(Routes.Level3G5.route) {
+                            popUpTo(Routes.Level2G5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -559,10 +623,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G5.route) {
-                        popUpTo(Routes.Level3G5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(5, 3)) {
+                        navController.navigate(Routes.Level4G5.route) {
+                            popUpTo(Routes.Level3G5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -574,10 +641,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G5.route) {
-                        popUpTo(Routes.Level4G5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(5, 4)) {
+                        navController.navigate(Routes.Level5G5.route) {
+                            popUpTo(Routes.Level4G5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -589,10 +659,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G5.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G5Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone5Complete.route) {
-                        popUpTo(Routes.Level5G5.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(5, 5)) {
+                        navController.navigate(Routes.Zone5Complete.route) {
+                            popUpTo(Routes.Level5G5.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -618,10 +691,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G6.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G6Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G6.route) {
-                        popUpTo(Routes.Level1G6.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(6, 1)) {
+                        navController.navigate(Routes.Level2G6.route) {
+                            popUpTo(Routes.Level1G6.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -633,10 +709,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G6.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G6Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G6.route) {
-                        popUpTo(Routes.Level2G6.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(6, 2)) {
+                        navController.navigate(Routes.Level3G6.route) {
+                            popUpTo(Routes.Level2G6.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -648,10 +727,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G6.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G6Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G6.route) {
-                        popUpTo(Routes.Level3G6.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(6, 3)) {
+                        navController.navigate(Routes.Level4G6.route) {
+                            popUpTo(Routes.Level3G6.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -663,10 +745,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G6.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G6Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G6.route) {
-                        popUpTo(Routes.Level4G6.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(6, 4)) {
+                        navController.navigate(Routes.Level5G6.route) {
+                            popUpTo(Routes.Level4G6.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -678,10 +763,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G6.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G6Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone6Complete.route) {
-                        popUpTo(Routes.Level5G6.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(6, 5)) {
+                        navController.navigate(Routes.Zone6Complete.route) {
+                            popUpTo(Routes.Level5G6.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -707,10 +795,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G7.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G7Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level2G7.route) {
-                        popUpTo(Routes.Level1G7.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(7, 1)) {
+                        navController.navigate(Routes.Level2G7.route) {
+                            popUpTo(Routes.Level1G7.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -722,10 +813,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level2G7.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G7Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level3G7.route) {
-                        popUpTo(Routes.Level2G7.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(7, 2)) {
+                        navController.navigate(Routes.Level3G7.route) {
+                            popUpTo(Routes.Level2G7.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -737,10 +831,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level3G7.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G7Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level4G7.route) {
-                        popUpTo(Routes.Level3G7.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(7, 3)) {
+                        navController.navigate(Routes.Level4G7.route) {
+                            popUpTo(Routes.Level3G7.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -752,10 +849,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level4G7.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G7Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Level5G7.route) {
-                        popUpTo(Routes.Level4G7.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(7, 4)) {
+                        navController.navigate(Routes.Level5G7.route) {
+                            popUpTo(Routes.Level4G7.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -767,10 +867,13 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level5G7.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G7Screen(
                 onLevelComplete = {
-                    navController.navigate(Routes.Zone7Complete.route) {
-                        popUpTo(Routes.Level5G7.route) { inclusive = true }
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(7, 5)) {
+                        navController.navigate(Routes.Zone7Complete.route) {
+                            popUpTo(Routes.Level5G7.route) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToMenu = {
@@ -796,36 +899,61 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G8.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G8Screen(
-                onLevelComplete = { navController.navigate(Routes.Level2G8.route) { popUpTo(Routes.Level1G8.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(8, 1)) {
+                        navController.navigate(Routes.Level2G8.route) { popUpTo(Routes.Level1G8.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level2G8.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G8Screen(
-                onLevelComplete = { navController.navigate(Routes.Level3G8.route) { popUpTo(Routes.Level2G8.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(8, 2)) {
+                        navController.navigate(Routes.Level3G8.route) { popUpTo(Routes.Level2G8.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level3G8.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G8Screen(
-                onLevelComplete = { navController.navigate(Routes.Level4G8.route) { popUpTo(Routes.Level3G8.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(8, 3)) {
+                        navController.navigate(Routes.Level4G8.route) { popUpTo(Routes.Level3G8.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level4G8.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G8Screen(
-                onLevelComplete = { navController.navigate(Routes.Level5G8.route) { popUpTo(Routes.Level4G8.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(8, 4)) {
+                        navController.navigate(Routes.Level5G8.route) { popUpTo(Routes.Level4G8.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level5G8.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G8Screen(
-                onLevelComplete = { navController.navigate(Routes.Zone8Complete.route) { popUpTo(Routes.Level5G8.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(8, 5)) {
+                        navController.navigate(Routes.Zone8Complete.route) { popUpTo(Routes.Level5G8.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
@@ -848,36 +976,61 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G9.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G9Screen(
-                onLevelComplete = { navController.navigate(Routes.Level2G9.route) { popUpTo(Routes.Level1G9.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(9, 1)) {
+                        navController.navigate(Routes.Level2G9.route) { popUpTo(Routes.Level1G9.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level2G9.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G9Screen(
-                onLevelComplete = { navController.navigate(Routes.Level3G9.route) { popUpTo(Routes.Level2G9.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(9, 2)) {
+                        navController.navigate(Routes.Level3G9.route) { popUpTo(Routes.Level2G9.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level3G9.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G9Screen(
-                onLevelComplete = { navController.navigate(Routes.Level4G9.route) { popUpTo(Routes.Level3G9.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(9, 3)) {
+                        navController.navigate(Routes.Level4G9.route) { popUpTo(Routes.Level3G9.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level4G9.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G9Screen(
-                onLevelComplete = { navController.navigate(Routes.Level5G9.route) { popUpTo(Routes.Level4G9.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(9, 4)) {
+                        navController.navigate(Routes.Level5G9.route) { popUpTo(Routes.Level4G9.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level5G9.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G9Screen(
-                onLevelComplete = { navController.navigate(Routes.Zone9Complete.route) { popUpTo(Routes.Level5G9.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(9, 5)) {
+                        navController.navigate(Routes.Zone9Complete.route) { popUpTo(Routes.Level5G9.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
@@ -900,36 +1053,61 @@ fun AppNavigation() {
         }
 
         composable(Routes.Level1G10.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level1G10Screen(
-                onLevelComplete = { navController.navigate(Routes.Level2G10.route) { popUpTo(Routes.Level1G10.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(10, 1)) {
+                        navController.navigate(Routes.Level2G10.route) { popUpTo(Routes.Level1G10.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level2G10.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level2G10Screen(
-                onLevelComplete = { navController.navigate(Routes.Level3G10.route) { popUpTo(Routes.Level2G10.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(10, 2)) {
+                        navController.navigate(Routes.Level3G10.route) { popUpTo(Routes.Level2G10.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level3G10.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level3G10Screen(
-                onLevelComplete = { navController.navigate(Routes.Level4G10.route) { popUpTo(Routes.Level3G10.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(10, 3)) {
+                        navController.navigate(Routes.Level4G10.route) { popUpTo(Routes.Level3G10.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level4G10.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level4G10Screen(
-                onLevelComplete = { navController.navigate(Routes.Level5G10.route) { popUpTo(Routes.Level4G10.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(10, 4)) {
+                        navController.navigate(Routes.Level5G10.route) { popUpTo(Routes.Level4G10.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
 
         composable(Routes.Level5G10.route) {
+            val progressViewModel: ProgressViewModel = hiltViewModel()
             Level5G10Screen(
-                onLevelComplete = { navController.navigate(Routes.Zone10Complete.route) { popUpTo(Routes.Level5G10.route) { inclusive = true } } },
+                onLevelComplete = {
+                    progressViewModel.saveLevelCompleted(idLevel = LevelCatalog.idFor(10, 5)) {
+                        navController.navigate(Routes.Zone10Complete.route) { popUpTo(Routes.Level5G10.route) { inclusive = true } }
+                    }
+                },
                 onNavigateToMenu = { navController.navigate(Routes.Menu.route) { popUpTo(0) { inclusive = true } } }
             )
         }
